@@ -12,13 +12,11 @@ library(distributional)
 library(markdown)
 library(rmarkdown)
 library(tinytex)
-#yes
 library(readr)
 ```
 
 #### Question 1
-yes
-Let X ∼ U(−1,1) be uniform on (−1,1), i.e., $f_{x}(x)$= 1/2 when −1 \< x \< 1 and zero otherwise. Let Y = $X^2$. Calculate the correlation of X and Y. Now, use runif() in R to generate 1000 I.I.D samples of X's from U(−1,1), and Y's and calculate the sample correlation of X and Y. Are X and Y uncorrelated? Are X and Y independent? Any conclusion on the relationship between uncorrelated and independent?abcshcb
+Let X ∼ U(−1,1) be uniform on (−1,1), i.e., $f_{x}(x)$= 1/2 when −1 \< x \< 1 and zero otherwise. Let Y = $X^2$. Calculate the correlation of X and Y. Now, use runif() in R to generate 1000 I.I.D samples of X's from U(−1,1), and Y's and calculate the sample correlation of X and Y. Are X and Y uncorrelated? Are X and Y independent? Any conclusion on the relationship between uncorrelated and independent?
 
 
 $$ 
