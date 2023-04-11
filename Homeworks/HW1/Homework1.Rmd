@@ -32,9 +32,14 @@ Determine which statements are true. Explain.\
   
 \setlength{\leftskip}{0cm}\
 
+I. False. Stochastic trends are characterized by unexplainable changes in direction.
+They arise from the random movement of the variable over time.
+II. True. Deterministic trends are a result of the constant effect of a few causal forces an are generally stable over time.
+III. True. Deterministic trends can provide accurate forecasts for several periods ahead, as forecasting generally assumes that trends will continue and change relatively slowly.
+
 #### Question 2
 *Random walk and stationarity. In this question we introduce WN and random walk with non-zero mean. A White Noise with non-zero mean\*
-Z~t~ ∼ WN(μ~Z~, σ^2^~Z~), *is a collection of uncorrelated random variables with the same mean and variance:* E(Zt) = μZ, Var(Z~t~) = σ~Z~^2^, and Cov(Z~t~, Z~s~) = 0 for t̸=s.
+Z~t~ ∼ WN(μ~Z~, σ^2^~Z~), *is a collection of uncorrelated random variables with the same mean and variance:* E(Z~t~) = μ~Z~, Var(Z~t~) = σ~Z~^2^, and Cov(Z~t~, Z~s~) = 0 for t̸=s.
 *When* Z~t~ *is referred to as a ‘White Noise’, without specifying its mean, by default, assume *μ~Z~ = 0.
 *A random walk with non-zero mean is expressed as* X~1~ =Z~1~, X~t~ = X~t−1~ + Z~t~ = Z~1~+...+Z~t~, t=2,3,..., where* Z~t~ ∼WN(μ~Z~, σ~Z~^2^).\
 Determine which statements are true with respect to a random walk model; show calculations and provide complete explanations.\  
