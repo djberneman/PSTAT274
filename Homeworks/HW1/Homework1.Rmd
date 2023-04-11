@@ -1,0 +1,149 @@
+---
+title: "PSTAT 174/274: Homework # 1"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This homework is based on Lectures 1–2. Please study material of week 1 before starting working on this problems. Good Luck!
+
+#### Question 1
+*Understanding deterministic and stochastic trends.* You are given the following statements about time series:
+
+\setlength{\leftskip}{2cm}
+
+   - I.   Stochastic trends are characterized by explainable changes in direction.\
+  - II. Deterministic trends are better suited to extrapolation than stochastic trends.\
+  - III. Short term extrapolation of deterministic trends can be justified by claiming that underlying trends will usually change slowly in comparison with the forecast lead time.
+  
+\setlength{\leftskip}{0cm}
+
+Determine which statements are true. Explain.\
+\setlength{\leftskip}{2cm}
+
+|         A. I only 
+|         B. II only    
+|         C. III only   
+|         D. I, II, and III
+|         E. The answer is not given by (A), (B), (C), or (D).
+  
+\setlength{\leftskip}{0cm}\
+
+#### Question 2
+*Random walk and stationarity. In this question we introduce WN and random walk with non-zero mean. A White Noise with non-zero mean\*
+Z~t~ ∼ WN(μ~Z~, σ^2^~Z~), *is a collection of uncorrelated random variables with the same mean and variance:* E(Zt) = μZ, Var(Z~t~) = σ~Z~^2^, and Cov(Z~t~, Z~s~) = 0 for t̸=s.
+*When* Z~t~ *is referred to as a ‘White Noise’, without specifying its mean, by default, assume *μ~Z~ = 0.
+*A random walk with non-zero mean is expressed as* X~1~ =Z~1~, X~t~ = X~t−1~ + Z~t~ = Z~1~+...+Z~t~, t=2,3,..., where* Z~t~ ∼WN(μ~Z~, σ~Z~^2^).\
+Determine which statements are true with respect to a random walk model; show calculations and provide complete explanations.\  
+\setlength{\leftskip}{2cm}
+
+- I.   If μ~Z~ = 0, then the random walk is nonstationary in the mean.  
+    *(Hint: Nonstationary in the mean means that the mean changes with time.)*
+- II. If σ~Z~^2^ = 0, then the random walk is nonstationary in the variance.\
+    *(Hint: Nonstationary in the variance means that the variance changes with time.)*
+- III. If σ~Z~^2^ > 0, then the random walk is nonstationary in the variance.\
+
+\setlength{\leftskip}{0cm}\
+
+#### Question 3
+*Calculation of sample acf.* You are given the following stock prices of company CAS:  
+
+| Day | Stock Price |  
+|:---:|:---:|  
+| 1 | 538 |  
+| 2 | 548 |  
+| 3 | 528 |  
+| 4 | 608 |  
+| 5 | 598 |  
+| 6 | 589 |  
+| 7 | 548 |  
+| 8 | 514 |  
+| 9 | 501 |  
+| 10| 498 |  
+
+Calculate the sample autocorrelation at lag 3.  
+*Hints:*\
+\setlength{\leftskip}{2cm}
+
+*(i) We are given a sample of size n = 10 to estimate autocorrelation at lag 3:* ρ(3) = Cor(X~1~, X~4~) = $\frac{γ(3)}{γ(0)}$\
+*– for definition of autocorrelation at lag 3 see Week 1 slide 52 or (2.1.3) on p.6 of Lecture Notes.*  
+*(ii) General formulas for calculating sample mean and covariance are given on slide 38 of week 1 and in §1.2 on p.4 of Lecture notes for week 1.*
+ *To estimate* ρ(3) = Cor(X~1~, X~4~) *we have:*  
+$\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$.         
+
+#### Question 4
+*Polyroot command in R. Recall from algebra, that a function* f(z) = a~n~z^n^ + a~n−1~z^n−1^ + ... + a~1~z + a~0~ *is called a polynomial function of order n. Roots of a polynomial function f are solutions of the equation* f(z) = 0.  
+*Roots of a quadratic equation* ax^2^ + bx + c = 0 *are given by the formula* x~1,2~ = $\frac{−b ± \sqrt{b^2−4ac}}{2a}$  
+Let f(z) = 1 − 2z and g(z) = 1 − 0.45z + 0.05z^2^. Find their roots, show calculations.  
+Check your answers using R command *polyroot*:\
+\setlength{\leftskip}{2cm}
+
+|        > *polyroot*(c(1, −2))
+|        > *polyroot*(c(1, −0.45, 0.05))
+|        *(Do not forget to include your output!)*
+\setlength{\leftskip}{0cm}\
+
+
+#### Question 5
+*Model identification.* You are given the following information about a MA(1) model with coefficient
+|θ~1~| < 1: ρ~1~ = −0.4, ρ~k~ = 0, k = 2,3,....\
+Determine the value of θ~1~.  \
+
+
+#### Question 6
+*Gaussian White Noise and its square.* Let {Z~t~} be a Gaussian white noise, that is, a sequence of i.i.d. normal r.v.s each with mean zero and variance 1. Let Y~t~ = Z~t~^2^.\
+
+\setlength{\leftskip}{2cm}
+
+(a) Using R generate 300 observations of the Gaussian white noise Z. Plot the series and its acf.  
+(b) Using R, plot 300 observations of the series Y = Z~t~^2^. Plot its acf.  
+(c) Analyze graphs from (a) and (b).  
+– Can you see a difference between the plots of graphs of time series Z and Y?\ 
+From the graphs, would you conclude that both series are stationary (or not)?  
+– Is there a noticeable difference in the plots of acf functions ρ~Z~ and ρ~Y~?\ 
+Would you describe Y as a non-Gaussian white noise sequence based on your plots? Provide full analysis of your conclusions.
+
+\setlength{\leftskip}{0cm}
+
+\setlength{\leftskip}{2cm}
+
+(d) Calculate the second-order moments of Y: μ~Y~ (t) = E(Y~t~), σ~Y~^2^ (t) = Var(Y~t~), and
+ρ~Y~(t, t + h) = Cor(Y~t~, Y~t+h~).\
+Do your calculations support your observations in (c)?  \
+
+*Hints:*\
+
+*(i) Slides 65 and 68 of week 1 have R commands to generate MA(1) time series. White Noise is a MA(1) process with coefficient θ~1~ = 0.*\
+*Here is a more direct code to generate* WN{Z~t~} ∼ N(0,1):
+
+\setlength{\leftskip}{0cm}
+
+\setlength{\leftskip}{2cm}
+
+|            Z <= rnorm(300)
+|            plot.ts(Z, xlab = ””, ylab = ””) acf(Z, main = ”ACF”)  
+
+*(ii) Useful for part (d): For* X ∼ N(0,σ^2^), E(X~4~) = 3(σ^2^)^2^.
+
+\setlength{\leftskip}{0cm}\
+
+
+**The following two problems are for students enrolled in PSTAT 274 ONLY**
+
+#### Question G1
+Let {Zt} be *Gaussian* white noise, i.e. {Z~t~} is a sequence of i.i.d. normal r.v.s each with mean zero and variance 1.
+
+\setlength{\leftskip}{2cm}
+
+Define: $X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}$
+  
+\setlength{\leftskip}{0cm}
+Show that {X~t~} is WN(0, 1) (that is, variables X~t~ and X~t+k~, k ≥ 1, are uncorrelated with mean zero and
+variance 1) but that X~t~ and X~t−1~ are **not** i.i.d.\
+
+
+#### Question G2
+If {X~t~} and {Y~t~} are uncorrelated stationary sequences, i.e., if X~r~ and Y~s~ are uncorrelated for every r and s, show that {X~t~ + Y~t~} is stationary with autocovariance function equal to the sum of the autocovariance functions of {X~t~} and {Y~t~}.
