@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(latex2exp)
 ```
 This homework is based on Lectures 1–2. Please study material of week 1 before starting working on this problems. Good Luck!
 
@@ -22,6 +24,7 @@ This homework is based on Lectures 1–2. Please study material of week 1 before
 \setlength{\leftskip}{0cm}
 
 Determine which statements are true. Explain.\
+
 \setlength{\leftskip}{2cm}
 
 |         A. I only 
@@ -172,7 +175,35 @@ Calculate the sample autocorrelation at lag 3.
 *– for definition of autocorrelation at lag 3 see Week 1 slide 52 or (2.1.3) on p.6 of Lecture Notes.*  
 *(ii) General formulas for calculating sample mean and covariance are given on slide 38 of week 1 and in §1.2 on p.4 of Lecture notes for week 1.*
  *To estimate* ρ(3) = Cor(X~1~, X~4~) *we have:*  
-$\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$.         
+$\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$
+
+```{r}
+
+data = data.frame(matrix(ncol=5, nrow=10))
+colnames(data)<-c("Day", "SP ($x_{t}$)", "$(x_{t}- \\bar{x})$", "$(x_{t}- \\bar{x})^2$", "$(x_{t}- \\bar{x})(x_{t+3}\ \ - \ \\bar{x})$")
+
+data$Day <- c(seq(1,10))
+data[,2] <- c(538, 548, 528, 608, 598, 589, 548, 514, 501, 498)
+
+mean = mean(data[,2])
+for(i in 1:10){
+  data[i,3] = data[i,2] - mean}
+
+for(i in 1:10){
+  data[i,4] = (data[i,2] - mean)^2}
+
+data[,5] <- NA
+for(i in 1:7){
+  data[i,5] = data[i, 3] * data[i+3, 3]}
+
+data[11,1] <- "total"
+data[11,2] <- sum(as.integer(data[1:10, 2]))
+data[11,3] <- sum(as.integer(data[1:10, 3]))
+data[11,4] <- sum(as.integer(data[1:10, 4]))
+data[11,5] <- sum(as.integer(data[1:7, 5]))
+knitr::kable(data)
+
+```
 
 #### Question 4
 *Polyroot command in R. Recall from algebra, that a function* f(z) = a~n~z^n^ + a~n−1~z^n−1^ + ... + a~1~z + a~0~ *is called a polynomial function of order n. Roots of a polynomial function f are solutions of the equation* f(z) = 0.  

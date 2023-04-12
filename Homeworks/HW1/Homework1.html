@@ -413,7 +413,7 @@ Z<sub>t</sub> <em>is referred to as a ‘White Noise’, without specifying
 its mean, by default, assume</em> μ<sub>Z</sub> = 0. <em>A random walk
 with non-zero mean is expressed as</em> X<sub>1</sub> =Z<sub>1</sub>,
 X<sub>t</sub> = X<sub>t−1</sub> + Z<sub>t</sub> =
-Z<sub>1</sub>+…+Z<sub>t</sub>, t=2,3,…, where* Z<sub>t</sub>
+Z<sub>1</sub>+…+Z<sub>t</sub>, t=2,3,…, <em>where</em> Z<sub>t</sub>
 ∼WN(μ<sub>Z</sub>, σ<sub>Z</sub><sup>2</sup>).<br />
 Determine which statements are true with respect to a random walk model;
 show calculations and provide complete explanations.  </p>
@@ -449,11 +449,11 @@ E[X<sub>t-1</sub>] + Z<sub>t</sub></div>
 \end{align*}
 \]</span> <span class="math display">\[
 \begin{aligned}
-&amp; E[X_{1}] = \mu_{Z}\\
-&amp; E[X_{2}] = 2\mu_{Z}\\
-&amp; E[X_{t-1}] = (t-1)\mu_{Z}\\
-&amp; E[X_{t}] = t\mu_{Z}\\
-&amp; Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[Z_{t}]
+&amp; E[X_{1}] = E[Z_{1}] = \mu_{Z}\\
+&amp; E[X_{2}] = E[X_{1}] + E[Z_{2}] = 2\mu_{Z}\\
+&amp; E[X_{t-1}] = E[X_{t-2}] + E[Z_{t-1}] = (t-1)\mu_{Z}\\
+&amp; E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\
+&amp; Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[X_{t}]
 \end{aligned}
 \]</span></p>
 <p>Since <span class="math inline">\(\mu_{Z} &gt; 0\ \ or \ \ \mu_{Z}
@@ -463,19 +463,72 @@ Thus the random walk is nonstationary in the mean.</p>
 <pre><code>II. False</code></pre>
 <p><span class="math display">\[
 \begin{aligned}
-&amp; \text{It is given that}\ σ_{Z}^2=0\ and Cov(Z_{t}, Z_{s}) =
-0\  for\   t̸=s.\\
-&amp; Also,\ X_{t}\ and\ Z_{s}\ \text(are)
+&amp; \text{It is given that}\ σ_{Z}^2=0\  \ \ \ \&amp; \ \ \ Cov(Z_{t},
+Z_{s}) =0,\ for\ t \ne s
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+For\ all\ &amp;t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
+Var[Z_{t}] &amp; = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}]
+=  \sigma^2_{Z} =0 \\ \\
+Var[X_{1}]&amp; = Var[Z_{1}] = \sigma^2_{Z} = 0\\
+Var[X_{2}]&amp; = Var[X_{1} + Z_{2}] \\
+&amp;= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
+&amp;= Var[X_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
+&amp;= 0 + 0 + 2(0)\\
+&amp;=0\\
+Var[X_{t-1}]&amp; = Var[X_{t-2} + Z_{t-1}] \\
+&amp;= Var[X_{t-2}] + Var[Z_{t-1}] + 2Cov[X_{t-2}, Z_{t-1}]\\
+&amp;= Var[X_{t-2}] + Var[Z_{t-1}] + 2Cov[Z_{t-2}, Z_{t-1}]\\
+&amp;= 0 + 0 + 2(0)\\
+&amp;=0\\
+Var[X_{t}]&amp; = Var[X_{t-1} + Z_{t}] \\
+&amp;= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
+&amp;= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[Z_{t-1}, Z_{t}]\\
+&amp;= 0 + 0 + 2(0)\\
+&amp;=0\\
+&amp; Therefore,\ Var[X_{1}] = Var[X_{2}] = Var[X_{t-1}] = Var[X_{t}]\\
+&amp; \text{Thus, the random walk is stationary in the variance}\\
+&amp; \text{because the variance remains constant as t changes.}
+\end{aligned}
+\]</span></p>
+<pre><code>III. True</code></pre>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \text{It is given that}\ σ_{Z}^2&gt;0\  \ \ \ \&amp; \ \ \
+Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s
 \end{aligned}
 \]</span> <span class="math display">\[
-\begin{align*}
-  V[Z_{t}] &amp; = V[Z_{1}] = V[Z_{2}] = V[Z_{t-1}] = V[Z_{t}]
-=  \sigma^2_{Z} =0\\
-  V[X_{t}] &amp; = V[Z_{1}] + E[Z_{2}] + ... E[Z_{t-1}] + E[Z_{t}] \\
-  &amp; = tE[Z_{t}] \\
-  &amp; = t\mu_{Z} \\
-\end{align*}
-\]</span> <br />
+\begin{aligned}
+For\ all\ &amp;t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
+Var[Z_{t}] &amp; = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}]
+=  \sigma^2_{Z} \\ \\
+Var[X_{1}]&amp; = Var[Z_{1}] = \sigma^2_{Z}\\
+Var[X_{2}]&amp; = Var[X_{1} + Z_{2}] \\
+&amp;= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
+&amp;= Var[Z_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
+&amp;= \sigma^2_{Z} + \sigma^2_{Z} + 2(0)\\
+&amp;= 2\sigma^2_{Z} \\
+&amp; \text{This implies that}\ Var[X_{2}] = 2Var[X_{1}] = 2Var[Z_{1}]\\
+Var[X_{3}]&amp; = Var[X_{2} + Z_{3}] \\
+&amp;= Var[X_{2}] + Var[Z_{3}] + 2Cov[X_{2}, Z_{3}]\\
+&amp;= 2Var[Z_{2}] + Var[Z_{3}] + 2Cov[2*Z_{2}, Z_{3}]\\
+&amp;= 2\sigma^2_{Z} + \sigma^2_{Z} + 2(2)(0)\\
+&amp;= 3\sigma^2_{Z} \\
+Var[X_{t}]&amp; = Var[X_{t-1} + Z_{t}] \\
+&amp;= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
+&amp;= 2Var[Z_{t-1}] + Var[Z_{t}] + 2Cov[(t-1)*Z_{t-1}, Z_{t}]\\
+&amp;= (t-1)\sigma^2_{Z} + \sigma^2_{Z} + 2(t-1)(0)\\
+&amp;= t\sigma^2_{Z} \\
+&amp; Therefore,\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne
+Var[X_{t}]\\
+&amp; \text{Thus, the random walk is nonstationary in the variance}\\
+&amp; \text{because the variance increases by increments of}\
+Var[Z_{t}]\ \text{as t changes}.
+\end{aligned}
+\]</span></p>
+<p><br />
 </p>
 </div>
 <div id="question-3" class="section level4">
@@ -545,7 +598,130 @@ given on slide 38 of week 1 and in §1.2 on p.4 of Lecture notes for week
 1.</em> <em>To estimate</em> ρ(3) = Cor(X<sub>1</sub>, X<sub>4</sub>)
 <em>we have:</em><br />
 <span class="math inline">\(\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad
-\hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}\)</span>.</p>
+\hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}\)</span></p>
+<pre class="r"><code>data = data.frame(matrix(ncol=5, nrow=10))
+colnames(data)&lt;-c(&quot;Day&quot;, &quot;SP ($x_{t}$)&quot;, &quot;$(x_{t}- \\bar{x})$&quot;, &quot;$(x_{t}- \\bar{x})^2$&quot;, &quot;$(x_{t}- \\bar{x})(x_{t+3}\ \ - \ \\bar{x})$&quot;)
+
+data$Day &lt;- c(seq(1,10))
+data[,2] &lt;- c(538, 548, 528, 608, 598, 589, 548, 514, 501, 498)
+
+mean = mean(data[,2])
+for(i in 1:10){
+  data[i,3] = data[i,2] - mean}
+
+for(i in 1:10){
+  data[i,4] = (data[i,2] - mean)^2}
+
+data[,5] &lt;- NA
+for(i in 1:7){
+  data[i,5] = data[i, 3] * data[i+3, 3]}
+
+data[11,1] &lt;- &quot;total&quot;
+data[11,2] &lt;- sum(as.integer(data[1:10, 2]))
+data[11,3] &lt;- sum(as.integer(data[1:10, 3]))
+data[11,4] &lt;- sum(as.integer(data[1:10, 4]))
+data[11,5] &lt;- sum(as.integer(data[1:7, 5]))
+knitr::kable(data)</code></pre>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="13%" />
+<col width="19%" />
+<col width="21%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Day</th>
+<th align="right">SP (<span class="math inline">\(x_{t}\)</span>)</th>
+<th align="right"><span class="math inline">\((x_{t}-
+\bar{x})\)</span></th>
+<th align="right"><span class="math inline">\((x_{t}-
+\bar{x})^2\)</span></th>
+<th align="right"><span class="math inline">\((x_{t}- \bar{x})(x_{t+3} -
+\bar{x})\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">538</td>
+<td align="right">-9</td>
+<td align="right">81</td>
+<td align="right">-549</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">548</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">51</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">528</td>
+<td align="right">-19</td>
+<td align="right">361</td>
+<td align="right">-798</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right">608</td>
+<td align="right">61</td>
+<td align="right">3721</td>
+<td align="right">61</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="right">598</td>
+<td align="right">51</td>
+<td align="right">2601</td>
+<td align="right">-1683</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">589</td>
+<td align="right">42</td>
+<td align="right">1764</td>
+<td align="right">-1932</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="right">548</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">-49</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="right">514</td>
+<td align="right">-33</td>
+<td align="right">1089</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="right">501</td>
+<td align="right">-46</td>
+<td align="right">2116</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="right">498</td>
+<td align="right">-49</td>
+<td align="right">2401</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">total</td>
+<td align="right">5470</td>
+<td align="right">0</td>
+<td align="right">14136</td>
+<td align="right">-4899</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="question-4" class="section level4">
 <h4>Question 4</h4>
