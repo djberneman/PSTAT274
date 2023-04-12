@@ -177,6 +177,12 @@ Calculate the sample autocorrelation at lag 3.
  *To estimate* ρ(3) = Cor(X~1~, X~4~) *we have:*  
 $\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$
 
+
+$$
+\begin{aligned}
+\rho(3) = \frac{\gamma(3)}{\gamma(0)} = \frac{ \sum_{t=1}^{n-3} (x_{t}-\bar{x})(x_{t+3}-\bar{x})}{\sum_{t=1}^{n}\ (x_{t}-\bar{x})^2 }
+\end{aligned}
+$$
 ```{r}
 
 data = data.frame(matrix(ncol=5, nrow=10))
@@ -203,6 +209,8 @@ data[11,4] <- sum(as.integer(data[1:10, 4]))
 data[11,5] <- sum(as.integer(data[1:7, 5]))
 knitr::kable(data)
 
+# Autocorrelation
+data[11,5] / data[11,4]
 ```
 
 #### Question 4
