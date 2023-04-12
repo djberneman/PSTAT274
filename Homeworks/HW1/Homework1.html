@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dylan Berneman" />
 
-<meta name="date" content="2023-04-11" />
+<meta name="date" content="2023-04-12" />
 
 <title>PSTAT 174/274: Homework # 1</title>
 
@@ -354,7 +354,7 @@ display: none;
 
 <h1 class="title toc-ignore">PSTAT 174/274: Homework # 1</h1>
 <h4 class="author">Dylan Berneman</h4>
-<h4 class="date">2023-04-11</h4>
+<h4 class="date">2023-04-12</h4>
 
 </div>
 
@@ -391,17 +391,26 @@ with the forecast lead time.</li>
         E. The answer is not given by (A), (B), (C), or (D).</div>
 <p><br />
 </p>
+<p>I. False. Stochastic trends are characterized by unexplainable
+changes in direction. They arise from the random movement of the
+variable over time. II. True. Deterministic trends are a result of the
+constant effect of a few causal forces an are generally stable over
+time. III. True. Deterministic trends can provide accurate forecasts for
+several periods ahead, as forecasting generally assumes that trends will
+continue and change relatively slowly.</p>
 </div>
 <div id="question-2" class="section level4">
 <h4>Question 2</h4>
 <p><em>Random walk and stationarity. In this question we introduce WN
-and random walk with non-zero mean. A White Noise with non-zero mean*
-Z<sub>t</sub> ∼ WN(μ<sub>Z</sub>, σ<sup>2</sup><sub>Z</sub>), </em>is a
+and random walk with non-zero mean. A White Noise with non-zero
+mean</em><br />
+Z<sub>t</sub> ∼ WN(μ<sub>Z</sub>, σ<sup>2</sup><sub>Z</sub>), <em>is a
 collection of uncorrelated random variables with the same mean and
-variance:* E(Zt) = μZ, Var(Z<sub>t</sub>) = σ<sub>Z</sub><sup>2</sup>,
-and Cov(Z<sub>t</sub>, Z<sub>s</sub>) = 0 for t̸=s. <em>When</em>
+variance:</em> E(Z<sub>t</sub>) = μ<sub>Z</sub>, Var(Z<sub>t</sub>) =
+σ<sub>Z</sub><sup>2</sup>, and Cov(Z<sub>t</sub>, Z<sub>s</sub>) = 0 for
+t <span class="math inline">\(\ne\)</span> s. <em>When</em>
 Z<sub>t</sub> <em>is referred to as a ‘White Noise’, without specifying
-its mean, by default, assume </em>μ<sub>Z</sub> = 0. <em>A random walk
+its mean, by default, assume</em> μ<sub>Z</sub> = 0. <em>A random walk
 with non-zero mean is expressed as</em> X<sub>1</sub> =Z<sub>1</sub>,
 X<sub>t</sub> = X<sub>t−1</sub> + Z<sub>t</sub> =
 Z<sub>1</sub>+…+Z<sub>t</sub>, t=2,3,…, where* Z<sub>t</sub>
@@ -410,8 +419,8 @@ Determine which statements are true with respect to a random walk model;
 show calculations and provide complete explanations.  </p>
 <ul>
 <li><ol style="list-style-type: upper-roman">
-<li>If μ<sub>Z</sub> = 0, then the random walk is nonstationary in the
-mean.<br />
+<li>If μ<sub>Z</sub> <span class="math inline">\(\neq\)</span> 0, then
+the random walk is nonstationary in the mean.<br />
 <em>(Hint: Nonstationary in the mean means that the mean changes with
 time.)</em></li>
 </ol></li>
@@ -427,7 +436,46 @@ nonstationary in the variance.<br />
 </li>
 </ol></li>
 </ul>
-<p><br />
+<pre><code>I. True. </code></pre>
+<div class="line-block">        For all t where t <span class="math inline">\(\ge\)</span> 1, E[X<sub>t</sub>] =
+E[X<sub>t-1</sub>] + Z<sub>t</sub></div>
+<p><span class="math display">\[
+\begin{align*}
+  E[Z_{t}] &amp; = E[Z_{1}] = E[Z_{2}] = E[Z_{t-1}] = E[Z_{t}]
+=  \mu_{Z} \\
+  E[X_{t}] &amp; = E[Z_{1}] + E[Z_{2}] + ... E[Z_{t-1}] + E[Z_{t}] \\
+  &amp; = tE[Z_{t}] \\
+  &amp; = t\mu_{Z} \\
+\end{align*}
+\]</span> <span class="math display">\[
+\begin{aligned}
+&amp; E[X_{1}] = \mu_{Z}\\
+&amp; E[X_{2}] = 2\mu_{Z}\\
+&amp; E[X_{t-1}] = (t-1)\mu_{Z}\\
+&amp; E[X_{t}] = t\mu_{Z}\\
+&amp; Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[Z_{t}]
+\end{aligned}
+\]</span></p>
+<p>Since <span class="math inline">\(\mu_{Z} &gt; 0\ \ or \ \ \mu_{Z}
+&lt; 0,\ X_{t}\)</span> either increases or decreases by increments of
+<span class="math inline">\(\mu_{Z}\)</span><br />
+Thus the random walk is nonstationary in the mean.</p>
+<pre><code>II. False</code></pre>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \text{It is given that}\ σ_{Z}^2=0\ and Cov(Z_{t}, Z_{s}) =
+0\  for\   t̸=s.\\
+&amp; Also,\ X_{t}\ and\ Z_{s}\ \text(are)
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{align*}
+  V[Z_{t}] &amp; = V[Z_{1}] = V[Z_{2}] = V[Z_{t-1}] = V[Z_{t}]
+=  \sigma^2_{Z} =0\\
+  V[X_{t}] &amp; = V[Z_{1}] + E[Z_{2}] + ... E[Z_{t-1}] + E[Z_{t}] \\
+  &amp; = tE[Z_{t}] \\
+  &amp; = t\mu_{Z} \\
+\end{align*}
+\]</span> <br />
 </p>
 </div>
 <div id="question-3" class="section level4">

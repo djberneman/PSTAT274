@@ -38,18 +38,113 @@ II. True. Deterministic trends are a result of the constant effect of a few caus
 III. True. Deterministic trends can provide accurate forecasts for several periods ahead, as forecasting generally assumes that trends will continue and change relatively slowly.
 
 #### Question 2
-*Random walk and stationarity. In this question we introduce WN and random walk with non-zero mean. A White Noise with non-zero mean\*
-Z~t~ ∼ WN(μ~Z~, σ^2^~Z~), *is a collection of uncorrelated random variables with the same mean and variance:* E(Z~t~) = μ~Z~, Var(Z~t~) = σ~Z~^2^, and Cov(Z~t~, Z~s~) = 0 for t̸=s.
-*When* Z~t~ *is referred to as a ‘White Noise’, without specifying its mean, by default, assume *μ~Z~ = 0.
-*A random walk with non-zero mean is expressed as* X~1~ =Z~1~, X~t~ = X~t−1~ + Z~t~ = Z~1~+...+Z~t~, t=2,3,..., where* Z~t~ ∼WN(μ~Z~, σ~Z~^2^).\
+*Random walk and stationarity. In this question we introduce WN and random walk with non-zero mean. A White Noise with non-zero mean*\
+Z~t~ ∼ WN(μ~Z~, σ^2^~Z~), *is a collection of uncorrelated random variables with the same mean and variance:* E(Z~t~) = μ~Z~, Var(Z~t~) = σ~Z~^2^, and Cov(Z~t~, Z~s~) = 0 for t $\ne$ s.
+*When* Z~t~ *is referred to as a ‘White Noise’, without specifying its mean, by default, assume* μ~Z~ = 0.
+*A random walk with non-zero mean is expressed as* X~1~ =Z~1~, X~t~ = X~t−1~ + Z~t~ = Z~1~+...+Z~t~, t=2,3,..., *where* Z~t~ ∼WN(μ~Z~, σ~Z~^2^).\
 Determine which statements are true with respect to a random walk model; show calculations and provide complete explanations.\  
 \setlength{\leftskip}{2cm}
 
-- I.   If μ~Z~ = 0, then the random walk is nonstationary in the mean.  
+- I.   If μ~Z~ $\neq$ 0, then the random walk is nonstationary in the mean.  
     *(Hint: Nonstationary in the mean means that the mean changes with time.)*
+
 - II. If σ~Z~^2^ = 0, then the random walk is nonstationary in the variance.\
     *(Hint: Nonstationary in the variance means that the variance changes with time.)*
 - III. If σ~Z~^2^ > 0, then the random walk is nonstationary in the variance.\
+
+\setlength{\leftskip}{0cm}
+
+\setlength{\leftskip}{2cm}
+
+    I. True. 
+|         For all t where t $\ge$ 1, E[X~t~] = E[X~t-1~] + Z~t~
+$$ 
+\begin{align*}
+  E[Z_{t}] & = E[Z_{1}] = E[Z_{2}] = E[Z_{t-1}] = E[Z_{t}] =  \mu_{Z} \\
+  E[X_{t}] & = E[Z_{1}] + E[Z_{2}] + ... E[Z_{t-1}] + E[Z_{t}] \\
+  & = tE[Z_{t}] \\
+  & = t\mu_{Z} \\
+\end{align*} 
+$$
+$$
+\begin{aligned}
+& E[X_{1}] = E[Z_{1}] = \mu_{Z}\\
+& E[X_{2}] = E[X_{1}] + E[Z_{2}] = 2\mu_{Z}\\
+& E[X_{t-1}] = E[X_{t-2}] + E[Z_{t-1}] = (t-1)\mu_{Z}\\
+& E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\
+& Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[X_{t}]
+\end{aligned} 
+$$   
+
+Since $\mu_{Z} > 0\ \ or \ \ \mu_{Z} < 0,\ X_{t}$ either increases or decreases by increments of $\mu_{Z}$\
+Thus the random walk is nonstationary in the mean. 
+
+    II. False
+$$
+\begin{aligned}
+& \text{It is given that}\ σ_{Z}^2=0\  \ \ \ \& \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s 
+\end{aligned}
+$$
+
+$$ 
+\begin{aligned}
+For\ all\ &t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
+Var[Z_{t}] & = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}] =  \sigma^2_{Z} =0 \\ \\
+Var[X_{1}]& = Var[Z_{1}] = \sigma^2_{Z} = 0\\
+Var[X_{2}]& = Var[X_{1} + Z_{2}] \\
+&= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
+&= Var[X_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
+&= 0 + 0 + 2(0)\\
+&=0\\
+Var[X_{t-1}]& = Var[X_{t-2} + Z_{t-1}] \\
+&= Var[X_{t-2}] + Var[Z_{t-1}] + 2Cov[X_{t-2}, Z_{t-1}]\\
+&= Var[X_{t-2}] + Var[Z_{t-1}] + 2Cov[Z_{t-2}, Z_{t-1}]\\
+&= 0 + 0 + 2(0)\\
+&=0\\
+Var[X_{t}]& = Var[X_{t-1} + Z_{t}] \\
+&= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
+&= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[Z_{t-1}, Z_{t}]\\
+&= 0 + 0 + 2(0)\\
+&=0\\
+& Therefore,\ Var[X_{1}] = Var[X_{2}] = Var[X_{t-1}] = Var[X_{t}]\\
+& \text{Thus, the random walk is stationary in the variance}\\
+& \text{because the variance remains constant as t changes.}
+\end{aligned} 
+$$   
+
+    III. True
+    
+$$
+\begin{aligned}
+& \text{It is given that}\ σ_{Z}^2>0\  \ \ \ \& \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s 
+\end{aligned}
+$$
+$$ 
+\begin{aligned}
+For\ all\ &t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
+Var[Z_{t}] & = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}] =  \sigma^2_{Z} \\ \\
+Var[X_{1}]& = Var[Z_{1}] = \sigma^2_{Z}\\
+Var[X_{2}]& = Var[X_{1} + Z_{2}] \\
+&= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
+&= Var[Z_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
+&= \sigma^2_{Z} + \sigma^2_{Z} + 2(0)\\
+&= 2\sigma^2_{Z} \\ 
+& \text{This implies that}\ Var[X_{2}] = 2Var[X_{1}] = 2Var[Z_{1}]\\
+Var[X_{3}]& = Var[X_{2} + Z_{3}] \\
+&= Var[X_{2}] + Var[Z_{3}] + 2Cov[X_{2}, Z_{3}]\\
+&= 2Var[Z_{2}] + Var[Z_{3}] + 2Cov[2*Z_{2}, Z_{3}]\\
+&= 2\sigma^2_{Z} + \sigma^2_{Z} + 2(2)(0)\\
+&= 3\sigma^2_{Z} \\ 
+Var[X_{t}]& = Var[X_{t-1} + Z_{t}] \\
+&= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
+&= 2Var[Z_{t-1}] + Var[Z_{t}] + 2Cov[(t-1)*Z_{t-1}, Z_{t}]\\
+&= (t-1)\sigma^2_{Z} + \sigma^2_{Z} + 2(t-1)(0)\\
+&= t\sigma^2_{Z} \\ 
+& Therefore,\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne Var[X_{t}]\\
+& \text{Thus, the random walk is nonstationary in the variance}\\
+& \text{because the variance increases by increments of}\ Var[Z_{t}]\ \text{as t changes}.
+\end{aligned} 
+$$   
 
 \setlength{\leftskip}{0cm}\
 
