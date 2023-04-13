@@ -361,6 +361,7 @@ $$
 
 $$
 \begin{aligned}
+& Assuming\ h=0\\
 & If\ Cov(Z_{t},\ Z_{s})=0\ for\ t \ne s\ \rightarrow\ Cov(Z^2_{t},\ Z^2_{s})=0\\
 &\rho_{Y}(t, t+h)=Cor(Y_{t}, Y_{t+h})\\ \\
 &Cor(Y_{t}, Y_{t+h}) = \frac{Cov(Y_{t}, Y_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
@@ -386,6 +387,73 @@ Define: $X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t
 Show that {X~t~} is WN(0, 1) (that is, variables X~t~ and X~t+k~, k ≥ 1, are uncorrelated with mean zero and
 variance 1) but that X~t~ and X~t−1~ are **not** i.i.d.\
 
+$$X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}$$
+$$Z_{t} \sim WN(0, 1)$$
+$$X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}$$
+$$ 
+\begin{aligned}
+\text{If t is even}:&\\
+& E[X_{t}] = E[Z_{t}]\\
+&\ \ \ \ \ \ \ \ \ \ = 0\\
+\text{If t is odd}:&\\
+& E[X_{t}] = E[(Z^2_{t-1}-1)/\sqrt{2}]\\
+&\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (E[Z^2_{t-1}]-1)\\
+&\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (Var[Z_{t-1}]+E[Z_{t-1}]^2-1)\\
+&\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (1+(0)^2-1)\\
+&\ \ \ \ \ \ \ \ \ \ = 0
+\end{aligned}
+$$
+
+$$ 
+\begin{aligned}
+\text{If t is even}:&\\
+& Var[X_{t}] = Var[Z_{t}]\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = 1\\
+\text{If t is odd}:&\\
+& Var[X_{t}] = Var[(Z^2_{t-1}-1)/\sqrt{2}]\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (Var[Z^2_{t-1}])\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (E[Z_{t-1}^4]-E[Z^2_{t-1}]^2])\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (3(Var[Z_{t-1}])^2-(Var[Z_{t-1}]-E[Z_{t-1}])^2)\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (3(1)^2-(1-0^2)^2)\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (2)\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \ 1\\
+
+\end{aligned}
+$$
+$$
+\begin{aligned}
+&E[X_{t}] = \begin{cases}E[Z_t] = 0, & \text { if } t \text { is even } \\ \left(E[(Z_{t-1}^2-1\right) / \sqrt{2}] = 0, & \text { if } t \text { is odd }\end{cases}\\
+& \ \ \ \ \ \ \ \ \ \ = 0\\ \\
+&Var[X_{t}] = \begin{cases}Var[Z_t] = 1, & \text { if } t \text { is even } \\ \left(Var[(Z_{t-1}^2-1\right) / \sqrt{2}] = 1, & \text { if } t \text { is odd }\end{cases}\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ = 0\\ \\
+& \rightarrow\ X_{t} \sim WN(0,1)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& \text{Let t be even and h be odd} \\
+&Cor(X_{t}, X_{t+h}) = \frac{Cov(X_{t}, X_{t+h})}{\sqrt{Var(X_{t})*Var(X_{t+h})}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{E[Z_{t}\ (Z^2_{t-1}-1)/\sqrt{2}]}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = \frac{0}{\sqrt{2*2}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = 0
+\end{aligned}
+$$
 
 #### Question G2
 If {X~t~} and {Y~t~} are uncorrelated stationary sequences, i.e., if X~r~ and Y~s~ are uncorrelated for every r and s, show that {X~t~ + Y~t~} is stationary with autocovariance function equal to the sum of the autocovariance functions of {X~t~} and {Y~t~}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
