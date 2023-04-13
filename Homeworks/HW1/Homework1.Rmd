@@ -225,6 +225,39 @@ Check your answers using R command *polyroot*:\
 |        *(Do not forget to include your output!)*
 \setlength{\leftskip}{0cm}\
 
+$$
+\begin{aligned}
+f(z) = 1 - 2z\\
+1-2z=0\\
+1 = 2z\\
+z = 0.5
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&\text{To solve for the roots of a second degree polynomial of the form:} \\
+& f(x) = ax^2 + bx + c,\\
+& \text{Calculate the following:}\\ \\
+&x = \frac{-b\ \pm \sqrt{b^2\ -\ 4ac}}{2a}\\ \\
+&g(z) = 1 - 0.45z + 0.05z^2= 0\\
+&a = 0.05,\ \ b = -0.45,\ \ c = 1 \\
+\\
+&z=\frac{-(-0.45)\ \pm \sqrt{(-0.45)^2\ -\ (4(0.05)(1)}}{2(0.05)}\\ \\
+& \ \ =\ \frac{0.45\ \pm \sqrt{0.2025\ -\ 0.2}}{0.1}\\ \\
+& \ \ =\ \frac{0.45\ \pm \sqrt{0.0025}}{0.1}\\ \\
+& \ \ =\frac{0.45\ \pm 0.05}{0.1}\\ \\
+&z = 
+\left\{
+    \begin{array}{lr}
+        0.4/0.1 \\
+        0.5/0.1\\
+    \end{array}
+\right\} \\
+&z = 4\ or\ 5
+\end{aligned}
+$$
+
 
 #### Question 5
 *Model identification.* You are given the following information about a MA(1) model with coefficient
