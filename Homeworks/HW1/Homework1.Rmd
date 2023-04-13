@@ -361,14 +361,12 @@ $$
 
 $$
 \begin{aligned}
-\rho_{Y}(t, t+h)&=Cor(Y_{t}, Y_{t+h})\\ \\
-Cor(Y_{t}, Y_{t+h}) &= \frac{Cov(Y_{t}, Y_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
-& = \frac{E[Y_{t}\ Y_{t+h}]-E[Y_{t}]\ E[Y_{t+h}]}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
-E[Z_{1}] = E[Z&_{2}] = E[Z_{t-1}] = E[Z_{t}] = E[Z_{t+1}] = E[Z_{t+h}]\\ \\
-& = \frac{E[Z^2_{t}\ Z^2_{t+h}]-E[Z^2_{t}]\ E[Z^2_{t+h}]}{\sqrt{Var(Z^2_{t})*Var(Z^2_{t+h})}}\\ \\
-& = \frac{0-0(0)}{\sqrt{2(2)}} \\
-&=0 \\
-& Since\ Cov(Z{t}, Z_{s})=0\ for\ t \ne s,\ Cov(Z^2_{t}, Z^2_{t+h})=0 
+& If\ Cov(Z_{t},\ Z_{s})=0\ for\ t \ne s\ \rightarrow\ Cov(Z^2_{t},\ Z^2_{s})=0\\
+&\rho_{Y}(t, t+h)=Cor(Y_{t}, Y_{t+h})\\ \\
+&Cor(Y_{t}, Y_{t+h}) = \frac{Cov(Y_{t}, Y_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{Cov(Z^2_{t},\ Z^2_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = \frac{0}{\sqrt{2*2}}\\ \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = 0
 \end{aligned}
 $$
 
