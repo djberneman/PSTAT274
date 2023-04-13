@@ -315,7 +315,9 @@ Do your calculations support your observations in (c)?  \
 
 *(ii) Useful for part (d): For* X ∼ N(0,σ^2^), E(X~4~) = 3(σ^2^)^2^.
 
-a.)
+\setlength{\leftskip}{2cm}
+
+(a)
 ```{r}
 set.seed(39)
 Z = rnorm(300, 0, 1)
@@ -324,16 +326,16 @@ ts.plot(Z)
 acf(Z)
 ```
 
-b.)
+(b)
 ```{r}
 set.seed(39)
 ts.plot(Y)
-abline(reg=lm(Y~time(Y)))
 acf(Y)
 ```
-c.) Just by looking at both time series plots, I could tell that they were both stationary because the majority of the values fall on a horizontal line. For the plot of Z, the horizontal line looks to be at y=0, while the plot of Y looks to have a horizontal line at y=1. Also, neither plot seems to have seasonality. For the plots of the acf of both Y and Z, it appears that Y has larger spikes then Z, which makes sense because Y = $Z^2$. In addition, the acf of Z appears to come from a gaussian white noise distribution because its spikes are all within the blue dotted lines. 
 
-d.)
+(c) Just by looking at both time series plots, I could tell that they were both stationary because the majority of the values fall on a horizontal line. For the plot of Z, the horizontal line looks to be at y=0, while the plot of Y looks to have a horizontal line at y=1. Also, neither plot seems to have seasonality. For the plots of the acf of both Y and Z, it appears that Y has larger spikes then Z, which makes sense because Y = $Z^2$. In addition, the acf of Z appears to come from a gaussian white noise distribution because its spikes are all within the blue dotted lines. 
+
+(d) \  
 $$
 \begin{aligned}
 & Z = N(0,1)\\
@@ -356,6 +358,7 @@ Var[Y] & = Var[Z_{t}^2]\\
 & = 2\\
 \end{aligned}
 $$
+
 $$
 \begin{aligned}
 \rho_{Y}(t, t+h)&=Cor(Y_{t}, Y_{t+h})\\ \\
@@ -367,7 +370,7 @@ $$
 &=0 \\
 & Since\ Cov(Z{t}, Z_{s})=0\ for\ t \ne s,\ Cov(Z^2_{t}, Z^2_{t+h})=0 
 \end{aligned}
-
+$$
 
 \setlength{\leftskip}{0cm}\
 
