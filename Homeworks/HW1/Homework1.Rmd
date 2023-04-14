@@ -434,9 +434,15 @@ $$
 \begin{aligned}
 & \text{Let t be even and h be odd} \\
 &Cor(X_{t}, X_{t+h}) = \frac{Cov(X_{t}, X_{t+h})}{\sqrt{Var(X_{t})*Var(X_{t+h})}}\\ \\
-& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{E[Z_{t}\ (Z^2_{t-1}-1)/\sqrt{2}]}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
-& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = \frac{0}{\sqrt{2*2}}\\ \\
-& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = 0
+&\text{Since}\ X_{t}\ \ \&\ \ X_{t+h}\ \ \text{are both from the distribution WN(0,1)} \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \& \\
+& \ \ \ \ \ \ \ \ \ \ Cov[(WN_{t}(0,1),\ WN_{s}(0,1)]=0\ for\ t \ne s\ \\ \\
+& \ \ \ \ \ \ \ \ \ \ \text{Then}\ \ Cov(X_{t}, X_{t+h})=0 \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \rightarrow Cor(X_{t}, X_{t+h}) = 0\\ \\
+&\text{Thus,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are uncorrelated}.\\
+&\text{But because}\ X_{t+h} = Z^2_{t-1+h}\ \text{and}\ Z^2_{t-1+h}\ \text{is dependent on}\ Z_{t+h-1,}\\
+&\text{then}\ X_{t+h}\ \text{is dependent on}\ X_{t+h-1}. \\
+&\text{Therefore,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are not i.i.d. variables.}
 \end{aligned}
 $$
 
