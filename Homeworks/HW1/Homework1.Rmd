@@ -271,6 +271,15 @@ polyroot(vect2)
 |θ~1~| < 1: ρ~1~ = −0.4, ρ~k~ = 0, k = 2,3,....\
 Determine the value of θ~1~.  \
 
+$$
+\begin{aligned}
+& \rho_{1} = (1+2\theta_{1})\theta_{1}\\
+& \rho_{1}(1+2\theta_{1})-\theta_{1}\\
+& \rho_{1} = -0.4\\
+& \rho()
+\end{aligned}
+$$
+
 \
 \
 
