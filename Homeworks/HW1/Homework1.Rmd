@@ -449,7 +449,21 @@ $$
 #### Question G2
 If {X~t~} and {Y~t~} are uncorrelated stationary sequences, i.e., if X~r~ and Y~s~ are uncorrelated for every r and s, show that {X~t~ + Y~t~} is stationary with autocovariance function equal to the sum of the autocovariance functions of {X~t~} and {Y~t~}.
 
-
+$$
+\begin{aligned}
+& \text{Given that both time series are uncorrelated, their covariance is 0}. \\
+& \rightarrow\ Var(X_{t}\ +\ Y_{t}) = Var(X_{t}) + Var(Y_{t}) \\
+& \rightarrow\ E(X_{t}\ +\ Y_{t}) = E(X_{t}) + E(Y_{t})\\
+& \ \ \ \ \ \ \ \ \ \ \ \ = µ_{X}+_{Y}\\
+&\gamma_{X+Y}(h) = Cov(X_{t}+Y_{t},\ X_{t+h}+Y_{t+h})\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(X_{t},\ Y_{t+h})\ +\ Cov(Y_{t},\ X_{t+h})\ +\ Cov(Y_{t},\ Y_{t+h})\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(Y_{t},\ Y_{t+h}) \\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \  = \gamma_{X}(h) + \gamma_{Y}(h)\\
+&\text{Given that we already know that both time series are stationary and the}\\
+&\text{autocovariance of their sum is the sum of their autocovariances, the sum of their}\\
+&\text{constant stationary coefficients will also be constant and therefore stationary.}
+\end{aligned}
+$$
 
 
 
