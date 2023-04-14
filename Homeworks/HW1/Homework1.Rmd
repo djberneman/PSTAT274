@@ -273,10 +273,21 @@ Determine the value of θ~1~.  \
 
 $$
 \begin{aligned}
-& \rho_{1} = (1+2\theta_{1})\theta_{1}\\
-& \rho_{1}(1+2\theta_{1})-\theta_{1}\\
-& \rho_{1} = -0.4\\
-& \rho()
+& \rho(1) = \frac{\theta_{1}}{(1+\theta^2_{1})}\\
+& \rho(1)(1+\theta^2_{1})-\theta_{1} = 0\\
+& \rho(1) = -0.4\\
+& -0.4(1+\theta^2_{1})-\theta_{1} = 0\\
+& -2(1+\theta^2_{1}) - 5\theta_{1}=0\\
+& 2(1+\theta^2_{1}) + 5\theta_{1}=0\\
+& 2\ \theta^2_{1} + 5\theta_{1} + 2 = 0\\
+& \frac{-5\ \pm\ \sqrt{5^2-4(2)(2)}}{2(2)} \\ \\
+& \frac{-5\ \pm\ 3}{2(2)}\\ \\
+& -8/4 = -2 \\
+& -2/4 = -0.5
+\\
+\\
+&\text{Given}\ |\ \theta_{1}\ |\ < 1,\\ 
+&\theta_{1} = -0.5
 \end{aligned}
 $$
 
