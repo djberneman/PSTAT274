@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dylan Berneman" />
 
-<meta name="date" content="2023-04-13" />
+<meta name="date" content="2023-04-14" />
 
 <title>PSTAT 174/274: Homework # 1</title>
 
@@ -354,7 +354,7 @@ display: none;
 
 <h1 class="title toc-ignore">PSTAT 174/274: Homework # 1</h1>
 <h4 class="author">Dylan Berneman</h4>
-<h4 class="date">2023-04-13</h4>
+<h4 class="date">2023-04-14</h4>
 
 </div>
 
@@ -391,13 +391,16 @@ with the forecast lead time.</li>
         E. The answer is not given by (A), (B), (C), or (D).</div>
 <p><br />
 </p>
-<p>I. False. Stochastic trends are characterized by unexplainable
+<ol style="list-style-type: upper-roman">
+<li><p>False. Stochastic trends are characterized by unexplainable
 changes in direction. They arise from the random movement of the
-variable over time. II. True. Deterministic trends are a result of the
-constant effect of a few causal forces an are generally stable over
-time. III. True. Deterministic trends can provide accurate forecasts for
+variable over time.</p></li>
+<li><p>True. Deterministic trends are a result of the constant effect of
+a few causal forces an are generally stable over time.</p></li>
+<li><p>True. Deterministic trends can provide accurate forecasts for
 several periods ahead, as forecasting generally assumes that trends will
-continue and change relatively slowly.</p>
+continue and change relatively slowly.</p></li>
+</ol>
 </div>
 <div id="question-2" class="section level4">
 <h4>Question 2</h4>
@@ -452,7 +455,7 @@ E[X<sub>t-1</sub>] + Z<sub>t</sub></div>
 &amp; E[X_{1}] = E[Z_{1}] = \mu_{Z}\\
 &amp; E[X_{2}] = E[X_{1}] + E[Z_{2}] = 2\mu_{Z}\\
 &amp; E[X_{t-1}] = E[X_{t-2}] + E[Z_{t-1}] = (t-1)\mu_{Z}\\
-&amp; E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\
+&amp; E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\ \\
 &amp; Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[X_{t}]
 \end{aligned}
 \]</span></p>
@@ -466,8 +469,7 @@ Thus the random walk is nonstationary in the mean.</p>
 &amp; \text{It is given that}\ σ_{Z}^2=0\  \ \ \ \&amp; \ \ \ Cov(Z_{t},
 Z_{s}) =0,\ for\ t \ne s
 \end{aligned}
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 \begin{aligned}
 For\ all\ &amp;t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
 Var[Z_{t}] &amp; = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}]
@@ -492,14 +494,12 @@ Var[X_{t}]&amp; = Var[X_{t-1} + Z_{t}] \\
 &amp; \text{Thus, the random walk is stationary in the variance}\\
 &amp; \text{because the variance remains constant as t changes.}
 \end{aligned}
-\]</span></p>
+\]</span><br />
+</p>
 <pre><code>III. True</code></pre>
-<p><span class="math display">\[
-\begin{aligned}
-&amp; \text{It is given that}\ σ_{Z}^2&gt;0\  \ \ \ \&amp; \ \ \
-Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s
-\end{aligned}
-\]</span> <span class="math display">\[
+<p><span class="math display">\[ \text{It is given that}\
+σ_{Z}^2&gt;0\  \ \ \ \&amp; \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne
+s\]</span> <span class="math display">\[
 \begin{aligned}
 For\ all\ &amp;t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
 Var[Z_{t}] &amp; = Var[Z_{1}] = Var[Z_{2}] = Var[Z_{t-1}] = Var[Z_{t}]
@@ -509,19 +509,20 @@ Var[X_{2}]&amp; = Var[X_{1} + Z_{2}] \\
 &amp;= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
 &amp;= Var[Z_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
 &amp;= \sigma^2_{Z} + \sigma^2_{Z} + 2(0)\\
-&amp;= 2\sigma^2_{Z} \\
+&amp;= 2\sigma^2_{Z} \\ \\
 &amp; \text{This implies that}\ Var[X_{2}] = 2Var[X_{1}] = 2Var[Z_{1}]\\
+\\
 Var[X_{3}]&amp; = Var[X_{2} + Z_{3}] \\
 &amp;= Var[X_{2}] + Var[Z_{3}] + 2Cov[X_{2}, Z_{3}]\\
 &amp;= 2Var[Z_{2}] + Var[Z_{3}] + 2Cov[2*Z_{2}, Z_{3}]\\
 &amp;= 2\sigma^2_{Z} + \sigma^2_{Z} + 2(2)(0)\\
-&amp;= 3\sigma^2_{Z} \\
+&amp;= 3\sigma^2_{Z} \\ \\
 Var[X_{t}]&amp; = Var[X_{t-1} + Z_{t}] \\
 &amp;= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
 &amp;= 2Var[Z_{t-1}] + Var[Z_{t}] + 2Cov[(t-1)*Z_{t-1}, Z_{t}]\\
 &amp;= (t-1)\sigma^2_{Z} + \sigma^2_{Z} + 2(t-1)(0)\\
-&amp;= t\sigma^2_{Z} \\
-&amp; Therefore,\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne
+&amp;= t\sigma^2_{Z} \\ \\
+&amp; \text{Therefore},\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne
 Var[X_{t}]\\
 &amp; \text{Thus, the random walk is nonstationary in the variance}\\
 &amp; \text{because the variance increases by increments of}\
@@ -597,14 +598,8 @@ autocorrelation at lag 3:</em> ρ(3) = Cor(X<sub>1</sub>, X<sub>4</sub>)
 given on slide 38 of week 1 and in §1.2 on p.4 of Lecture notes for week
 1.</em> <em>To estimate</em> ρ(3) = Cor(X<sub>1</sub>, X<sub>4</sub>)
 <em>we have:</em><br />
-<span class="math inline">\(\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad
-\hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}\)</span></p>
-<p><span class="math display">\[
-\begin{aligned}
-\rho(3) = \frac{\gamma(3)}{\gamma(0)} = \frac{ \sum_{t=1}^{n-3}
-(x_{t}-\bar{x})(x_{t+3}-\bar{x})}{\sum_{t=1}^{n}\ (x_{t}-\bar{x})^2 }
-\end{aligned}
-\]</span></p>
+<span class="math display">\[\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad
+\hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}\]</span></p>
 <pre class="r"><code>data = data.frame(matrix(ncol=5, nrow=10))
 colnames(data)&lt;-c(&quot;Day&quot;, &quot;SP ($x_{t}$)&quot;, &quot;$(x_{t}- \\bar{x})$&quot;, &quot;$(x_{t}- \\bar{x})^2$&quot;, &quot;$(x_{t}- \\bar{x})(x_{t+3}\ \ - \ \\bar{x})$&quot;)
 
@@ -731,6 +726,9 @@ knitr::kable(data)</code></pre>
 <pre class="r"><code># Autocorrelation
 data[11,5] / data[11,4]</code></pre>
 <pre><code>## [1] -0.346562</code></pre>
+<p><br />
+<br />
+</p>
 </div>
 <div id="question-4" class="section level4">
 <h4>Question 4</h4>
@@ -796,6 +794,9 @@ polyroot(vect1)</code></pre>
 <pre><code>## [1] 0.5+0i</code></pre>
 <pre class="r"><code>polyroot(vect2)</code></pre>
 <pre><code>## [1] 4+0i 5-0i</code></pre>
+<p><br />
+<br />
+</p>
 </div>
 <div id="question-5" class="section level4">
 <h4>Question 5</h4>
@@ -803,6 +804,9 @@ polyroot(vect1)</code></pre>
 information about a MA(1) model with coefficient |θ<sub>1</sub>| &lt; 1:
 ρ<sub>1</sub> = −0.4, ρ<sub>k</sub> = 0, k = 2,3,….<br />
 Determine the value of θ<sub>1</sub>.<br />
+</p>
+<p><br />
+<br />
 </p>
 </div>
 <div id="question-6" class="section level4">
@@ -883,7 +887,10 @@ E[Y] &amp; = E[Z_{t}^2]\\
 &amp; = 0 + 1\\
 &amp;=1
 \end{aligned}
-\]</span> <span class="math display">\[
+\]</span><br />
+</p></li>
+</ol>
+<p><span class="math display">\[
 \begin{aligned}
 For\ X &amp;= N(0,\sigma^2),\ E[X^4]=3(\sigma^2)^2\\
 Var[Y] &amp; = \sigma^2_{y}(t)\\
@@ -893,27 +900,28 @@ Var[Y] &amp; = Var[Z_{t}^2]\\
 &amp; = 3(1)^2 - 1^2\\
 &amp; = 2\\
 \end{aligned}
-\]</span></p></li>
-</ol>
+\]</span>/</p>
 <p><span class="math display">\[
 \begin{aligned}
-\rho_{Y}(t, t+h)&amp;=Cor(Y_{t}, Y_{t+h})\\ \\
-&amp; = \frac{Cov(Y_{t}, Y_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
-&amp; = \frac{E[Y_{t}\ Y_{t+h}]-E[Y_{t}]\
-E[Y_{t+h}]}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
-&amp; = \frac{E[Z^2_{t}\ Z^2_{t+h}]-E[Z^2_{t}]\
-E[Z^2_{t+h}]}{\sqrt{Var(Z^2_{t})*Var(Z^2_{t+h})}}\\ \\
-&amp; = \frac{0-0(0)}{\sqrt{2(2)}} \\
-&amp;=0/2\\
-&amp;=0 \\
-&amp; Since\ Cov(Z{t}, Z_{s})=0\ for\ t \ne s,\ Cov(Z^2_{t},
-Z^2_{t+h})=0
+&amp; Assuming\ h=0\\
+&amp; If\ Cov(Z_{t},\ Z_{s})=0\ for\ t \ne s\ \rightarrow\ Cov(Z^2_{t},\
+Z^2_{s})=0\\
+&amp;\rho_{Y}(t, t+h)=Cor(Y_{t}, Y_{t+h})\\ \\
+&amp;Cor(Y_{t}, Y_{t+h}) = \frac{Cov(Y_{t},
+Y_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{Cov(Z^2_{t},\
+Z^2_{t+h})}{\sqrt{Var(Y_{t})*Var(Y_{t+h})}}\\ \\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  =
+\frac{0}{\sqrt{2*2}}\\ \\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = 0
 \end{aligned}
-\]</span></p>
+\]</span><br />
+</p>
 <p><br />
 </p>
 <p><strong>The following two problems are for students enrolled in PSTAT
-274 ONLY</strong></p>
+274 ONLY</strong><br />
+</p>
 </div>
 <div id="question-g1" class="section level4">
 <h4>Question G1</h4>
@@ -927,6 +935,84 @@ X<sub>t</sub> and X<sub>t+k</sub>, k ≥ 1, are uncorrelated with mean
 zero and variance 1) but that X<sub>t</sub> and X<sub>t−1</sub> are
 <strong>not</strong> i.i.d.<br />
 </p>
+<p><span class="math display">\[
+\begin{align*}
+Z_{t} \sim WN(0, 1)
+\end{align*}
+\]</span></p>
+<p><span class="math display">\[
+X_t= \begin{cases}Z_t, &amp; \text { if } t \text { is even } \\
+\left(Z_{t-1}^2-1\right) / \sqrt{2}, &amp; \text { if } t \text { is odd
+}\end{cases}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+\text{If t is even}:&amp;\\
+&amp; E[X_{t}] = E[Z_{t}]\\
+&amp;\ \ \ \ \ \ \ \ \ \ = 0\\
+\text{If t is odd}:&amp;\\
+&amp; E[X_{t}] = E[(Z^2_{t-1}-1)/\sqrt{2}]\\
+&amp;\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (E[Z^2_{t-1}]-1)\\
+&amp;\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (Var[Z_{t-1}]+E[Z_{t-1}]^2-1)\\
+&amp;\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (1+(0)^2-1)\\
+&amp;\ \ \ \ \ \ \ \ \ \ = 0
+\end{align*}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+\text{If t is even}:&amp;\\
+&amp; Var[X_{t}] = Var[Z_{t}]\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = 1\\
+\text{If t is odd}:&amp;\\
+&amp; Var[X_{t}] = Var[(Z^2_{t-1}-1)/\sqrt{2}]\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (Var[Z^2_{t-1}])\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\
+(E[Z_{t-1}^4]-E[Z^2_{t-1}]^2])\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\
+(3(Var[Z_{t-1}])^2-(Var[Z_{t-1}]-E[Z_{t-1}])^2)\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (3(1)^2-(1-0^2)^2)\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (2)\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \ 1\\
+\end{align*}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;E[X_{t}] = \begin{cases}E[Z_t] = 0, &amp; \text { if } t \text { is
+even } \\ \left(E[(Z_{t-1}^2-1\right) / \sqrt{2}] = 0, &amp; \text { if
+} t \text { is odd }\end{cases}\\
+&amp; \ \ \ \ \ \ \ \ \ \ = 0\\ \\
+&amp;Var[X_{t}] = \begin{cases}Var[Z_t] = 1, &amp; \text { if } t \text
+{ is even } \\ \left(Var[(Z_{t-1}^2-1\right) / \sqrt{2}] = 1, &amp;
+\text { if } t \text { is odd }\end{cases}\\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ = 0\\ \\
+&amp; \rightarrow\ X_{t} \sim WN(0,1)
+\end{align*}
+\]</span><br />
+</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp; \text{Let t be even and h be odd} \\
+&amp;Cor(X_{t}, X_{t+h}) = \frac{Cov(X_{t},
+X_{t+h})}{\sqrt{Var(X_{t})*Var(X_{t+h})}}\\ \\
+&amp;\text{Since}\ X_{t}\ \ \&amp;\ \ X_{t+h}\ \ \text{are both from the
+distribution WN(0,1)} \\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \&amp; \\
+&amp; \ \ \ \ \ \ \ \ \ \ Cov[(WN_{t}(0,1),\ WN_{s}(0,1)]=0\ for\ t \ne
+s\ \\ \\
+&amp; \ \ \ \ \ \ \ \ \ \ \text{Then}\ \ Cov(X_{t}, X_{t+h})=0 \\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \rightarrow Cor(X_{t}, X_{t+h}) =
+0\\ \\
+&amp;\text{Thus,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are
+uncorrelated}.\\
+&amp;\text{But because}\ X_{t+h} = (Z^2_{t-1+h}-1)/\sqrt{2}\ \text{and}\
+Z^2_{t-1+h}\ \text{is dependent on}\ Z_{t+h-1,}\\
+&amp;\text{then}\ X_{t+h}\ \text{is also dependent on}\ X_{t+h-1}. \\
+&amp;\text{Therefore,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are not i.i.d.
+variables.}
+\end{align*}
+\]</span>  <br />
+</p>
 </div>
 <div id="question-g2" class="section level4">
 <h4>Question G2</h4>
@@ -935,6 +1021,27 @@ sequences, i.e., if X<sub>r</sub> and Y<sub>s</sub> are uncorrelated for
 every r and s, show that {X<sub>t</sub> + Y<sub>t</sub>} is stationary
 with autocovariance function equal to the sum of the autocovariance
 functions of {X<sub>t</sub>} and {Y<sub>t</sub>}.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \text{Given that both time series are uncorrelated, their
+covariance is 0}. \\
+&amp; \rightarrow\ Var(X_{t}\ +\ Y_{t}) = Var(X_{t}) + Var(Y_{t}) \\
+&amp; \rightarrow\ E(X_{t}\ +\ Y_{t}) = E(X_{t}) + E(Y_{t})\\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ = µ_{X}+_{Y}\\
+&amp;\gamma_{X+Y}(h) = Cov(X_{t}+Y_{t},\ X_{t+h}+Y_{t+h})\\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(X_{t},\
+Y_{t+h})\ +\ Cov(Y_{t},\ X_{t+h})\ +\ Cov(Y_{t},\ Y_{t+h})\\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(Y_{t},\
+Y_{t+h}) \\
+&amp;\ \ \ \ \ \ \ \ \ \ \ \ \ \  = \gamma_{X}(h) + \gamma_{Y}(h)\\ \\
+&amp;\text{Given that we already know that both time series are
+stationary and the}\\
+&amp;\text{autocovariance of their sum is the sum of their
+autocovariances, the sum of their}\\
+&amp;\text{constant stationary coefficients will also be constant and
+therefore stationary.}
+\end{aligned}
+\]</span></p>
 </div>
 
 

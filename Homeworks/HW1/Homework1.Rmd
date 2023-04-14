@@ -35,10 +35,13 @@ Determine which statements are true. Explain.\
   
 \setlength{\leftskip}{0cm}\
 
-I. False. Stochastic trends are characterized by unexplainable changes in direction.
-They arise from the random movement of the variable over time.
-II. True. Deterministic trends are a result of the constant effect of a few causal forces an are generally stable over time.
-III. True. Deterministic trends can provide accurate forecasts for several periods ahead, as forecasting generally assumes that trends will continue and change relatively slowly.
+\setlength{\leftskip}{2cm}
+
+  I.    False. Stochastic trends are characterized by unexplainable changes in direction. They arise from the random movement of the variable over time.
+    
+  II. True. Deterministic trends are a result of the constant effect of a few causal forces an are generally stable over time.
+    
+  III. True. Deterministic trends can provide accurate forecasts for several periods ahead, as forecasting generally assumes that trends will continue and change relatively slowly.
 
 #### Question 2
 *Random walk and stationarity. In this question we introduce WN and random walk with non-zero mean. A White Noise with non-zero mean*\
@@ -74,7 +77,7 @@ $$
 & E[X_{1}] = E[Z_{1}] = \mu_{Z}\\
 & E[X_{2}] = E[X_{1}] + E[Z_{2}] = 2\mu_{Z}\\
 & E[X_{t-1}] = E[X_{t-2}] + E[Z_{t-1}] = (t-1)\mu_{Z}\\
-& E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\
+& E[X_{t}] = E[X_{t-1}] + E[Z_{t}] = t\mu_{Z}\\ \\
 & Therefore,\ E[X_{1}] \neq E[X_{2}] \neq E[X_{t-1}] \neq E[X_{t}]
 \end{aligned} 
 $$   
@@ -88,7 +91,6 @@ $$
 & \text{It is given that}\ σ_{Z}^2=0\  \ \ \ \& \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s 
 \end{aligned}
 $$
-
 $$ 
 \begin{aligned}
 For\ all\ &t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
@@ -113,15 +115,10 @@ Var[X_{t}]& = Var[X_{t-1} + Z_{t}] \\
 & \text{Thus, the random walk is stationary in the variance}\\
 & \text{because the variance remains constant as t changes.}
 \end{aligned} 
-$$   
+$$\
 
     III. True
-    
-$$
-\begin{aligned}
-& \text{It is given that}\ σ_{Z}^2>0\  \ \ \ \& \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s 
-\end{aligned}
-$$
+$$ \text{It is given that}\ σ_{Z}^2>0\  \ \ \ \& \ \ \ Cov(Z_{t}, Z_{s}) =0,\ for\ t \ne s$$
 $$ 
 \begin{aligned}
 For\ all\ &t\ \ge 1,\ Var[X_{t}] = Var[X_{t-1} + Z_{t}]\\
@@ -131,19 +128,19 @@ Var[X_{2}]& = Var[X_{1} + Z_{2}] \\
 &= Var[X_{1}] + Var[Z_{2}] + 2Cov[X_{1}, Z_{2}]\\
 &= Var[Z_{1}] + Var[Z_{2}] + 2Cov[Z_{1}, Z_{2}]\\
 &= \sigma^2_{Z} + \sigma^2_{Z} + 2(0)\\
-&= 2\sigma^2_{Z} \\ 
-& \text{This implies that}\ Var[X_{2}] = 2Var[X_{1}] = 2Var[Z_{1}]\\
+&= 2\sigma^2_{Z} \\ \\
+& \text{This implies that}\ Var[X_{2}] = 2Var[X_{1}] = 2Var[Z_{1}]\\ \\
 Var[X_{3}]& = Var[X_{2} + Z_{3}] \\
 &= Var[X_{2}] + Var[Z_{3}] + 2Cov[X_{2}, Z_{3}]\\
 &= 2Var[Z_{2}] + Var[Z_{3}] + 2Cov[2*Z_{2}, Z_{3}]\\
 &= 2\sigma^2_{Z} + \sigma^2_{Z} + 2(2)(0)\\
-&= 3\sigma^2_{Z} \\ 
+&= 3\sigma^2_{Z} \\ \\
 Var[X_{t}]& = Var[X_{t-1} + Z_{t}] \\
 &= Var[X_{t-1}] + Var[Z_{t}] + 2Cov[X_{t-1}, Z_{t}]\\
 &= 2Var[Z_{t-1}] + Var[Z_{t}] + 2Cov[(t-1)*Z_{t-1}, Z_{t}]\\
 &= (t-1)\sigma^2_{Z} + \sigma^2_{Z} + 2(t-1)(0)\\
-&= t\sigma^2_{Z} \\ 
-& Therefore,\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne Var[X_{t}]\\
+&= t\sigma^2_{Z} \\ \\
+& \text{Therefore},\ Var[X_{1}] \ne Var[X_{2}] \ne Var[X_{3}] \ne Var[X_{t}]\\
 & \text{Thus, the random walk is nonstationary in the variance}\\
 & \text{because the variance increases by increments of}\ Var[Z_{t}]\ \text{as t changes}.
 \end{aligned} 
@@ -175,14 +172,7 @@ Calculate the sample autocorrelation at lag 3.
 *– for definition of autocorrelation at lag 3 see Week 1 slide 52 or (2.1.3) on p.6 of Lecture Notes.*  
 *(ii) General formulas for calculating sample mean and covariance are given on slide 38 of week 1 and in §1.2 on p.4 of Lecture notes for week 1.*
  *To estimate* ρ(3) = Cor(X~1~, X~4~) *we have:*  
-$\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$
-
-
-$$
-\begin{aligned}
-\rho(3) = \frac{\gamma(3)}{\gamma(0)} = \frac{ \sum_{t=1}^{n-3} (x_{t}-\bar{x})(x_{t+3}-\bar{x})}{\sum_{t=1}^{n}\ (x_{t}-\bar{x})^2 }
-\end{aligned}
-$$
+$$\bar{x}=\frac{1}{n} \sum_{t=1}^n x_t, \quad \hat{\rho}_3=\frac{\hat{\gamma}(3)}{\hat{\gamma}(0)}=\frac{\sum_{t=1}^{n-3}\left(x_t-\bar{x}\right)\left(x_{t+3}-\bar{x}\right)}{\sum_{t=1}^n\left(x_t-\bar{x}\right)^2}$$
 ```{r}
 
 data = data.frame(matrix(ncol=5, nrow=10))
@@ -212,6 +202,8 @@ knitr::kable(data)
 # Autocorrelation
 data[11,5] / data[11,4]
 ```
+\
+\
 
 #### Question 4
 *Polyroot command in R. Recall from algebra, that a function* f(z) = a~n~z^n^ + a~n−1~z^n−1^ + ... + a~1~z + a~0~ *is called a polynomial function of order n. Roots of a polynomial function f are solutions of the equation* f(z) = 0.  
@@ -271,13 +263,16 @@ vect2 <- append(vect2, 0.05)
 polyroot(vect1)
 polyroot(vect2)
 ```
-
+\
+\
 
 #### Question 5
 *Model identification.* You are given the following information about a MA(1) model with coefficient
 |θ~1~| < 1: ρ~1~ = −0.4, ρ~k~ = 0, k = 2,3,....\
 Determine the value of θ~1~.  \
 
+\
+\
 
 #### Question 6
 *Gaussian White Noise and its square.* Let {Z~t~} be a Gaussian white noise, that is, a sequence of i.i.d. normal r.v.s each with mean zero and variance 1. Let Y~t~ = Z~t~^2^.\
@@ -346,7 +341,8 @@ E[Y] & = E[Z_{t}^2]\\
 & = 0 + 1\\
 &=1
 \end{aligned}
-$$
+$$\
+
 $$
 \begin{aligned}
 For\ X &= N(0,\sigma^2),\ E[X^4]=3(\sigma^2)^2\\
@@ -357,7 +353,8 @@ Var[Y] & = Var[Z_{t}^2]\\
 & = 3(1)^2 - 1^2\\
 & = 2\\
 \end{aligned}
-$$
+$$/
+
 
 $$
 \begin{aligned}
@@ -369,12 +366,12 @@ $$
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = \frac{0}{\sqrt{2*2}}\\ \\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  = 0
 \end{aligned}
-$$
+$$\
 
 \setlength{\leftskip}{0cm}\
 
 
-**The following two problems are for students enrolled in PSTAT 274 ONLY**
+**The following two problems are for students enrolled in PSTAT 274 ONLY**\
 
 #### Question G1
 Let {Zt} be *Gaussian* white noise, i.e. {Z~t~} is a sequence of i.i.d. normal r.v.s each with mean zero and variance 1.
@@ -387,11 +384,19 @@ Define: $X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t
 Show that {X~t~} is WN(0, 1) (that is, variables X~t~ and X~t+k~, k ≥ 1, are uncorrelated with mean zero and
 variance 1) but that X~t~ and X~t−1~ are **not** i.i.d.\
 
-$$X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}$$
-$$Z_{t} \sim WN(0, 1)$$
-$$X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}$$
+
+$$
+\begin{align*}
+Z_{t} \sim WN(0, 1)
+\end{align*}
+$$
+
+$$
+X_t= \begin{cases}Z_t, & \text { if } t \text { is even } \\ \left(Z_{t-1}^2-1\right) / \sqrt{2}, & \text { if } t \text { is odd }\end{cases}
+$$
+
 $$ 
-\begin{aligned}
+\begin{align*}
 \text{If t is even}:&\\
 & E[X_{t}] = E[Z_{t}]\\
 &\ \ \ \ \ \ \ \ \ \ = 0\\
@@ -401,11 +406,11 @@ $$
 &\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (Var[Z_{t-1}]+E[Z_{t-1}]^2-1)\\
 &\ \ \ \ \ \ \ \ \ \ = \sqrt{2}\ (1+(0)^2-1)\\
 &\ \ \ \ \ \ \ \ \ \ = 0
-\end{aligned}
+\end{align*}
 $$
 
 $$ 
-\begin{aligned}
+\begin{align*}
 \text{If t is even}:&\\
 & Var[X_{t}] = Var[Z_{t}]\\
 &\ \ \ \ \ \ \ \ \ \ \ \ \ \ = 1\\
@@ -417,21 +422,21 @@ $$
 &\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (3(1)^2-(1-0^2)^2)\\
 &\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{2}\ (2)\\
 &\ \ \ \ \ \ \ \ \ \ \ \ \ \ = \ 1\\
+\end{align*}
+$$
 
-\end{aligned}
 $$
-$$
-\begin{aligned}
+\begin{align*}
 &E[X_{t}] = \begin{cases}E[Z_t] = 0, & \text { if } t \text { is even } \\ \left(E[(Z_{t-1}^2-1\right) / \sqrt{2}] = 0, & \text { if } t \text { is odd }\end{cases}\\
 & \ \ \ \ \ \ \ \ \ \ = 0\\ \\
 &Var[X_{t}] = \begin{cases}Var[Z_t] = 1, & \text { if } t \text { is even } \\ \left(Var[(Z_{t-1}^2-1\right) / \sqrt{2}] = 1, & \text { if } t \text { is odd }\end{cases}\\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ = 0\\ \\
 & \rightarrow\ X_{t} \sim WN(0,1)
-\end{aligned}
-$$
+\end{align*}
+$$\
 
 $$
-\begin{aligned}
+\begin{align*}
 & \text{Let t be even and h be odd} \\
 &Cor(X_{t}, X_{t+h}) = \frac{Cov(X_{t}, X_{t+h})}{\sqrt{Var(X_{t})*Var(X_{t+h})}}\\ \\
 &\text{Since}\ X_{t}\ \ \&\ \ X_{t+h}\ \ \text{are both from the distribution WN(0,1)} \\
@@ -440,11 +445,13 @@ $$
 & \ \ \ \ \ \ \ \ \ \ \text{Then}\ \ Cov(X_{t}, X_{t+h})=0 \\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \rightarrow Cor(X_{t}, X_{t+h}) = 0\\ \\
 &\text{Thus,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are uncorrelated}.\\
-&\text{But because}\ X_{t+h} = Z^2_{t-1+h}\ \text{and}\ Z^2_{t-1+h}\ \text{is dependent on}\ Z_{t+h-1,}\\
-&\text{then}\ X_{t+h}\ \text{is dependent on}\ X_{t+h-1}. \\
+&\text{But because}\ X_{t+h} = (Z^2_{t-1+h}-1)/\sqrt{2}\ \text{and}\ Z^2_{t-1+h}\ \text{is dependent on}\ Z_{t+h-1,}\\
+&\text{then}\ X_{t+h}\ \text{is also dependent on}\ X_{t+h-1}. \\
 &\text{Therefore,}\ X_{t}\ \text{and}\ X_{t+h}\ \text{are not i.i.d. variables.}
-\end{aligned}
+\end{align*}
 $$
+\ 
+\
 
 #### Question G2
 If {X~t~} and {Y~t~} are uncorrelated stationary sequences, i.e., if X~r~ and Y~s~ are uncorrelated for every r and s, show that {X~t~ + Y~t~} is stationary with autocovariance function equal to the sum of the autocovariance functions of {X~t~} and {Y~t~}.
@@ -458,7 +465,7 @@ $$
 &\gamma_{X+Y}(h) = Cov(X_{t}+Y_{t},\ X_{t+h}+Y_{t+h})\\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(X_{t},\ Y_{t+h})\ +\ Cov(Y_{t},\ X_{t+h})\ +\ Cov(Y_{t},\ Y_{t+h})\\
 &\ \ \ \ \ \ \ \ \ \ \ \ \ \ = Cov(X_{t},\ X_{t+h})\ +\ Cov(Y_{t},\ Y_{t+h}) \\
-&\ \ \ \ \ \ \ \ \ \ \ \ \ \  = \gamma_{X}(h) + \gamma_{Y}(h)\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \  = \gamma_{X}(h) + \gamma_{Y}(h)\\ \\
 &\text{Given that we already know that both time series are stationary and the}\\
 &\text{autocovariance of their sum is the sum of their autocovariances, the sum of their}\\
 &\text{constant stationary coefficients will also be constant and therefore stationary.}
