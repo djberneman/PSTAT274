@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-(1) What is the definition of a white-noise process? Does it have to be Gaussian?
+(1) What is the definition of a white-noise process? Does it have to be Gaussian?\
 A white-noise process is defined as the time series generated from uncorrelated variables with mean zero and a finite variance. White Noise is a MA(1) process with coefficient θ1 = 0.
 
 (2) In Lab 2 question 2 Moving averages, what is the difference of yt and xt in the plot? What does this difference suggest about Moving Average as a data processing technique? Plot the acf of yt in question 2.\
