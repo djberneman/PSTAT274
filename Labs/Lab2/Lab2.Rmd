@@ -1,0 +1,65 @@
+---
+title: "Lab Assignment 2"
+author: "Dylan Berneman"
+date: '2023-04-15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+(1) What is the definition of a white-noise process? Does it have to be Gaussian?
+A white-noise process is defined as the time series generated from uncorrelated variables with mean zero and a finite variance. White Noise is a MA(1) process with coefficient θ1 = 0.
+
+(2) In Lab 2 question 2 Moving averages, what is the difference of yt and xt in the plot? What does this difference suggest about Moving Average as a data processing technique? Plot the acf of yt in question 2.\
+
+y~t~ is the average of the previous, current and next values of x~t~. While they both possess the same mean, the variance of the moving average is smaller. This suggests that moving averages increase the precission of the random process by decreasing the variance.
+
+```{r}
+z_t <- rnorm(200,0,1)
+y_t = filter(z_t, filter = rep(1/3,3), sides = 2, method = "convolution")
+plot.ts(z_t,xlab = "t",ylab = expression(X[t]),type = "l",main = "Moving Average")
+lines(y_t,col = "blue")
+legend("topright",c("WN", "Moving Avg."),col = c("black","blue"),lty = 1)
+
+acf(y_t[2:199], main="ACF")
+```
+
+(3) Simulate an AR model using two different ways you learned from Lab 2.
+Hint: filter() and arima.sim()
+
+```{r}
+x_t <- filter(z_t,filter = c(1,-0.9),method = "recursive")
+plot(x_t,xlab = "t",ylab = expression(x[t]),type = "l", main = "Autoregressive Model")
+
+```
+
+```{r}
+#a
+theta_1 <- 0.45
+theta_2 <- 0.55
+var_ma <- 1 + theta_1^2 + (theta_2)^2
+# Simulate MA
+x1 <- arima.sim(n = 100,model = list(ma=c(theta_1,theta_2)))
+# Theoretical ACF
+theo_acf1 <- c(var_ma,(theta_1 + theta_1*theta_2),theta_2,rep(0,18))/var_ma
+
+ #b
+theta_1 <- -0.45
+theta_2 <- 0.55
+var_ma <- 1+theta_1^2+theta_2^2
+x2 <- arima.sim(n = 100,model = list(ma=c(theta_1,theta_2)))
+theo_acf2 <- c(var_ma,(theta_1 + theta_1*theta_2),theta_2,rep(0,18))/var_ma
+
+# Plot both ACFs
+op <- par(mfrow = c(1,2))
+acf(x1,main = expression(theta[1] == 0.45~theta[2] == 0.55)) # Sample auto-correlation 
+lines(x = 0:20,y = theo_acf1,col = "red") # Add theoretical ACF
+acf(x2,main = expression(theta[1] == -0.45~theta[2] == 0.55)) 
+lines(x = 0:20,y = theo_acf2,col = "red")
+
+
+yt <- arima.sim(list(order=c(1,0,0), ar=.5), n=500)
+acf(yt)  
+```
