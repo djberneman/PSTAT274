@@ -13,33 +13,30 @@ knitr::opts_chunk$set(echo = TRUE)
 Note: {Z~t~} ∼ WN(0,σ~Z~^2^ ) denotes white noise.\
 
 ##### Question 1 
-Below, you are given the following graphs of autocorrelation functions for three separate data sets, each with n observations. The dotted lines in each graph correspond to 95% confidence intervals. Determine which of the above data sets exhibit statistically significant autocorrelations. Explain how you came to this conclusion.
+Below, you are given the following graphs of autocorrelation functions for three separate data sets, each with n observations. The dotted lines in each graph correspond to 95% confidence intervals. Determine which of the above data sets exhibit statistically significant autocorrelations. Explain how you came to this conclusion.\
 
-```{r}
+```{r echo=FALSE}
 knitr::include_graphics("Datasets.png")
 ```
 
 \setlength{\leftskip}{2cm}
 
-  (A.) I only; 
-  (B.) II only; 
-  (C.) III only; 
-  (D.) I, II and III; 
-  (E.) The answer is not given by (A), (B), (C), or (D).
+  (A) I only;  
+  (B) II only;  
+  (C) III only;  
+  (D) I, II and III;  
+  (E) The answer is not given by (A), (B), (C), or (D).\
 
-The autocorrelation of the time series at each lag is only significant if the spike reaches past the significance threshold level. 
-
-Dataset I is statistically significant at lag 3 and lag 7.
-Dataset II is statistically significant up to lag 3.
-Dataset III is not statistically significant at all.
-
-Only Datasets I and Dataset II are statistically significant. 
-E.
-
+  The autocorrelation of the time series at each lag is only significant if the spike reaches past     the significance threshold level.  
+  Dataset I is statistically significant at lag 3 and lag 7.  
+  Dataset II is statistically significant up to lag 3.  
+  Dataset III is not statistically significant at all.  
+  Only Datasets I and Dataset II are statistically significant.  
+  E.
 
 \setlength{\leftskip}{0cm}
 \
-\
+
 
 #### Question 2
 
@@ -47,8 +44,8 @@ For each of the two time series models, check stationarity and invertibility. Fu
 
 \setlength{\leftskip}{2cm}
 
-  (2.a) X~t~ = Z~t~ − 23Z~t−1~ − 13Z~t−2~.
-  (2.b) X~t~ = 32X~t−1~ + 13X~t−2~ +Z~t~.
+  (a) X~t~ = Z~t~ − $\frac{2}{3}$Z~t−1~ − $\frac{1}{3}$Z~t−2~  
+  (b) X~t~ = $\frac{2}{3}$X~t−1~ + $\frac{1}{3}$X~t−2~ +Z~t~  
 
 \setlength{\leftskip}{0cm}
 
