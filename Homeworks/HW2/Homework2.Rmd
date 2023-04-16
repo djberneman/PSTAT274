@@ -1,0 +1,110 @@
+---
+title: "PSTAT 174/274, Spring 2023: Homework #2"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Note: {Z~t~} ∼ WN(0,σ~Z~^2^ ) denotes white noise.\
+
+##### Question 1 
+Below, you are given the following graphs of autocorrelation functions for three separate data sets, each with n observations. The dotted lines in each graph correspond to 95% confidence intervals. Determine which of the above data sets exhibit statistically significant autocorrelations. Explain how you came to this conclusion.
+
+```{r}
+knitr::include_graphics("Datasets.png")
+```
+
+\setlength{\leftskip}{2cm}
+
+  (A.) I only; 
+  (B.) II only; 
+  (C.) III only; 
+  (D.) I, II and III; 
+  (E.) The answer is not given by (A), (B), (C), or (D).
+
+The autocorrelation of the time series at each lag is only significant if the spike reaches past the significance threshold level. 
+
+Dataset I is statistically significant at lag 3 and lag 7.
+Dataset II is statistically significant up to lag 3.
+Dataset III is not statistically significant at all.
+
+Only Datasets I and Dataset II are statistically significant. 
+E.
+
+
+\setlength{\leftskip}{0cm}
+\
+\
+
+#### Question 2
+
+For each of the two time series models, check stationarity and invertibility. Fully justify your answer.\
+
+\setlength{\leftskip}{2cm}
+
+  (2.a) X~t~ = Z~t~ − 23Z~t−1~ − 13Z~t−2~.
+  (2.b) X~t~ = 32X~t−1~ + 13X~t−2~ +Z~t~.
+
+\setlength{\leftskip}{0cm}
+
+
+\
+\
+  
+#### Question 3 
+
+\setlength{\leftskip}{2cm}
+
+  (3.a) For a MA(3) process with coefficients θ~1~ = 2, θ~2~ = 0.5, and θ~3~ = −0.1, 
+    (i) write the mathematical equation for MA(3) model with these coefficients
+    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4).
+    
+  (3.b) For an AR(1) process with coefficient φ~1~ = −0.5, 
+    (i) write the mathematical equation for AR(1) model with these coefficients 
+    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4).
+    
+\setlength{\leftskip}{0cm}
+\
+\
+
+#### Question 4
+
+You are given the following process: X~t~ = 3 + Y + Z~t~, where Y is a mean zero random variable with variance σ~Y~^2^ , independent of the white noise {Z~t~}. Determine whether the process X is stationary and find its autocovariance and autocorrelation functions.
+
+\setlength{\leftskip}{2cm}
+
+
+
+\setlength{\leftskip}{0cm}
+\
+\
+
+#### Question 5
+
+Let X~t~ = Z~t~ + 2Z~t−1~ − 8Z~t−2~.
+
+\setlength{\leftskip}{2cm}
+
+  (i) Identify the model as the model as MA(q) or AR(p), specify q or p respectively.
+  (ii) Is the model stationary and invertible? Explain fully and show calculations where needed.
+|    (Hint: review 4 from homework 1!)
+  (iii) Find ρ~X~(2). Use R to simulate 300 values of {X~t~} and use your simulated values to plot sample acf. Compare your sample estimate of ρ~X~(2) to its true value found by calculations. Redo this part using 10,000 simulated values of X~t~.
+
+\setlength{\leftskip}{2cm}
+
+
+
+
+**The following problems are for students enrolled in PSTAT 274 ONLY**
+
+
+G1Let{Zt}∼WN(0,1)and{Xt}begivenbyXt =Zt+θZt−2.
+(a) Find the autocovariance and autocorrelation function for this process when θ = 0.8. (b) Compute the variance of the sample mean (X1 + X2 + X3 + X4)/4 when θ = 0.8. (c) Repeat (b) when θ = −0.8 and compare your answer with the result obtained in (b).
+G2 Provide at least two examples of AR(2) models with autocovariance functions exhibiting very different behavior pattern. Include plots of corresponding theoretical acfs and the corresponding R code.
+G3 Let Xt = Zt + θZt−1, t = 1,2,..., where Zt ∼ IID(0,σZ2 ). Show that Xt is both weakly and strictly stationary.
+(Hint: for the last part express the joint moment generating function E exp(Pni=1 λiXi) in terms of function m(λ) = E exp(λZi).)
