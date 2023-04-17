@@ -45,6 +45,25 @@ For each of the two time series models, check stationarity and invertibility. Fu
 \setlength{\leftskip}{2cm}
 
   (a) X~t~ = Z~t~ − $\frac{2}{3}$Z~t−1~ − $\frac{1}{3}$Z~t−2~  
+  $$
+  
+  $$
+  \begin{aligned}
+  E[X_{t}] &= E[Z_{t} - \frac{2}{3} Z_{t-1} - \frac{1}{3} Z_{t-2}]\\
+  &= E[Z_{t}] - \frac{2}{3}E[Z_{t-1}] - \frac{1}{3}E{Z_{t-2}}]\\
+  &= 0
+  \end{aligned}
+  $$  
+  
+  $$
+  \begin{aligned}
+  Var[X_{t}] &= Var[Z_{t} - \frac{2}{3} Z_{t-1} - \frac{1}{3} Z_{t-2}]\\
+  &= Var[Z_{t}] + (-\frac{2}{3})^2\ Var[Z_{t-1}] + (- \frac{1}{3})^2\ Var[{Z_{t-2}}]\\
+  & = \sigma_{Z}^2 + \frac{4}{9} \sigma_{Z}^2 + \frac{1}{9}\sigma_{Z}^2\\
+  &= \frac{14}{9}\sigma_{Z}^2
+  \end{aligned}
+  $$
+  
   (b) X~t~ = $\frac{2}{3}$X~t−1~ + $\frac{1}{3}$X~t−2~ +Z~t~  
 
 \setlength{\leftskip}{0cm}
