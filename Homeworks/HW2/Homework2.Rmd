@@ -102,7 +102,22 @@ $$
       $$X_{t} = Z_{t}\ +\ 2\ Z_{t-1}\ +\ 0.5\ Z_{t-2}\ -\ 0.1\ Z_{t-3}$$  
     (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
     $$\begin{aligned}
-    &\rho(k) = \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2 }
+    \rho(k) &= \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ \\
+    
+    \rho(1) &= \frac{\theta_{1}+\theta_{1}\theta_{2}+\theta_{2}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+    
+    & = \frac{2+2(0.5)+0.5(-0.1)}{1+2^2+0.5^2+(-0.1)^2}\\
+    & = 2.95/5.26\\
+    &=0.5608 \\\\
+    \rho(2) &= \frac{\theta_{2}+\theta_{1}\theta_{3}+\theta_{2}\theta_{4}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+    &= (0.5+2(-0.1))/5.26\\ 
+    & = 0.05703\\\\
+    \rho(3) &= \frac{\theta_{3}+\theta_{1}\theta_{4}+\theta_{2}\theta_{5}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+     &= -0.1/5.26\\
+     &= -0.019\\\\
+     \rho(4) &= \frac{\theta_{4}+\theta_{1}\theta_{5}+\theta_{2}\theta_{6}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+     &=0\\
+     &\rho_X(k)=0, \ k>q
     \end{aligned}$$
 ```{r}
 
@@ -116,10 +131,19 @@ acf(X_t, lag=c(seq(1,4)), plot=FALSE)
   
   
     
-  (b) For an AR(1) process with coefficient φ~1~ = −0.5, 
-    (i) write the mathematical equation for AR(1) model with these coefficients\
-    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
-    
+  (b) For an AR(1) process with coefficient $\phi$~1~ = −0.5, 
+    (i) Write the mathematical equation for AR(1) model with these coefficients\
+    $$X_{t} = -0.5\ X_{t-1} + Z_{t}$$
+    (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
+    $$
+    \begin{aligned}
+    & \rho_{X}(k) = \phi_{1}^k\\
+    & \rho(1)= -0.5\\
+    & \rho(2)= 0.25\\
+    & \rho(1)= -0.125\\
+    & \rho(1)= 0.0625\\
+    \end{aligned}
+    $$
 \setlength{\leftskip}{0cm}
 \
 \
