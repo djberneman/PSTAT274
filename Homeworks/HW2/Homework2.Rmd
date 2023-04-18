@@ -45,26 +45,48 @@ For each of the two time series models, check stationarity and invertibility. Fu
 \setlength{\leftskip}{2cm}
 
   (a) X~t~ = Z~t~ − $\frac{2}{3}$Z~t−1~ − $\frac{1}{3}$Z~t−2~  
-  $$
+
+$$
+\begin{aligned}
+&X_{t}\ \text{is a moving average model, MA(2)}\\
+& \text{By definition, moving average models are} \\
+& \text{always stationary.}\\
+X_{t} &= Z_{t}-\frac{2}{3}Z_{t-1}-\frac{1}{3}Z_{t-2}\\
+& = \theta(B)Z_{t}\\
+& = 1 -\theta_{1}B\ Z_{t-1} - \theta_{2}B^2\ Z_{t-2}\\
+& = 1- \frac{2}{3}B\ Z_{t-1} - \frac{1}{3}B^2\ Z_{t-2}\\
+&\theta(z) = 1 - \frac{2}{3}z-\frac{1}{3}z^2\\
+z &= \frac{-(-2/3)\ \pm\ \sqrt{(-2/3)^2-4(-1/3)(1)}}{2(-1/3)}\\ \\
+&= \frac{2/3\ \pm\ \sqrt{4/9+4/3}}{-2/3}\\\\
+&= -1 \pm\ \frac{\sqrt{16/9}}{-2/3}\\\\
+& = -1 + \frac{-4/3}{-2/3}\ or\ -1-\frac{4/3}{-2/3}\\
+& = 1\ or\ -3\\ \\
+&\text{This time series is not invertible.}
+\end{aligned}
+$$  
+
+\setlength{\leftskip}{0cm}\
+
+\setlength{\leftskip}{2cm}
+  (b) X~t~ = (2/3) X~t−1~ + (1/3) X~t−2~ +Z~t~  
+  
+\setlength{\leftskip}{0cm}
   
   $$
   \begin{aligned}
-  E[X_{t}] &= E[Z_{t} - \frac{2}{3} Z_{t-1} - \frac{1}{3} Z_{t-2}]\\
-  &= E[Z_{t}] - \frac{2}{3}E[Z_{t-1}] - \frac{1}{3}E{Z_{t-2}}]\\
-  &= 0
+  &X_{t} = Z_{t}+\frac{2}{3}X_{t-1}+\frac{1}{3}X_{t-2}\\
+  &Z_{t} = X_{t}-\frac{2}{3}X_{t-1}-\frac{1}{3}X_{t-2}\\\\
+  & \text{Since it is of the form},\ \phi(B)X_{t} = Z_{t},\\
+  & \text{it is automatically invertible} \\\\
+  &\phi(z) = 1 - \frac{2}{3}z-\frac{1}{3}z^2\\
+  z &= \frac{-(-2/3)\ \pm\ \sqrt{(-2/3)^2-4(-1/3)(1)}}{2(-1/3)}\\ \\
+  &= \frac{2/3\ \pm\ \sqrt{4/9+4/3}}{-2/3}\\\\
+  &= -1 \pm\ \frac{\sqrt{16/9}}{-2/3}\\\\
+  & = -1 + \frac{-4/3}{-2/3}\ or\ -1-\frac{4/3}{-2/3}\\
+  & = 1\ or\ -3\\ \\
+  &\text{This time series is not stationary}
   \end{aligned}
-  $$  
-  
   $$
-  \begin{aligned}
-  Var[X_{t}] &= Var[Z_{t} - \frac{2}{3} Z_{t-1} - \frac{1}{3} Z_{t-2}]\\
-  &= Var[Z_{t}] + (-\frac{2}{3})^2\ Var[Z_{t-1}] + (- \frac{1}{3})^2\ Var[{Z_{t-2}}]\\
-  & = \sigma_{Z}^2 + \frac{4}{9} \sigma_{Z}^2 + \frac{1}{9}\sigma_{Z}^2\\
-  &= \frac{14}{9}\sigma_{Z}^2
-  \end{aligned}
-  $$
-  
-  (b) X~t~ = $\frac{2}{3}$X~t−1~ + $\frac{1}{3}$X~t−2~ +Z~t~  
 
 \setlength{\leftskip}{0cm}
 
@@ -76,13 +98,17 @@ For each of the two time series models, check stationarity and invertibility. Fu
 
 \setlength{\leftskip}{2cm}
 
-  (3.a) For a MA(3) process with coefficients θ~1~ = 2, θ~2~ = 0.5, and θ~3~ = −0.1, 
-    (i) write the mathematical equation for MA(3) model with these coefficients
-    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4).
+  (a) For a MA(3) process with coefficients θ~1~ = 2, θ~2~ = 0.5, and θ~3~ = −0.1\
+    (i) Write the mathematical equation for MA(3) model with these coefficients\
+      $$X_{t} = Z_{t}\ +\ 2\ Z_{t-1}\ +\ 0.5\ Z_{t-2}\ -\ 0.1\ Z_{t-3}$$  
+    (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
+  
+  
+  
     
-  (3.b) For an AR(1) process with coefficient φ~1~ = −0.5, 
-    (i) write the mathematical equation for AR(1) model with these coefficients 
-    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4).
+  (b) For an AR(1) process with coefficient φ~1~ = −0.5, 
+    (i) write the mathematical equation for AR(1) model with these coefficients\
+    (ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
     
 \setlength{\leftskip}{0cm}
 \
