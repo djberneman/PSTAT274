@@ -102,7 +102,7 @@ $$
       $$X_{t} = Z_{t}\ +\ 2\ Z_{t-1}\ +\ 0.5\ Z_{t-2}\ -\ 0.1\ Z_{t-3}$$  
     (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
     $$\begin{aligned}
-    &\rho(k) = \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta{k+2}}{}
+    &\rho(k) = \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2 }
     \end{aligned}$$
 ```{r}
 
