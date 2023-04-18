@@ -121,8 +121,14 @@ $$
     \end{aligned}$$
 ```{r}
 
+rnorm()
+Z_t <- rnorm(n=10000000, 0,)
+Y_t <- rnorm(n=10000000, 0,10)
+X_t <- Z_t+Y_t+3
 
-Z_t <- rnorm(n=100, 0,1)
+mean(X_t)
+variance(X_t)
+
 X_t <- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
 acf(X_t, lag=c(seq(1,4)), plot=FALSE)
 
@@ -150,7 +156,26 @@ acf(X_t, lag=c(seq(1,4)), plot=FALSE)
 
 #### Question 4
 
-You are given the following process: X~t~ = 3 + Y + Z~t~, where Y is a mean zero random variable with variance σ~Y~^2^ , independent of the white noise {Z~t~}. Determine whether the process X is stationary and find its autocovariance and autocorrelation functions.
+You are given the following process: X~t~ = 3 + Y + Z~t~, where Y is a mean zero random variable with variance σ~Y~^2^, independent of the white noise {Z~t~}. Determine whether the process X is stationary and find its autocovariance and autocorrelation functions.
+
+$$
+\begin{aligned}
+&X_{t}=3+Y+Z_{t}\\\\
+E[X_{t}]&=E[3+Y+Z_{t}]\\
+&= E[3]+E[Y]+E[Z_{t}]\\
+&= 3 + 0 + 0 = 3 \\\\
+
+& \text{Given that Y is independent from}\ Z_{t},\\
+Var[X_{t}] &= Var[3+Y+Z_{t}]\\
+&= Var[Y + Z_{t}]\\
+&= Var[Y] + Var[Z_{t}] \\
+Var[X_t] &= \sigma_{Y}^2 + \sigma_{Z}^2\\
+& \text{Since}\ Var[X+Y]=Var[X]+Var[Y]\ \text{if X and Y are independent} \\\\
+
+Cor(X_{t}) &= Cor(3+Y+Z_{t})\\
+&= Cov()
+\end{aligned}
+$$
 
 \setlength{\leftskip}{2cm}
 
