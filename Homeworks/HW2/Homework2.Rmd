@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(distributional)
 ```
 
 
@@ -36,7 +38,6 @@ knitr::include_graphics("Datasets.png")
 
 \setlength{\leftskip}{0cm}
 \
-
 
 #### Question 2
 
@@ -89,8 +90,6 @@ $$
   $$
 
 \setlength{\leftskip}{0cm}
-
-
 \
 \
   
@@ -102,7 +101,18 @@ $$
     (i) Write the mathematical equation for MA(3) model with these coefficients\
       $$X_{t} = Z_{t}\ +\ 2\ Z_{t-1}\ +\ 0.5\ Z_{t-2}\ -\ 0.1\ Z_{t-3}$$  
     (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
-  
+    $$\begin{aligned}
+    &\rho(k) = \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta{k+2}}{}
+    \end{aligned}$$
+```{r}
+
+
+Z_t <- rnorm(n=100, 0,1)
+X_t <- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
+acf(X_t, lag=c(seq(1,4)), plot=FALSE)
+
+
+```
   
   
     
