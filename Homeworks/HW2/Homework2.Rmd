@@ -101,62 +101,45 @@ $$
     (i) Write the mathematical equation for MA(3) model with these coefficients\
       $$X_{t} = Z_{t}\ +\ 2\ Z_{t-1}\ +\ 0.5\ Z_{t-2}\ -\ 0.1\ Z_{t-3}$$  
     (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
-    $$\begin{aligned}
-    \rho(k) &= \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ \\
-    
-    \rho(1) &= \frac{\theta_{1}+\theta_{1}\theta_{2}+\theta_{2}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
-    
-    & = \frac{2+2(0.5)+0.5(-0.1)}{1+2^2+0.5^2+(-0.1)^2}\\
-    & = 2.95/5.26\\
-    &=0.5608 \\\\
-    \rho(2) &= \frac{\theta_{2}+\theta_{1}\theta_{3}+\theta_{2}\theta_{4}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
-    &= (0.5+2(-0.1))/5.26\\ 
-    & = 0.05703\\\\
-    \rho(3) &= \frac{\theta_{3}+\theta_{1}\theta_{4}+\theta_{2}\theta_{5}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
-     &= -0.1/5.26\\
-     &= -0.019\\\\
-     \rho(4) &= \frac{\theta_{4}+\theta_{1}\theta_{5}+\theta_{2}\theta_{6}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
-     &=0\\
-     &\rho_X(k)=0, \ k>q
-    \end{aligned}$$
-```{r}
-
-rnorm()
-Z_t <- rnorm(n=10000000, 0,)
-Y_t <- rnorm(n=10000000, 0,10)
-X_t <- Z_t+Y_t+3
-
-mean(X_t)
-variance(X_t)
-
-X_t <- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
-acf(X_t, lag=c(seq(1,4)), plot=FALSE)
-
-
-```
-  
-  
+$$
+\begin{aligned}
+\rho(k) &= \frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ \\
+\rho(1) &= \frac{\theta_{1}+\theta_{1}\theta_{2}+\theta_{2}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+& = \frac{2+2(0.5)+0.5(-0.1)}{1+2^2+0.5^2+(-0.1)^2}\\
+& = 2.95/5.26\\
+&=0.5608 \\\\
+\rho(2) &= \frac{\theta_{2}+\theta_{1}\theta_{3}+\theta_{2}\theta_{4}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+&= (0.5+2(-0.1))/5.26\\ 
+& = 0.05703\\\\
+\rho(3) &= \frac{\theta_{3}+\theta_{1}\theta_{4}+\theta_{2}\theta_{5}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+&= -0.1/5.26\\
+&= -0.019\\\\
+\rho(4) &= \frac{\theta_{4}+\theta_{1}\theta_{5}+\theta_{2}\theta_{6}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\ 
+&=0\\
+&\rho_X(k)=0, \ k>q
+\end{aligned}
+$$
     
   (b) For an AR(1) process with coefficient $\phi$~1~ = −0.5, 
     (i) Write the mathematical equation for AR(1) model with these coefficients\
     $$X_{t} = -0.5\ X_{t-1} + Z_{t}$$
     (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2), ρ(3) and ρ(4)\
-    $$
-    \begin{aligned}
-    & \rho_{X}(k) = \phi_{1}^k\\
-    & \rho(1)= -0.5\\
-    & \rho(2)= 0.25\\
-    & \rho(1)= -0.125\\
-    & \rho(1)= 0.0625\\
-    \end{aligned}
-    $$
+$$
+\begin{aligned}
+& \rho_{X}(k) = \phi_{1}^k\\
+& \rho(1)= -0.5\\
+& \rho(2)= 0.25\\
+& \rho(1)= -0.125\\
+& \rho(1)= 0.0625\\
+\end{aligned}
+$$
 \setlength{\leftskip}{0cm}
 \
 \
 
 #### Question 4
 
-You are given the following process: X~t~ = 3 + Y + Z~t~, where Y is a mean zero random variable with variance σ~Y~^2^, independent of the white noise {Z~t~}. Determine whether the process X is stationary and find its autocovariance and autocorrelation functions.
+You are given the following process: X~t~ = 3 + Y + Z~t~, where Y is a mean zero random variable with variance σ~Y~^2^, independent of the white noise {Z~t~}. Determine whether the process X is stationary and find its autocovariance and autocorrelation functions.\
 
 $$
 \begin{aligned}
@@ -172,16 +155,12 @@ Var[X_{t}] &= Var[3+Y+Z_{t}]\\
 Var[X_t] &= \sigma_{Y}^2 + \sigma_{Z}^2\\
 & \text{Since}\ Var[X+Y]=Var[X]+Var[Y]\ \text{if X and Y are independent} \\\\
 
-Cor(X_{t}) &= Cor(3+Y+Z_{t})\\
-&= Cov()
+Cor(X_{t}) = &Cor(3+Y+Z_{t})\\
+& \gamma_{X}(0) = Cov(X_{t}, X_{t}) = Var(X_{t})\\
+& \text{is independent of all t}
 \end{aligned}
 $$
 
-\setlength{\leftskip}{2cm}
-
-
-
-\setlength{\leftskip}{0cm}
 \
 \
 
@@ -192,11 +171,74 @@ Let X~t~ = Z~t~ + 2Z~t−1~ − 8Z~t−2~.
 \setlength{\leftskip}{2cm}
 
   (i) Identify the model as the model as MA(q) or AR(p), specify q or p respectively.
+  
+$$
+\begin{aligned}
+MA(2)
+\end{aligned}
+$$
+\setlength{\leftskip}{2cm}
+  
   (ii) Is the model stationary and invertible? Explain fully and show calculations where needed.
 |    (Hint: review 4 from homework 1!)
+$$
+\begin{aligned}
+&\text{All moving average models are stationary.}\\
+&\text{Since}\ \theta_{1} = 2,\ \&\ \theta_{2} = -8,\\
+& |\theta_{2}| > |\theta_{1}| > 1\\
+& \text{The model is not invertible.}
+\end{aligned}
+$$
+\setlength{\leftskip}{2cm}
+  
   (iii) Find ρ~X~(2). Use R to simulate 300 values of {X~t~} and use your simulated values to plot sample acf. Compare your sample estimate of ρ~X~(2) to its true value found by calculations. Redo this part using 10,000 simulated values of X~t~.
 
-\setlength{\leftskip}{2cm}
+$$
+\begin{aligned}
+\rho_{X}(2) &= \frac{\theta_{2}+\theta_{1}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2}\\\\
+&= -8/(1+2^2+(-8)^2)\\
+&= -8/69\\
+&=-0.1159
+\end{aligned}
+$$
+```{r}
+set.seed(3)
+
+Z_t <- rnorm(n=300, 0,1)
+Z_t1 <- Z_t
+Z_t1[1] <- NA
+for(i in 2:300){
+  Z_t1[i] = Z_t[i-1]}
+
+Z_t2 <- Z_t
+Z_t2[1:2] <- NA
+for(i in 3:300){
+  Z_t2[i] = Z_t[i-2]}
+
+X_t <- na.omit(Z_t + 2*Z_t1 - 8*Z_t2)
+
+# Calculated autocorrelation at lag 2 is -0.1159
+acf(X_t, lag=2, plot=FALSE)[2]
+# Sample autocorrelation at lag 2 is very close to what was calculated.
+
+Z_t <- rnorm(n=10000, 0,1)
+
+Z_t1 <- Z_t
+Z_t1[1] <- NA
+for(i in 2:10000){
+  Z_t1[i] = Z_t[i-1]}
+
+Z_t2 <- Z_t
+Z_t2[1:2] <- NA
+for(i in 3:10000){
+  Z_t2[i] = Z_t[i-2]}
+
+X_t <- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
+
+# Calculated autocorrelation at lag 2 is -0.1159
+acf(X_t, lag=2, plot=FALSE)[2]
+# Either I calculated the autocorrelation at lag 2 wrong, or more observation make the sample autocorrelation worse.
+```
 
 
 

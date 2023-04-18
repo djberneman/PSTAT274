@@ -457,25 +457,76 @@ coefficients<br />
 Z_{t-2}\ -\ 0.1\ Z_{t-3}\]</span><br />
 (ii) Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1),
 ρ(2), ρ(3) and ρ(4)<br />
-</p></li>
-<li><p>For an AR(1) process with coefficient φ<sub>1</sub> = −0.5, (i)
-write the mathematical equation for AR(1) model with these
-coefficients<br />
-(ii) calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1),
-ρ(2), ρ(3) and ρ(4)<br />
+<span class="math display">\[
+\begin{aligned}
+\rho(k) &amp;=
+\frac{\theta_{k}+\theta_{1}\theta_{k+1}+\theta_{2}\theta_{k+2}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+\\
+\rho(1) &amp;=
+\frac{\theta_{1}+\theta_{1}\theta_{2}+\theta_{2}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+&amp; = \frac{2+2(0.5)+0.5(-0.1)}{1+2^2+0.5^2+(-0.1)^2}\\
+&amp; = 2.95/5.26\\
+&amp;=0.5608 \\\\
+\rho(2) &amp;=
+\frac{\theta_{2}+\theta_{1}\theta_{3}+\theta_{2}\theta_{4}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+&amp;= (0.5+2(-0.1))/5.26\\
+&amp; = 0.05703\\\\
+\rho(3) &amp;=
+\frac{\theta_{3}+\theta_{1}\theta_{4}+\theta_{2}\theta_{5}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+&amp;= -0.1/5.26\\
+&amp;= -0.019\\\\
+\rho(4) &amp;=
+\frac{\theta_{4}+\theta_{1}\theta_{5}+\theta_{2}\theta_{6}}{1+\theta_{1}^2+\theta_{2}^2+\theta_{3}^2}\\
+&amp;=0\\
+&amp;\rho_X(k)=0, \ k&gt;q
+\end{aligned}
+\]</span></p></li>
+<li><p>For an AR(1) process with coefficient <span class="math inline">\(\phi\)</span><sub>1</sub> = −0.5, (i) Write the
+mathematical equation for AR(1) model with these coefficients<br />
+<span class="math display">\[X_{t} = -0.5\ X_{t-1} + Z_{t}\]</span> (ii)
+Calculate the autocorrelation function at lags 1, 2, 3, 4: ρ(1), ρ(2),
+ρ(3) and ρ(4)<br />
+<span class="math display">\[
+\begin{aligned}
+&amp; \rho_{X}(k) = \phi_{1}^k\\
+&amp; \rho(1)= -0.5\\
+&amp; \rho(2)= 0.25\\
+&amp; \rho(1)= -0.125\\
+&amp; \rho(1)= 0.0625\\
+\end{aligned}
+\]</span> <br />
+<br />
 </p></li>
 </ol>
-<p><br />
-<br />
-</p>
 </div>
 <div id="question-4" class="section level4">
 <h4>Question 4</h4>
 <p>You are given the following process: X<sub>t</sub> = 3 + Y +
 Z<sub>t</sub>, where Y is a mean zero random variable with variance
-σ<sub>Y</sub><sup>2</sup> , independent of the white noise
+σ<sub>Y</sub><sup>2</sup>, independent of the white noise
 {Z<sub>t</sub>}. Determine whether the process X is stationary and find
-its autocovariance and autocorrelation functions.</p>
+its autocovariance and autocorrelation functions.<br />
+</p>
+$$
+<span class="math display">\[\begin{aligned}
+&amp;X_{t}=3+Y+Z_{t}\\\\
+E[X_{t}]&amp;=E[3+Y+Z_{t}]\\
+&amp;= E[3]+E[Y]+E[Z_{t}]\\
+&amp;= 3 + 0 + 0 = 3 \\\\
+
+&amp; \text{Given that Y is independent from}\ Z_{t},\\
+Var[X_{t}] &amp;= Var[3+Y+Z_{t}]\\
+&amp;= Var[Y + Z_{t}]\\
+&amp;= Var[Y] + Var[Z_{t}] \\
+Var[X_t] &amp;= \sigma_{Y}^2 + \sigma_{Z}^2\\
+&amp; \text{Since}\ Var[X+Y]=Var[X]+Var[Y]\ \text{if X and Y are
+independent} \\\\
+
+Cor(X_{t}) = &amp;Cor(3+Y+Z_{t})\\
+&amp; \gamma_{X}(0) = Cov(X_{t}, X_{t}) = Var(X_{t})\\
+&amp; \text{is independent of all t}
+\end{aligned}\]</span>
+<p>$$</p>
 <p><br />
 <br />
 </p>
@@ -487,14 +538,89 @@ its autocovariance and autocorrelation functions.</p>
 <ol style="list-style-type: lower-roman">
 <li>Identify the model as the model as MA(q) or AR(p), specify q or p
 respectively.</li>
-<li>Is the model stationary and invertible? Explain fully and show
-calculations where needed. | (Hint: review 4 from homework 1!)</li>
-<li>Find ρ<sub>X</sub>(2). Use R to simulate 300 values of
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+MA(2)
+\end{aligned}
+\]</span> </p>
+<ol start="2" style="list-style-type: lower-roman">
+<li><p>Is the model stationary and invertible? Explain fully and show
+calculations where needed. | (Hint: review 4 from homework 1!) <span class="math display">\[
+\begin{aligned}
+&amp;\text{All moving average models are stationary.}\\
+&amp;\text{Since}\ \theta_{1} = 2,\ \&amp;\ \theta_{2} = -8,\\
+&amp; |\theta_{2}| &gt; |\theta_{1}| &gt; 1\\
+&amp; \text{The model is not invertible.}
+\end{aligned}
+\]</span> </p></li>
+<li><p>Find ρ<sub>X</sub>(2). Use R to simulate 300 values of
 {X<sub>t</sub>} and use your simulated values to plot sample acf.
 Compare your sample estimate of ρ<sub>X</sub>(2) to its true value found
 by calculations. Redo this part using 10,000 simulated values of
-X<sub>t</sub>.</li>
+X<sub>t</sub>.</p></li>
 </ol>
+<p><span class="math display">\[
+\begin{aligned}
+\rho_{X}(2) &amp;=
+\frac{\theta_{2}+\theta_{1}\theta_{3}}{1+\theta_{1}^2+\theta_{2}^2}\\\\
+&amp;= -8/(1+2^2+(-8)^2)\\
+&amp;= -8/69\\
+&amp;=-0.1159
+\end{aligned}
+\]</span></p>
+<pre class="r"><code>set.seed(3)
+
+Z_t &lt;- rnorm(n=300, 0,1)
+Z_t1 &lt;- Z_t
+Z_t1[1] &lt;- NA
+for(i in 2:300){
+  Z_t1[i] = Z_t[i-1]}
+
+Z_t2 &lt;- Z_t
+Z_t2[1:2] &lt;- NA
+for(i in 3:300){
+  Z_t2[i] = Z_t[i-2]}
+
+X_t &lt;- na.omit(Z_t + 2*Z_t1 - 8*Z_t2)
+
+# Calculated autocorrelation at lag 2 is -0.1159
+acf(X_t, lag=2, plot=FALSE)[2]</code></pre>
+<pre><code>## 
+## Autocorrelations of series &#39;X_t&#39;, by lag
+## 
+##      2 
+## -0.111</code></pre>
+<pre class="r"><code># Sample autocorrelation at lag 2 is very close to what was calculated.
+
+Z_t &lt;- rnorm(n=10000, 0,1)
+
+Z_t1 &lt;- Z_t
+Z_t1[1] &lt;- NA
+for(i in 2:10000){
+  Z_t1[i] = Z_t[i-1]}
+
+Z_t2 &lt;- Z_t
+Z_t2[1:2] &lt;- NA
+for(i in 3:10000){
+  Z_t2[i] = Z_t[i-2]}
+
+X_t &lt;- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
+
+# Calculated autocorrelation at lag 2 is -0.1159
+acf(X_t, lag=2, plot=FALSE)[2]</code></pre>
+<pre><code>## 
+## Autocorrelations of series &#39;X_t&#39;, by lag
+## 
+##     2 
+## 0.001</code></pre>
+<pre class="r"><code># Either I calculated the autocorrelation at lag 2 wrong, or more observation make the sample autocorrelation worse.</code></pre>
+<p>X_t &lt;- na.omit(Z_t + 2<em>Z_t1 - 8</em>Z_t2) data &lt;-
+data.frame(“Z_t” = rnorm(n=300, 0,1)&lt;- rnorm(n=300, 0,1) Y_t &lt;-
+rnorm(n=10000000, 0,10) X_t &lt;- Z_t+Y_t+3</p>
+<p>mean(X_t) variance(X_t)</p>
+<p>acf(X_t, lag=c(seq(1,4)), plot=FALSE)</p>
+<p>```</p>
 <p><strong>The following problems are for students enrolled in PSTAT 274
 ONLY</strong></p>
 <p>G1Let{Zt}∼WN(0,1)and{Xt}begivenbyXt =Zt+θZt−2. (a) Find the
