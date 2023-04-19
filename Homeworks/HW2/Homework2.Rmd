@@ -310,4 +310,41 @@ Let X~t~ = Z~t~ + θZ~t−1~, t = 1,2,..., where Z~t~ ∼ IID(0,σ~Z~^2^).
 Show that X~t~ is both weakly and strictly stationary.\
   (Hint: for the last part express the joint moment generating function E $exp(\sum_{i=1}^{n} \lambda_iX_i)$ in terms of function m(λ) = E exp(λZ~i~).)\
   
-  
+$$
+\begin{aligned}
+E[X_{t}] &= E[Z_{t}+\theta Z_{t-1}]\\
+&=E[Z_{t}] + \theta E[Z_{t-1}]\\
+&= 0+\theta *0\\
+&=0\\\\
+&\text{If}\ Z_{t}\ \&\ Z_{s}\ \text{are independent,}\\
+&\text{then}\ Cov(Z_{t},\ Z_{s}) = 0,\ \text{for}\ t\ne s\\\\
+Cov[X_{t}, X_{t+k}] &= Cov[Z_{t} + \theta Z_{t-1}, Z_{t+k} + \theta Z_{t+k-1}]\\
+&= \theta\ Cov[Z_{t}, Z_{t+k-1}] + Cov[Z_{t}, Z_{t+k}] + \\
+& \ \ \ \ \ \theta^2\ Cov[Z_{t-1}, Z_{t+k-1}] + \theta\ Cov[Z_{t-1}, Z_{t+k}]\\
+&=0\\\\
+&\text{Since neither the expected value nor the covariance relies on t,}\\
+&\text{this time series is weakly stationary}
+\end{aligned}
+$$
+\
+$$
+\begin{aligned}
+E\ [e^{\sum_{i=1}^{n} \lambda_iX_i}] &= E[e^ {\lambda_1X_1+\lambda_2X_2+...+\lambda_nX_n}]\\
+&=E[e^{\lambda_1X_1}\ *\ e^{\lambda_2X_2}\ *\ ...\ *\ e^{\lambda_nX_n}]\\
+&=E[e^{\ \lambda X}]^n\\\\
+M(t) = &E[e^{Xt}]= e^{µt +\frac{1}{2}\sigma^2t^2}\ \ \ \ \rightarrow\ \ \ \
+M(\lambda) = E[e^{X\lambda}] = e^{µ\lambda +\frac{1}{2}\sigma^2\lambda^2}\\\\
+µ\  =\ & E[X_{t}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \sigma^2=Var[X_{t}]\\ 
+=\ & E[Z_{t}+\theta Z_{t-1}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = Var[Z_{t}] + \theta^2\ Var[Z_{t-1}] + 2\theta\ Cov[Z_{t},\ Z_{t-1}]\\
+=\ & E[Z_{t}]+E[\theta Z_{t-1}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_{Z}^2 + \theta\ \sigma_{Z}^2\\
+=\ & 0\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_{Z}^2(1+\theta)\\\\
+M(\lambda) &= e^{\ 0\ *\ µ\ +\ \frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2} = e^{\frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2}  \\\\
+E[&e^{\ \lambda X}]^n\ =\ [e^{\frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2}]^n
+\end{aligned}
+$$
+\
+\
+\
+$$
+M(\lambda)=E[e^{\lambda_1(Z_{t}+\theta Z_{t-1})}\ *\ e^{\lambda_2(Z_{t}+\theta Z_{t-1})}\ *\ ...\ *\ e^{\lambda_n(Z_{t}+\theta Z_{t-1})}]\\
+$$
