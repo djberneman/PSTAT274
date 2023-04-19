@@ -211,7 +211,6 @@ X_t[2] = Z_t[2]+2*Z_t[1]
 X_t[3:300] = Z_t[3:300]+2*Z_t[2:299]-8*Z_t[1:298]
 acf(X_t, lag=2, plot = FALSE)[[1]][[3]]
 
-
 Z_t <- rnorm(10000,0,1)
 X_t <- Z_t
 X_t[1] = Z_t[1]
@@ -346,5 +345,5 @@ $$
 \
 \
 $$
-M(\lambda)=E[e^{\lambda_1(Z_{t}+\theta Z_{t-1})}\ *\ e^{\lambda_2(Z_{t}+\theta Z_{t-1})}\ *\ ...\ *\ e^{\lambda_n(Z_{t}+\theta Z_{t-1})}]\\
+M(\lambda)=E[e^{\lambda_1(Z_{1}+\theta Z_{0})}\ *\ e^{\lambda_2(Z_{2}+\theta Z_{1})}\ *\ ...\ *\ e^{\lambda_n(Z_{n}+\theta Z_{n-1})}]\\
 $$
