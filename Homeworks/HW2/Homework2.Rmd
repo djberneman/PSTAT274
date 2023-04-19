@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(distributional)
+library(ts.extend)
 ```
 
 
@@ -203,26 +204,110 @@ $$
 $$
 
 ```{r warning=FALSE}
-for(i in 1:1000){
-  set.seed(i)
-  Z_t <- rnorm(300,0,1)
-  X_t <- Z_t
-  X_t[1] = Z_t[1]
-  X_t[2] = Z_t[2]+2*Z_t[1]
-  X_t[3:300] = Z_t[3:300]+2*Z_t[2:299]-8*Z_t[1:298]
-  print(i)
-  print(acf(X_t, lag=2, plot = FALSE)[[1]][[3]])}
+Z_t <- rnorm(300,0,1)
+X_t <- Z_t
+X_t[1] = Z_t[1]
+X_t[2] = Z_t[2]+2*Z_t[1]
+X_t[3:300] = Z_t[3:300]+2*Z_t[2:299]-8*Z_t[1:298]
+acf(X_t, lag=2, plot = FALSE)[[1]][[3]]
+
+
+Z_t <- rnorm(10000,0,1)
+X_t <- Z_t
+X_t[1] = Z_t[1]
+X_t[2] = Z_t[2]+2*Z_t[1]
+X_t[3:10000] = Z_t[3:10000]+2*Z_t[2:9999]-8*Z_t[1:9998]
+acf(X_t, lag=2, plot = FALSE)[[1]][[3]]
 ```
-
-
-
-
+\
+After testing the range of acf lag 2 values when there are 300 and 10000   
+observations, I found that the variance for the acf values with 10000 observations  
+is smaller than the variance for the acf values with 300 observation.  
+Either way, the mean of acf values for both time series with 300 observations  
+and 10000 observations is very close to the theoretical acf at lag 2.
+\
+\
 
 **The following problems are for students enrolled in PSTAT 274 ONLY**
+\
 
+#### Question G1
+Let{Z~t~}∼WN(0,1) and {X~t~} be given by X~t~ =Z~t~+θZ~t−2~\  
 
-G1Let{Zt}∼WN(0,1)and{Xt}begivenbyXt =Zt+θZt−2.
-(a) Find the autocovariance and autocorrelation function for this process when θ = 0.8. (b) Compute the variance of the sample mean (X1 + X2 + X3 + X4)/4 when θ = 0.8. (c) Repeat (b) when θ = −0.8 and compare your answer with the result obtained in (b).
-G2 Provide at least two examples of AR(2) models with autocovariance functions exhibiting very different behavior pattern. Include plots of corresponding theoretical acfs and the corresponding R code.
-G3 Let Xt = Zt + θZt−1, t = 1,2,..., where Zt ∼ IID(0,σZ2 ). Show that Xt is both weakly and strictly stationary.
-(Hint: for the last part express the joint moment generating function E exp(Pni=1 λiXi) in terms of function m(λ) = E exp(λZi).)
+  (a) Find the autocovariance and autocorrelation function for this process when θ = 0.8\
+$$
+\begin{aligned}
+\gamma_{x}(k)&= 
+\begin{cases}1+\theta_{2}^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=2\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ otherwise \end{cases} \\\\
+&= \begin{cases}1.64\ \ \ \ \ \ \ \ for\ \ k = 0\\ 0.8\ \ \ \ \ \ \ \ \ \ for\ \ k=2\\ 0 \ \ \ \ \ \ \ \  \ \ \ \ \ otherwise \end{cases} \\\\
+\rho_{X}(k) &=
+\begin{cases}1\ \ \ \ \ \ \ \ \ \ \ for\ \ k=0\\ \frac{\theta_{k}}{1+\theta_{2}^2}\ \ \ \ \ for\ \ k=\pm 2\\ 0 \ \ \ \ \ \ \ \ \ \ \ otherwise \end{cases} \\\\
+&= \begin{cases}1\ \ \ \ \ \ \  \ \ \ \ \ \ \ for\ \ k=0\\ 0.4878\ \ \ \ \ for\ \ k=\pm 2\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \  otherwise \end{cases} 
+\end{aligned}
+$$
+  
+  
+  (b) Compute the variance of the sample mean (X~1~ + X~2~ + X~3~ + X~4~)/4 when θ = 0.8\
+$$
+\begin{aligned}
+\theta = 0.8\\\\
+Var[\frac{X_{1}+X_{2}+X_{3}+X_{4}}{4}] &= (Var[X_{1}]+ Var[X_{2}]+ Var[X_{3}]+ Var[X_{4}]+ 2Cov[X_{2}, X_{4}] + 2Cov[X_{1}, X_{3}])/16\\\\
+Var[X_{t}] = \sigma_{Z}^2(1 + \theta^2), &\ \ \ \ \ \ \ \ \ \ \ \ \ Cov(X_{t}, X_{t+k}) = \sigma_{Z}^2(\theta_{k})\\
+&=\frac{1}{16}\ [4(1+\theta_{2}^2) + 4\theta]\\
+&=\frac{1+\theta_{2}^2+\theta_{2}}{4}\\\\
+&=[1+0.64+0.8]/4\\
+&=0.61
+\end{aligned}
+$$
+  
+  (c) Repeat (b) when θ = −0.8 and compare your answer with the result obtained in (b)\
+  
+$$
+\begin{aligned}
+\theta = -0.8\\\\
+Var[\frac{X_{1}+X_{2}+X_{3}+X_{4}}{4}] &= (Var[X_{1}]+ Var[X_{2}]+ Var[X_{3}]+ Var[X_{4}]+ 2Cov[X_{2}, X_{4}] + 2Cov[X_{1}, X_{3}])/16\\\\
+Var[X_{t}] = \sigma_{Z}^2(1 + \theta^2), &\ \ \ \ \ \ \ \ \ \ \ \ \ Cov(X_{t}, X_{t+k}) = \sigma_{Z}^2(\theta_{k})\\
+&=\frac{1}{16}\ [4(1+\theta_{2}^2) - 4\theta]\\
+&=\frac{1+\theta_{2}^2-\theta_{2}}{4}\\\\
+&=[1+0.64-0.8]/4\\
+&=0.41
+\end{aligned}
+$$
+  
+\
+\
+
+#### Question G2
+Provide at least two examples of AR(2) models with autocovariance functions exhibiting very different behavior pattern. Include plots of corresponding theoretical acfs and the corresponding R code.
+```{r}
+ar2a <- arima.sim(model=list(ar=c(0.5, 0.4)), n=100, sd=1)
+acf(ar2a, type="covariance")
+
+ar2b <- arima.sim(model=list(ar=c(0.8, -0.4)), n=100, sd=1)
+acf(ar2b, type="covariance")
+
+#Set the parameters
+AR    <- c(0.8, -0.4)
+sigma <- 1
+
+#Compute auto-covariance function up to length n
+plot((sigma^2)*ts.extend::ARMA.autocov(n = 10, ar = AR))
+
+#Set the parameters
+AR    <- c(0.8, 0.4)
+sigma <- 1
+
+#Compute auto-covariance function up to length n
+plot((sigma^2)*ts.extend::ARMA.autocov(n = 10, ar = AR))
+
+```
+
+\
+\
+
+#### Question G3
+Let X~t~ = Z~t~ + θZ~t−1~, t = 1,2,..., where Z~t~ ∼ IID(0,σ~Z~^2^). 
+Show that X~t~ is both weakly and strictly stationary.\
+  (Hint: for the last part express the joint moment generating function E $exp(\sum_{i=1}^{n} \lambda_iX_i)$ in terms of function m(λ) = E exp(λZ~i~).)\
+  
+  
