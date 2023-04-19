@@ -201,44 +201,19 @@ $$
 &=-0.1159
 \end{aligned}
 $$
-```{r}
-set.seed(3)
 
-Z_t <- rnorm(n=300, 0,1)
-Z_t1 <- Z_t
-Z_t1[1] <- NA
-for(i in 2:300){
-  Z_t1[i] = Z_t[i-1]}
-
-Z_t2 <- Z_t
-Z_t2[1:2] <- NA
-for(i in 3:300){
-  Z_t2[i] = Z_t[i-2]}
-
-X_t <- na.omit(Z_t + 2*Z_t1 - 8*Z_t2)
-
-# Calculated autocorrelation at lag 2 is -0.1159
-acf(X_t, lag=2, plot=FALSE)[2]
-# Sample autocorrelation at lag 2 is very close to what was calculated.
-
-Z_t <- rnorm(n=10000, 0,1)
-
-Z_t1 <- Z_t
-Z_t1[1] <- NA
-for(i in 2:10000){
-  Z_t1[i] = Z_t[i-1]}
-
-Z_t2 <- Z_t
-Z_t2[1:2] <- NA
-for(i in 3:10000){
-  Z_t2[i] = Z_t[i-2]}
-
-X_t <- Z_t + 2*Z_t + 0.5*Z_t - 0.1*Z_t
-
-# Calculated autocorrelation at lag 2 is -0.1159
-acf(X_t, lag=2, plot=FALSE)[2]
-# Either I calculated the autocorrelation at lag 2 wrong, or more observation make the sample autocorrelation worse.
+```{r warning=FALSE}
+for(i in 1:1000){
+  set.seed(i)
+  Z_t <- rnorm(300,0,1)
+  X_t <- Z_t
+  X_t[1] = Z_t[1]
+  X_t[2] = Z_t[2]+2*Z_t[1]
+  X_t[3:300] = Z_t[3:300]+2*Z_t[2:299]-8*Z_t[1:298]
+  print(i)
+  print(acf(X_t, lag=2, plot = FALSE)[[1]][[3]])}
 ```
+
 
 
 
