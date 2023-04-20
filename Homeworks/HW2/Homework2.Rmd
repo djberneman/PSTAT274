@@ -330,20 +330,12 @@ $$
 \begin{aligned}
 E\ [e^{\sum_{i=1}^{n} \lambda_iX_i}] &= E[e^ {\lambda_1X_1+\lambda_2X_2+...+\lambda_nX_n}]\\
 &=E[e^{\lambda_1X_1}\ *\ e^{\lambda_2X_2}\ *\ ...\ *\ e^{\lambda_nX_n}]\\
-&=E[e^{\ \lambda X}]^n\\\\
-M(t) = &E[e^{Xt}]= e^{µt +\frac{1}{2}\sigma^2t^2}\ \ \ \ \rightarrow\ \ \ \
-M(\lambda) = E[e^{X\lambda}] = e^{µ\lambda +\frac{1}{2}\sigma^2\lambda^2}\\\\
-µ\  =\ & E[X_{t}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \sigma^2=Var[X_{t}]\\ 
-=\ & E[Z_{t}+\theta Z_{t-1}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = Var[Z_{t}] + \theta^2\ Var[Z_{t-1}] + 2\theta\ Cov[Z_{t},\ Z_{t-1}]\\
-=\ & E[Z_{t}]+E[\theta Z_{t-1}]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_{Z}^2 + \theta\ \sigma_{Z}^2\\
-=\ & 0\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_{Z}^2(1+\theta)\\\\
-M(\lambda) &= e^{\ 0\ *\ µ\ +\ \frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2} = e^{\frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2}  \\\\
-E[&e^{\ \lambda X}]^n\ =\ [e^{\frac{1}{2}\sigma_{Z}^2(1+\theta)\lambda^2}]^n
+M(\lambda)&=E[e^{\lambda_1(Z_{1}+\theta Z_{0})}\ *\ e^{\lambda_2(Z_{2}+\theta Z_{1})}\ *\ ...\ *\ e^{\lambda_n(Z_{n}+\theta Z_{n-1})}]\\
+
+&=E[e^{(\lambda_1\theta)Z_{0}}]\ *\ E[e^{(\lambda_1+\lambda_2\theta)Z_{1}}] *\ E[e^{(\lambda_2+\lambda_3\theta)Z_{2}}]*\ E[e^{(\lambda_{n-1}+\lambda_n\theta)Z_{n-1}}]*\ E[e^{\lambda_nZ_{n}}]\\
+&=M_{Z_{0}}(\lambda_{1}\theta)\ M_{Z_{1}}(\lambda_{1} + \lambda_{2}\theta)\ M_{Z_{1}}(\lambda_{2} + \lambda_{3}\theta)\ M_{Z_{n-1}}(\lambda_{n-1} + \lambda_{n}\theta)\ M_{Z_{n}}(\lambda_{n})\\
+&= M_{Z_{i}}(\lambda_{i}+\lambda_{i+1}\theta)\ \ \ \ iid\\\\
+\text{Therefore, }& \text{the time series is strictly stationary.}
 \end{aligned}
 $$
-\
-\
-\
-$$
-M(\lambda)=E[e^{\lambda_1(Z_{1}+\theta Z_{0})}\ *\ e^{\lambda_2(Z_{2}+\theta Z_{1})}\ *\ ...\ *\ e^{\lambda_n(Z_{n}+\theta Z_{n-1})}]\\
-$$
+Thus, the time series is both weakly stationary and strictly stationary.
