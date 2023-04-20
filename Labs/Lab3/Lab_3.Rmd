@@ -1,0 +1,33 @@
+---
+title: "Lab Assignment 3"
+author: "Dylan Berneman"
+date: '2023-04-21'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Question 1
+Consider the AR(2) process below:
+$$
+\begin{aligned}
+X_t = 0.8\ X_{t-1}\ - 0.12\ X_{t-2}\ + Z_{t}\ \text{with }Z_{t}  \stackrel{iid}{\sim} N(0, 1)
+\end{aligned}
+$$
+\setlength{\leftskip}{2cm}
+
+  (a) Express the process in terms of the back shift operator, *B*.  
+  
+  (b) Determine whether each process is causal and/or invertible. (Hint: use *polyroot()*)\
+  
+  (c) Plot the sample ACF and PACF after simulating 200 observations from this AR(2) model with the following code:  
+```{r}
+set.seed(1234)
+ar2 <- arima.sim(model = list(ar = c(0.8, -0.12), sd = 1), n = 200)
+```  
+  (d) Use the above simulation to **manually** construct the Yule-Waker estimate $\hat{\phi}_1, \ \hat{\phi}_2, \ \text{and } \hat{\phi}_Z^2.$ Also, use the pre-installed function *ar.yw()* for estimation.
+  
+  
+\setlength{\leftskip}{0cm}
