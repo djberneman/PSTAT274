@@ -21,21 +21,36 @@ $$
   (a) Express the process in terms of the back shift operator, *B*.  
   
   $$Z_{t}=(1-0.8\ B+0.12\ B^2)X_{t}$$
+  \
   
   (b) Determine whether each process is causal and/or invertible. (Hint: use *polyroot()*)\
 ```{r}
 polyroot(c(1,-0.8,0.12))
 ```
-  Since the roots are outside of the unit circle, the AR(2) model is causal.
-  
+  Since the roots are outside of the unit circle, the AR(2) model is causal.\
+  \
+
   (c) Plot the sample ACF and PACF after simulating 200 observations from this AR(2) model with the following code:  
 ```{r}
 set.seed(1234)
+
 ar2 <- arima.sim(model = list(ar = c(0.8, -0.12), sd = 1), n = 200)
 acf(ar2)
+pacf(ar2)
 ```  
-  (d) Use the above simulation to **manually** construct the Yule-Waker estimate $\hat{\phi}_1, \ \hat{\phi}_2, \ \text{and } \hat{\phi}_Z^2.$ Also, use the pre-installed function *ar.yw()* for estimation.
-  
-  
-\setlength{\leftskip}{0cm}
+  \
 
+  (d) Use the above simulation to **manually** construct the Yule-Walker estimate $\hat{\phi}_1, \ \hat{\phi}_2, \ \text{and } \hat{\phi}_Z^2.$ Also, use the pre-installed function *ar.yw()* for estimation.
+```{r}
+acv_ar <- acf(ar2,type = "covariance",main = "Sample ACF",plot = F)
+Rho <- toeplitz(acv_ar$acf[c(1,2)]/acv_ar$acf[1])
+rho <- acv_ar$acf[c(2,3)]/acv_ar$acf[1]
+phi_hat <- solve(Rho) %*% rho 
+phi_hat
+sigma_z <- acv_ar$acf[1]*(1-t(rho)%*%solve(Rho)%*%rho) 
+sigma_z
+yw <- ar.yw(ar2,order = 2) 
+yw$x.mean
+yw$ar
+yw$var.pred
+```  
