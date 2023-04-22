@@ -9,12 +9,59 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-. Note: {Zt} ∼ WN(0,σZ2 ) denotes white noise.
-1. You are given the following time series model: Xt = 23 Xt−1 + 12 Xt−2 + Zt. Determine whether this time series is stationary and/or invertible.
-2. You are given the following statements about a time series modeled as an AR(3) process: I. Partial Autocorrelation for lag 3 is always equal to zero.
-II. Partial Autocorrelation for lag 4 is always equal to zero.
-III. Partial Autocorrelation for lag 4 is always greater than zero.
-Determine which of the above statements are true.
+Note: {Z~t~} ∼ WN(0, σ~Z~^2^ ) denotes white noise.
+
+#### Question 1
+
+You are given the following time series model: $X_t = \frac23 X_{t−1} + \frac12 X_{t−2} + Z_t$. Determine whether this time series is stationary and/or invertible.
+
+```{r}
+polyroot(c(1, -2/3, -1/2))
+```
+The time series is invertible because all AR models are invertible. It has a root within the unit circle, so it cannot be stationary.\
+\
+
+#### Question 2
+You are given the following statements about a time series modeled as an AR(3) process:\
+  
+  - I.    Partial Autocorrelation for lag 3 is always equal to zero.   
+  - II. Partial Autocorrelation for lag 4 is always equal to zero.    
+  - III. Partial Autocorrelation for lag 4 is always greater than zero.  
+  
+  
+Determine which of the above statements are true.\
+
+  - I. 
+  - II.
+  - III. True. The autocorrelation at lag k is $\phi^k$. Any value to the power of an even number is greater than 0.
+  
+```{r}
+ar2 <- arima.sim(model = list(ar = c(0.333, 0.333, .333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(-.333, 0.333, .333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(0.333, -0.333, .333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(0.333, 0.333, -.333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(-0.333, -0.333, .333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(-0.333, 0.333, -.333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(0.333, -0.333, -.333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+ar2 <- arima.sim(model = list(ar = c(-0.333, -0.333, -.333), sd = 1), n = 200)
+acf(ar2, plot=FALSE, lag.max=4)
+
+```
+
 3. For a stationary ARMA(1,1) model, you are given the following information: ρX(1) = 0.7, ρX(2) = 0.3. Calculate φ1.
 Hint: Formulas for ACF of ARMA (1,1) model Xt − φ1Xt−1 = Zt + θ1Zt−1 are given in §5.1 of lecture notes and slide 24 of week 3. Can you determine a recursive relation between ρX (k) and ρX (k − 1)? Use it!
 4. You are given PACF for a stationary process: φ11 = −0.60, φ22 = 0.36, φkk = 0 for k ≥ 3. What time series model could have this PACF? Identify model’s coefficients and write model equation.
