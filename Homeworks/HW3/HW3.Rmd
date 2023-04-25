@@ -9,71 +9,87 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Note: {Z~t~} ∼ WN(0, σ~Z~^2^ ) denotes white noise.
+*Note: {Z~t~} ∼ WN(0, σ~Z~^2^ ) denotes white noise.*\
+\
 
-#### Question 1
+### Question 1
 
 You are given the following time series model: $X_t = \frac23 X_{t−1} + \frac12 X_{t−2} + Z_t$. Determine whether this time series is stationary and/or invertible.
 
 ```{r}
 polyroot(c(1, -2/3, -1/2))
 ```
-The time series is invertible because all AR models are invertible. It has a root within the unit circle, so it cannot be stationary.\
+The time series is invertible because all AR models are invertible. It has a root within the unit circle, so it cannot be stationary.
+\
 \
 
-#### Question 2
+### Question 2
 You are given the following statements about a time series modeled as an AR(3) process:\
-  
-  - I.    Partial Autocorrelation for lag 3 is always equal to zero.   
-  - II. Partial Autocorrelation for lag 4 is always equal to zero.    
-  - III. Partial Autocorrelation for lag 4 is always greater than zero.  
-  
-  
+
+(I)    Partial Autocorrelation for lag 3 is always equal to zero.   
+(II) Partial Autocorrelation for lag 4 is always equal to zero.    
+(III) Partial Autocorrelation for lag 4 is always greater than zero.\
+
 Determine which of the above statements are true.\
 
-  - I. 
-  - II.
-  - III. True. The autocorrelation at lag k is $\phi^k$. Any value to the power of an even number is greater than 0.
-  
-```{r}
-ar2 <- arima.sim(model = list(ar = c(0.333, 0.333, .333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+(I)  False. The PACF for an AR(p) model at lag p cannot be equal to 0.
+(II)  True. The partial autocorrelation at lag k of an AR(p) time series is 0 at all lags k>p. Since p=3 and k=4, PACF $\phi_{4}=0$
+(III)  False. The partial autocorrelation at lag k of an AR(p) time series is 0 at all lags k>p.
+\
+\
 
-ar2 <- arima.sim(model = list(ar = c(-.333, 0.333, .333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+### Question 3
+For a stationary ARMA(1,1) model, you are given the following information: ρ~X~(1) = 0.7, ρ~X~(2) = 0.3. Calculate $\phi_{1}$.
 
-ar2 <- arima.sim(model = list(ar = c(0.333, -0.333, .333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+*Hint: Formulas for ACF of ARMA (1,1) model X~t~ − $\phi_1$X~t−1~ = Z~t~ + θ~1~ Z~t−1~ are given in §5.1 of lecture notes and slide 24 of week 3.  \
+Can you determine a recursive relation between ρ~X~(k) and ρ~X~ (k−1)? Use it!*
+\
+\
 
-ar2 <- arima.sim(model = list(ar = c(0.333, 0.333, -.333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+### Question 4 
+You are given PACF for a stationary process: $\phi_{11}$ = −0.60, $\phi_{22}$ = 0.36, $\phi_{kk}$ = 0 for k ≥ 3. What time series model could have this PACF?  
+Identify model’s coefficients and write model equation.\
 
-ar2 <- arima.sim(model = list(ar = c(-0.333, -0.333, .333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+*Hint: • §6 of Lecture Notes and slides 32-33 of Week 3 provide relationship between PACF and ACF, allowing to calculate ACFs of the model from given PACFs.  
+• Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week 3, provide relationship between ACF and model coefficients.*
+\
+\
 
-ar2 <- arima.sim(model = list(ar = c(-0.333, 0.333, -.333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+### Question 5
+You are given the following time-series model: X~t~ = 0.8X~t−1~ + 2 + Z~t~ − 0.5Z~t−1~.   
+Which of the following statements about this model is false?\
 
-ar2 <- arima.sim(model = list(ar = c(0.333, -0.333, -.333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+(A) ρ~X~(1) = 0.4.\
 
-ar2 <- arima.sim(model = list(ar = c(-0.333, -0.333, -.333), sd = 1), n = 200)
-acf(ar2, plot=FALSE, lag.max=4)
+(B) ρ~X~(k) < ρX(1),k ≥ 2.\
 
-```
+(C) The model is ARMA(1,1).\
 
-3. For a stationary ARMA(1,1) model, you are given the following information: ρX(1) = 0.7, ρX(2) = 0.3. Calculate φ1.
-Hint: Formulas for ACF of ARMA (1,1) model Xt − φ1Xt−1 = Zt + θ1Zt−1 are given in §5.1 of lecture notes and slide 24 of week 3. Can you determine a recursive relation between ρX (k) and ρX (k − 1)? Use it!
-4. You are given PACF for a stationary process: φ11 = −0.60, φ22 = 0.36, φkk = 0 for k ≥ 3. What time series model could have this PACF? Identify model’s coefficients and write model equation.
-Hint: • §6 of Lecture Notes and slides 32-33 of Week 3 provide relationship between PACF and ACF, allowing to calculate ACFs of the model from given PACFs.
-• Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week 3, provide relationship between ACF and model coefficients.
-5. You are given the following time-series model: Xt = 0.8Xt−1 + 2 + Zt − 0.5Zt−1. Which of the following statements about this model is false?
-A. ρX(1) = 0.4. B. ρX(k) < ρX(1),k ≥ 2. C. The model is ARMA(1,1). D. The model is stationary. E. The mean, μX, is 2.
-6. The Notion of parameter redundancy pertains to the situation when AR and MA characteristic polynomials φ(z) and share θ(z) share a common factor, in which case model may be simplified. Determine which of the following models are parameter redundant:
-I. Xt = 21Xt−1 +Zt − 12Zt−1;
-II. Xt = 12Xt−1 +Zt − 19Zt−2; III.Xt=−5Xt−1−1Xt−2+Zt+ 8Zt−1+ 1Zt−2.
-The following problems are for students enrolled in PSTAT 274 ONLY
+(D) The model is stationary.\
 
-GE 1. Show that the two MA(1) processes
-Xt =Zt+θZt−1,{Zt}∼WN(0,σ2),andYt =Z ̃t+θ1Z ̃t−1,{Z ̃t}∼WN(0,σ2θ2), where 0 < |θ| < 1, have the same autocovariance functions.
-GE 2. You are given the following time series model: Xt = φXt−1 + Zt. Let Yt = X2t, that is, the original process observed only at even times. Show that Yt is also an AR(1) model Yt = φ∗Yt−1 + Zt∗ and determine φ∗ and Zt∗, that is, express φ∗ and Zt∗ via φ and Zt
+(E) The mean, μ~X~, is 2.
+\
+\
+
+### Question 6
+The Notion of parameter redundancy pertains to the situation when AR and MA characteristic polynomials $\phi$(z) and θ(z) share a common factor, in which case the model may be simplified.
+Determine which of the following models are parameter redundant:
+
+(I)    X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac12$ Z~t−1~;
+
+(II)  X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac19$ Z~t−2~; 
+
+(III) X~t~ = $-\frac56$X~t−1~ − $\frac16$X~t−2~+Z~t~ + $\frac{8}{12}$Z~t−1~ + $\frac{1}{12}$Z~t−2~.
+\
+\
+
+**The following problems are for students enrolled in PSTAT 274 ONLY**
+\
+
+### Question GE 1
+Show that the two MA(1) processes  X~t~ = Z~t~ + θ Z~t−1~,  {Z~t~}∼WN(0, σ^2^), and Y~t~ = Z̃~t~ + $\frac1θ$Z̃~t−1~,  {Z̃~t~} ∼ WN(0, σ^2^θ^2^), where 0 < |θ| < 1, have the same autocovariance functions.
+\
+\
+
+### Question GE 2
+You are given the following time series model: X~t~ = $\phi$X~t−1~ + Z~t~. Let Y~t~ = X~2t~, that is, the original process observed only at even times. Show that Y~t~ is also an AR(1) model Y~t~ = $\phi$~∗~Y~t−1~ + Z~t~^∗^ and determine $\phi$^∗^ and Z~t~^∗^, that is, express $\phi$^∗^ and Z~t~^∗^ via $\phi$ and Z~t~
