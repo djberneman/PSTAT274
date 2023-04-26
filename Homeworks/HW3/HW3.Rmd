@@ -52,7 +52,6 @@ $$
 &\phi_1 = 3/7
 \end{aligned}
 $$
-
 \
 \
 
@@ -61,7 +60,16 @@ You are given PACF for a stationary process: $\phi_{11}$ = −0.60, $\phi_{22}$ 
 Identify model’s coefficients and write model equation.\
 
 *Hint: • §6 of Lecture Notes and slides 32-33 of Week 3 provide relationship between PACF and ACF, allowing to calculate ACFs of the model from given PACFs.  
-• Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week 3, provide relationship between ACF and model coefficients.*
+• Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week 3, provide relationship between ACF and model coefficients.*\
+
+AR(2): X~t~ = 0.6X~t-1~ - 0.36X~t-2~ + Z~t~
+$$
+\begin{aligned}
+k=1:\ \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
+k=2:\ \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
+Substitute 
+\end{aligned}
+$$
 \
 \
 
@@ -70,14 +78,42 @@ You are given the following time-series model: X~t~ = 0.8X~t−1~ + 2 + Z~t~ −
 Which of the following statements about this model is false?\
 
 (A) ρ~X~(1) = 0.4.\
+True.
+$$
+\begin{aligned}
+\rho_X(k)&=\frac{(\phi_1+\theta_1)(1+\phi_1\theta_1)}{1+2\phi_1\theta_1+\theta_1^2}\ \phi_1^{k-1}\\
+\rho_X(1)&=\frac{(0.8-0.5)(1+(0.8)(-0.5))}{1+2(0.8)(-0.5)+(-0.5)^2}\ (0.8)^{1-1}\\
+&= \frac{0.3(0.6)}{1-0.8+0.25}\\
+&=0.4\\
+\end{aligned}
+$$
+\
 
 (B) ρ~X~(k) < ρX(1),k ≥ 2.\
+True.
+$$
+\begin{aligned}
+\rho_X(k)&=\rho_X(1) * \phi_1^{k-1}\\
+\text{Since } &\phi_1 <1,\ \phi_1^x < 1\ \text{for } x\geq2
+\end{aligned}
+$$\
 
 (C) The model is ARMA(1,1).\
+True. It is of the form X~t~ - $\phi_1$X~t-1~ = Z~t~ - $\theta_1$Z~t-1~\ 
 
 (D) The model is stationary.\
+True. $|\theta_1|<1\ \ \&\ \ |\phi_1| < 1$ and the roots are outside of the unit circle.
 
-(E) The mean, μ~X~, is 2.
+(E) The mean, μ~X~, is 2.\
+False. 
+$$ 
+\begin{aligned}
+E[X_t] &= E[0.8X_{t-1} +2]\\
+µ_X& = 0.8µ_X + 2\\
+0.2µ_X &=2\\
+µ_X &= 10
+\end{aligned}
+$$
 \
 \
 
@@ -86,10 +122,34 @@ The Notion of parameter redundancy pertains to the situation when AR and MA char
 Determine which of the following models are parameter redundant:
 
 (I)    X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac12$ Z~t−1~;
-
+$$
+X_t = \frac12 X_{t−1} + Z_t − \frac12 Z_{t−1}\\
+X_t - \frac12 X_{t−1} = Z_t − \frac12 Z_{t−1}\\
+X_t(1-0.5B)=Z_t(1-0.5B)\\
+X_t = Z_t\\
+\text{Since the model can be simplified, it is redundent.}
+$$
 (II)  X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac19$ Z~t−2~; 
-
+$$
+X_t = \frac12 X_{t−1} + Z_t − \frac19 Z_{t−2}\\
+X_t - \frac12 X_{t−1} = Z_t − \frac19 Z_{t−2}\\
+X_t(1-0.5B)=Z_t(1-\frac19 B^2)\\
+\text{Since the model cannot be further simplified, it is not redundent.}
+$$
 (III) X~t~ = $-\frac56$X~t−1~ − $\frac16$X~t−2~+Z~t~ + $\frac{8}{12}$Z~t−1~ + $\frac{1}{12}$Z~t−2~.
+$$
+X_t = -\frac56 X_{t−1} -\frac16 X_{t−2}+ Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\
+
+X_t +\frac56 X_{t−1} +\frac16 X_{t−2}= Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\
+
+\frac16 X_t(6+5B+B^2)=\frac{1}{12}Z_t(12+8B+B^2)\\
+\frac16 X_t(3+B)=\frac{1}{12}Z_t(6+B)(2+B)\\
+\frac12(2+B)\frac13 X_t(3+B)=\frac12(2+B)\frac16Z_t(6+B)\\
+\frac13 X_t(3+B)=\frac13\frac12Z_t(6+B)\\
+X_t(3+B)=\frac12Z_t(6+B)\\
+X_t(3+B)=Z_t(3+\frac12B)\\
+\text{Since the model can be simplified, it is redundent.}
+$$
 \
 \
 
