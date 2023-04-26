@@ -65,9 +65,19 @@ Identify model’s coefficients and write model equation.\
 AR(2): X~t~ = 0.6X~t-1~ - 0.36X~t-2~ + Z~t~
 $$
 \begin{aligned}
-k=1:\ \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
-k=2:\ \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
-Substitute 
+\alpha(1):\ & \phi_{11} = \rho_X(1)=-0.60\\
+\alpha(2): \ & \phi_{22} = \frac{\rho_X(2)-(\rho_X(1))^2}{1-(\rho_X(1))^2} \\
+&0.36= \frac{\rho_X(2)-(-0.60)^2}{1-(-0.60)^2}\\
+& \ \ \ \ \ \ \ \ = \frac{\rho_X(2)-0.36}{1-0.36}\\
+&\rho_X(2) = (0.36)(0.64)+0.36 \\
+& \ \ \ \ \ \ \ \ \ \ = 0.5904\\\\
+
+ACF\rightarrow\ & \rho_X(1)=\phi_1\rho_X(1-0)\\
+ACF\rightarrow\ & \rho_X(2)=\phi_1\rho_X(2-1)+\phi_2\rho_X(2-2) \\
+& \ \ \ \ \ \ \ \ \ \  =\phi_1\rho_X(1)+\phi_2\rho_X(0)\\\\
+
+&\phi_{21} + \phi_{22}\rho_X(1)=\rho_X(1)\\
+&\phi_{21}\rho_X(1) + \phi_{22}=\rho_X(2)
 \end{aligned}
 $$
 \
