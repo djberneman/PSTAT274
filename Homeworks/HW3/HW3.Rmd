@@ -158,6 +158,36 @@ $$
 
 ### Question GE 1
 Show that the two MA(1) processes  X~t~ = Z~t~ + θ Z~t−1~,  {Z~t~}∼WN(0, σ^2^), and Y~t~ = Z̃~t~ + $\frac1θ$Z̃~t−1~,  {Z̃~t~} ∼ WN(0, σ^2^θ^2^), where 0 < |θ| < 1, have the same autocovariance functions.
+$$
+\begin{aligned}
+&Z_t \sim WN(0, \sigma^2) \ \ \ \ \ \ \ \ \ \ \ \tilde{Z_t} \sim WN(0, \sigma^2\theta^2)\\
+& Var[Z_t] = \sigma^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Var[\tilde{Z_t}] = \sigma^2\theta^2 \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2 \theta^2 = \sigma_Y^2\\\\
+
+& \text{For }Z_t:\ \theta_1 = \theta \ \ \ \ \ \ \ \ \ \ \ \ \ \text{For }\tilde{Z_t}:\ \theta_1 = \frac1\theta \\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \theta_X \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{\theta_X} = \theta_Y\\\\
+
+\gamma_{X}(k)&= 
+\begin{cases}(1+\theta_{1}^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+
+&= \begin{cases}(1+\theta_X^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_X\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+
+&= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\\\
+
+\gamma_{Y}(k)&= 
+\begin{cases}(1+\theta_{1}^2)\sigma_Y^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_Y^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+
+&= 
+\begin{cases}(1+\frac{1}{\theta_X^2})\sigma_X^2 \theta^2\ \ \ \ for\ \ k = 0\\ \frac{1}{\theta_X}\sigma_X^2 \theta^2 \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+
+&= 
+\begin{cases}(\theta^2+\frac{\theta^2}{\theta^2})\sigma^2 \ \ \ \ \ \ \ \ for\ \ k = 0\\ \frac{\theta^2}{\theta}\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+
+&= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases}\\\\
+
+&Therefore,\ \gamma_{X}(k) = \gamma_{Y}(k)
+\end{aligned}
+$$
 \
 \
 
