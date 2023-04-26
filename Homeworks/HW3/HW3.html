@@ -399,6 +399,7 @@ is 0 at all lags k&gt;p. Since p=3 and k=4, PACF <span class="math inline">\(\p
 <li>False. The partial autocorrelation at lag k of an AR(p) time series
 is 0 at all lags k&gt;p.<br />
 <br />
+<br />
 </li>
 </ol>
 </div>
@@ -438,8 +439,7 @@ model from given PACFs.<br />
 • Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week
 3, provide relationship between ACF and model coefficients.</em><br />
 </p>
-<p>AR(2): X<sub>t</sub> = 0.6X<sub>t-1</sub> - 0.36X<sub>t-2</sub> +
-Z<sub>t</sub> <span class="math display">\[
+<p><span class="math display">\[
 \begin{aligned}
 \alpha(1):\ &amp; \phi_{11} = \rho_X(1)=-0.60\\
 \alpha(2): \ &amp; \phi_{22} =
@@ -449,7 +449,8 @@ Z<sub>t</sub> <span class="math display">\[
 &amp;\rho_X(2) = (0.36)(0.64)+0.36 \\
 &amp; \ \ \ \ \ \ \ \ \ \ = 0.5904\\\\
 \end{aligned}
-\]</span> <span class="math display">\[
+\]</span><br />
+<span class="math display">\[
 \begin{aligned}
 ACF\rightarrow\ &amp; \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
 &amp; \rho_X(1)=\frac{\phi_1}{1-\phi_2} \\
@@ -462,7 +463,8 @@ ACF\rightarrow\ &amp; \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
 &amp;-0.60(1-\phi_2)=\phi_1\\
 ***\phi_1***\ \ \ \ \ \ \ \ \ \ &amp; \phi_1 = 0.60\phi_2 - 0.60
 \end{aligned}
-\]</span> <span class="math display">\[
+\]</span><br />
+<span class="math display">\[
 \begin{aligned}
 ACF\rightarrow\ &amp; \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
 &amp; \rho_X(2)=\frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\
@@ -480,25 +482,24 @@ ACF\rightarrow\ &amp; \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
 \phi_2&amp;=1 + \frac{\phi_1}{0.60}\\
 ***\phi_1***\ \ \ \ \ \ \ \ \ \ \phi_2&amp;=1+\frac53\phi_1
 \end{aligned}
-\]</span></p>
-$$
-<span class="math display">\[\begin{aligned}
+\]</span><br />
+<span class="math display">\[
+\begin{aligned}
 &amp;\phi_1 = 0.60\phi_2 - 0.60\\
 &amp;\phi_2=1+\frac53\phi_1\\\\
-
 &amp; 0.5904=\phi_1(-0.60) + \phi_2\\
 &amp; 0.5904=-0.60(0.60\phi_2-0.60)+\phi_2\\
 &amp; 0.5904-0.36=0.64\phi_2\\
 &amp; 0.2304 = 0.64\phi_2\\
 &amp;\phi_2=0.36\\\\
-
 &amp;\phi_1 = 0.60\phi_2 - 0.60\\
 &amp;\phi_1 = 0.60(0.36) - 0.60\\
 &amp;\phi_1 = 0.216-0.60\\
 &amp;\phi_1=-0.384\\
-\end{aligned}\]</span>
-<p>$$ AR(2) Model: <span class="math inline">\(X_t = -0.384\ X_{t-1} +
-0.36\ X_{t-2} + Z_t\)</span><br />
+\end{aligned}
+\]</span><br />
+AR(2) Model: <span class="math inline">\(X_t = -0.384\ X_{t-1} + 0.36\
+X_{t-2} + Z_t\)</span><br />
 <br />
 </p>
 </div>
@@ -556,98 +557,101 @@ in which case the model may be simplified. Determine which of the
 following models are parameter redundant:</p>
 <ol style="list-style-type: upper-roman">
 <li>X<sub>t</sub> = <span class="math inline">\(\frac12\)</span>
-X<sub>t−1</sub> +Z<sub>t</sub> − <span class="math inline">\(\frac12\)</span> Z<sub>t−1</sub>; <span class="math display">\[
+X<sub>t−1</sub> +Z<sub>t</sub> − <span class="math inline">\(\frac12\)</span> Z<sub>t−1</sub>;<br />
+<span class="math display">\[
 X_t = \frac12 X_{t−1} + Z_t − \frac12 Z_{t−1}\\
 X_t - \frac12 X_{t−1} = Z_t − \frac12 Z_{t−1}\\
 X_t(1-0.5B)=Z_t(1-0.5B)\\
 X_t = Z_t\\
 \text{Since the model can be simplified, it is redundent.}
-\]</span></li>
+\]</span><br />
+</li>
 <li>X<sub>t</sub> = <span class="math inline">\(\frac12\)</span>
-X<sub>t−1</sub> +Z<sub>t</sub> − <span class="math inline">\(\frac19\)</span> Z<sub>t−2</sub>; <span class="math display">\[
+X<sub>t−1</sub> +Z<sub>t</sub> − <span class="math inline">\(\frac19\)</span> Z<sub>t−2</sub>;<br />
+<span class="math display">\[
 X_t = \frac12 X_{t−1} + Z_t − \frac19 Z_{t−2}\\
 X_t - \frac12 X_{t−1} = Z_t − \frac19 Z_{t−2}\\
 X_t(1-0.5B)=Z_t(1-\frac19 B^2)\\
 \text{Since the model cannot be further simplified, it is not
 redundent.}
-\]</span></li>
+\]</span><br />
+</li>
 <li>X<sub>t</sub> = <span class="math inline">\(-\frac56\)</span>X<sub>t−1</sub> − <span class="math inline">\(\frac16\)</span>X<sub>t−2</sub>+Z<sub>t</sub> +
-<span class="math inline">\(\frac{8}{12}\)</span>Z<sub>t−1</sub> + <span class="math inline">\(\frac{1}{12}\)</span>Z<sub>t−2</sub>. $$ X_t = -
-X_{t−1} - X_{t−2}+ Z_t + Z_{t−1} + Z_{t−2}\</li>
-</ol>
-<p>X_t + X_{t−1} + X_{t−2}= Z_t + Z_{t−1} + Z_{t−2}\</p>
-<p> X_t(6+5B+B<sup>2)=Z_t(12+8B+B</sup>2)\ X_t(3+B)=Z_t(6+B)(2+B)\ (2+B)
-X_t(3+B)=(2+B)16Z_t(6+B)\ X_t(3+B)=12Z_t(6+B)\ X_t(3+B)=12Z_t(6+B)\
-X_t(3+B)=Z_t(3+12B)\ $$<br />
+<span class="math inline">\(\frac{8}{12}\)</span>Z<sub>t−1</sub> + <span class="math inline">\(\frac{1}{12}\)</span>Z<sub>t−2</sub>.<br />
+<span class="math display">\[
+\begin{aligned}
+X_t = -\frac56 X_{t−1} -\frac16 &amp;X_{t−2}+ Z_t + \frac{8}{12} Z_{t−1}
++\frac{1}{12} Z_{t−2}\\\\
+X_t +\frac56 X_{t−1} +\frac16 X_{t−2}&amp;= Z_t + \frac{8}{12} Z_{t−1}
++\frac{1}{12} Z_{t−2}\\
+\frac16 X_t(6+5B+B^2)&amp;=\frac{1}{12}Z_t(12+8B+B^2)\\
+\frac16 X_t(3+B)&amp;=\frac{1}{12}Z_t(6+B)(2+B)\\
+\frac12(2+B)\frac13 X_t(3+B)&amp;=\frac12(2+B)\frac16Z_t(6+B)\\
+\frac13 X_t(3+B)&amp;=\frac13\frac12Z_t(6+B)\\
+X_t(3+B)&amp;=\frac12Z_t(6+B)\\
+X_t(3+B)&amp;=Z_t(3+\frac12B)\\\\
+\text{Since the model can be simplified, it is redundent.}
+\end{aligned}
+\]</span><br />
 <br />
-</p>
+</li>
+</ol>
 <p><strong>The following problems are for students enrolled in PSTAT 274
 ONLY</strong><br />
 </p>
 </div>
 <div id="question-ge-1" class="section level3">
 <h3>Question GE 1</h3>
-Show that the two MA(1) processes X<sub>t</sub> = Z<sub>t</sub> + θ
+<p>Show that the two MA(1) processes X<sub>t</sub> = Z<sub>t</sub> + θ
 Z<sub>t−1</sub>, {Z<sub>t</sub>}∼WN(0, σ<sup>2</sup>), and Y<sub>t</sub>
 = Z̃<sub>t</sub> + <span class="math inline">\(\frac1θ\)</span>Z̃<sub>t−1</sub>, {Z̃<sub>t</sub>} ∼
 WN(0, σ<sup>2</sup>θ<sup>2</sup>), where 0 &lt; |θ| &lt; 1, have the
-same autocovariance functions. $$
-<span class="math display">\[\begin{aligned}
+same autocovariance functions.<br />
+</p>
+<p><span class="math display">\[
+\begin{aligned}
 &amp;Z_t \sim WN(0, \sigma^2) \ \ \ \ \ \ \ \ \ \ \ \tilde{Z_t} \sim
 WN(0, \sigma^2\theta^2)\\
 &amp; Var[Z_t] = \sigma^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-Var[\tilde{Z_t}] = \sigma^2\theta^2 \\
+Var[\tilde{Z_t}] = \sigma^2\theta^2\\
 &amp; \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2\ \ \ \ \ \ \ \ \ \ \ \ \ \
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2 \theta^2 = \sigma_Y^2\\\\
-
 &amp; \text{For }Z_t:\ \theta_1 = \theta \ \ \ \ \ \ \ \ \ \ \ \ \
 \text{For }\tilde{Z_t}:\ \theta_1 = \frac1\theta \\
 &amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \theta_X \ \ \ \ \ \ \ \ \
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{\theta_X} =
 \theta_Y\\\\
-
-\gamma_{X}(k)&amp;=
-\begin{cases}(1+\theta_{1}^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\
-\theta_{k}\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\
-0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k&gt;1\ or\
-k&lt;-1 \end{cases} \\\\
-
+\gamma_{X}(k)&amp;= \begin{cases}(1+\theta_{1}^2)\sigma_X^2\ \ \ \ \ \ \
+\ for\ \ k = 0\\ \theta_{k}\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\
+k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
 &amp;= \begin{cases}(1+\theta_X^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k =
 0\\ \theta_X\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \
 k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\
 k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
-
 &amp;= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\
 \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k&gt;1\ or\ k&lt;-1
 \end{cases} \\\\\\
-
-\gamma_{Y}(k)&amp;=
-\begin{cases}(1+\theta_{1}^2)\sigma_Y^2\ \ \ \ \ \ \ \ for\ \ k = 0\\
-\theta_{k}\sigma_Y^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\
-0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k&gt;1\ or\
-k&lt;-1 \end{cases} \\\\
-
-&amp;=
-\begin{cases}(1+\frac{1}{\theta_X^2})\sigma_X^2 \theta^2\ \ \ \ for\ \ k
-= 0\\ \frac{1}{\theta_X}\sigma_X^2 \theta^2 \ \ \ \ \ \ \ \ \ \ \ \ \
-for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\
+\gamma_{Y}(k)&amp;= \begin{cases}(1+\theta_{1}^2)\sigma_Y^2\ \ \ \ \ \ \
+\ for\ \ k = 0\\ \theta_{k}\sigma_Y^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\
 k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
-
-&amp;=
-\begin{cases}(\theta^2+\frac{\theta^2}{\theta^2})\sigma^2 \ \ \ \ \ \ \
-\ for\ \ k = 0\\ \frac{\theta^2}{\theta}\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \
-\ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-\ \ \ for\ k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
-
+&amp;= \begin{cases}(1+\frac{1}{\theta_X^2})\sigma_X^2 \theta^2\ \ \ \
+for\ \ k = 0\\ \frac{1}{\theta_X}\sigma_X^2 \theta^2 \ \ \ \ \ \ \ \ \ \
+\ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+for\ k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
+&amp;= \begin{cases}(\theta^2+\frac{\theta^2}{\theta^2})\sigma^2 \ \ \ \
+\ \ \ \ for\ \ k = 0\\ \frac{\theta^2}{\theta}\sigma^2 \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ for\ k&gt;1\ or\ k&lt;-1 \end{cases} \\\\
 &amp;= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\
 \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k&gt;1\ or\ k&lt;-1
 \end{cases}\\\\
-
 &amp;Therefore,\ \gamma_{X}(k) = \gamma_{Y}(k)
-\end{aligned}\]</span>
-<p>$$<br />
+\end{aligned}
+\]</span><br />
 <br />
 </p>
 </div>
@@ -660,18 +664,8 @@ Y<sub>t</sub> = <span class="math inline">\(\phi\)</span><sub>∗</sub>Y<sub>t�
 Z<sub>t</sub><sup>∗</sup> and determine <span class="math inline">\(\phi\)</span><sup>∗</sup> and
 Z<sub>t</sub><sup>∗</sup>, that is, express <span class="math inline">\(\phi\)</span><sup>∗</sup> and
 Z<sub>t</sub><sup>∗</sup> via <span class="math inline">\(\phi\)</span>
-and Z<sub>t</sub></p>
-<pre class="r"><code>Z=rnorm(100,0,1)
-X=Z[1:50]
-for(i in 1:50){
-  X[i] = Z[2*i-1]
-}
-i=7
-X[i]</code></pre>
-<pre><code>## [1] 0.667891</code></pre>
-<pre class="r"><code>Z[2*i-1]</code></pre>
-<pre><code>## [1] 0.667891</code></pre>
-<p><span class="math display">\[
+and Z<sub>t</sub><br />
+<span class="math display">\[
 \begin{aligned}
 X_t &amp;= \phi X_{t−1} + Z_t\\
 Y_t &amp;= X_{2t}\\

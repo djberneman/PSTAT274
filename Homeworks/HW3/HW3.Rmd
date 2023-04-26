@@ -37,6 +37,7 @@ Determine which of the above statements are true.\
 (III)  False. The partial autocorrelation at lag k of an AR(p) time series is 0 at all lags k>p.
 \
 \
+\
 
 ### Question 3
 For a stationary ARMA(1,1) model, you are given the following information: ρ~X~(1) = 0.7, ρ~X~(2) = 0.3. Calculate $\phi_{1}$.
@@ -62,7 +63,6 @@ Identify model’s coefficients and write model equation.\
 *Hint: • §6 of Lecture Notes and slides 32-33 of Week 3 provide relationship between PACF and ACF, allowing to calculate ACFs of the model from given PACFs.  
 • Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week 3, provide relationship between ACF and model coefficients.*\
 
-AR(2): X~t~ = 0.6X~t-1~ - 0.36X~t-2~ + Z~t~
 $$
 \begin{aligned}
 \alpha(1):\ & \phi_{11} = \rho_X(1)=-0.60\\
@@ -73,6 +73,7 @@ $$
 & \ \ \ \ \ \ \ \ \ \ = 0.5904\\\\
 \end{aligned}
 $$
+\
 $$
 \begin{aligned}
 ACF\rightarrow\ & \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
@@ -87,6 +88,7 @@ ACF\rightarrow\ & \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
 ***\phi_1***\ \ \ \ \ \ \ \ \ \ & \phi_1 = 0.60\phi_2 - 0.60
 \end{aligned}
 $$
+\
 $$
 \begin{aligned}
 ACF\rightarrow\ & \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
@@ -103,24 +105,23 @@ ACF\rightarrow\ & \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
 ***\phi_1***\ \ \ \ \ \ \ \ \ \ \phi_2&=1+\frac53\phi_1
 \end{aligned}
 $$
-
+\
 $$
 \begin{aligned}
 &\phi_1 = 0.60\phi_2 - 0.60\\
 &\phi_2=1+\frac53\phi_1\\\\
-
 & 0.5904=\phi_1(-0.60) + \phi_2\\
 & 0.5904=-0.60(0.60\phi_2-0.60)+\phi_2\\
 & 0.5904-0.36=0.64\phi_2\\
 & 0.2304 = 0.64\phi_2\\
 &\phi_2=0.36\\\\
-
 &\phi_1 = 0.60\phi_2 - 0.60\\
 &\phi_1 = 0.60(0.36) - 0.60\\
 &\phi_1 = 0.216-0.60\\
 &\phi_1=-0.384\\
 \end{aligned}
 $$
+\
 AR(2) Model: $X_t = -0.384\ X_{t-1} + 0.36\ X_{t-2} + Z_t$
 \
 \
@@ -174,6 +175,7 @@ The Notion of parameter redundancy pertains to the situation when AR and MA char
 Determine which of the following models are parameter redundant:
 
 (I)    X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac12$ Z~t−1~;
+\
 $$
 X_t = \frac12 X_{t−1} + Z_t − \frac12 Z_{t−1}\\
 X_t - \frac12 X_{t−1} = Z_t − \frac12 Z_{t−1}\\
@@ -181,26 +183,30 @@ X_t(1-0.5B)=Z_t(1-0.5B)\\
 X_t = Z_t\\
 \text{Since the model can be simplified, it is redundent.}
 $$
+\
 (II)  X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac19$ Z~t−2~; 
+\
 $$
 X_t = \frac12 X_{t−1} + Z_t − \frac19 Z_{t−2}\\
 X_t - \frac12 X_{t−1} = Z_t − \frac19 Z_{t−2}\\
 X_t(1-0.5B)=Z_t(1-\frac19 B^2)\\
 \text{Since the model cannot be further simplified, it is not redundent.}
 $$
+\
 (III) X~t~ = $-\frac56$X~t−1~ − $\frac16$X~t−2~+Z~t~ + $\frac{8}{12}$Z~t−1~ + $\frac{1}{12}$Z~t−2~.
+\
 $$
-X_t = -\frac56 X_{t−1} -\frac16 X_{t−2}+ Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\
-
-X_t +\frac56 X_{t−1} +\frac16 X_{t−2}= Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\
-
-\frac16 X_t(6+5B+B^2)=\frac{1}{12}Z_t(12+8B+B^2)\\
-\frac16 X_t(3+B)=\frac{1}{12}Z_t(6+B)(2+B)\\
-\frac12(2+B)\frac13 X_t(3+B)=\frac12(2+B)\frac16Z_t(6+B)\\
-\frac13 X_t(3+B)=\frac13\frac12Z_t(6+B)\\
-X_t(3+B)=\frac12Z_t(6+B)\\
-X_t(3+B)=Z_t(3+\frac12B)\\
+\begin{aligned}
+X_t = -\frac56 X_{t−1} -\frac16 &X_{t−2}+ Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\\\
+X_t +\frac56 X_{t−1} +\frac16 X_{t−2}&= Z_t + \frac{8}{12} Z_{t−1} +\frac{1}{12} Z_{t−2}\\
+\frac16 X_t(6+5B+B^2)&=\frac{1}{12}Z_t(12+8B+B^2)\\
+\frac16 X_t(3+B)&=\frac{1}{12}Z_t(6+B)(2+B)\\
+\frac12(2+B)\frac13 X_t(3+B)&=\frac12(2+B)\frac16Z_t(6+B)\\
+\frac13 X_t(3+B)&=\frac13\frac12Z_t(6+B)\\
+X_t(3+B)&=\frac12Z_t(6+B)\\
+X_t(3+B)&=Z_t(3+\frac12B)\\\\
 \text{Since the model can be simplified, it is redundent.}
+\end{aligned}
 $$
 \
 \
@@ -209,34 +215,22 @@ $$
 \
 
 ### Question GE 1
-Show that the two MA(1) processes  X~t~ = Z~t~ + θ Z~t−1~,  {Z~t~}∼WN(0, σ^2^), and Y~t~ = Z̃~t~ + $\frac1θ$Z̃~t−1~,  {Z̃~t~} ∼ WN(0, σ^2^θ^2^), where 0 < |θ| < 1, have the same autocovariance functions.
+Show that the two MA(1) processes  X~t~ = Z~t~ + θ Z~t−1~,  {Z~t~}∼WN(0, σ^2^), and Y~t~ = Z̃~t~ + $\frac1θ$Z̃~t−1~,  {Z̃~t~} ∼ WN(0, σ^2^θ^2^), where 0 < |θ| < 1, have the same autocovariance functions.\
+
 $$
 \begin{aligned}
 &Z_t \sim WN(0, \sigma^2) \ \ \ \ \ \ \ \ \ \ \ \tilde{Z_t} \sim WN(0, \sigma^2\theta^2)\\
-& Var[Z_t] = \sigma^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Var[\tilde{Z_t}] = \sigma^2\theta^2 \\
+& Var[Z_t] = \sigma^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Var[\tilde{Z_t}] = \sigma^2\theta^2\\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \sigma_X^2 \theta^2 = \sigma_Y^2\\\\
-
 & \text{For }Z_t:\ \theta_1 = \theta \ \ \ \ \ \ \ \ \ \ \ \ \ \text{For }\tilde{Z_t}:\ \theta_1 = \frac1\theta \\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \theta_X \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \frac{1}{\theta_X} = \theta_Y\\\\
-
-\gamma_{X}(k)&= 
-\begin{cases}(1+\theta_{1}^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
-
+\gamma_{X}(k)&= \begin{cases}(1+\theta_{1}^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
 &= \begin{cases}(1+\theta_X^2)\sigma_X^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_X\sigma_X^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
-
 &= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\\\
-
-\gamma_{Y}(k)&= 
-\begin{cases}(1+\theta_{1}^2)\sigma_Y^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_Y^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
-
-&= 
-\begin{cases}(1+\frac{1}{\theta_X^2})\sigma_X^2 \theta^2\ \ \ \ for\ \ k = 0\\ \frac{1}{\theta_X}\sigma_X^2 \theta^2 \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
-
-&= 
-\begin{cases}(\theta^2+\frac{\theta^2}{\theta^2})\sigma^2 \ \ \ \ \ \ \ \ for\ \ k = 0\\ \frac{\theta^2}{\theta}\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
-
+\gamma_{Y}(k)&= \begin{cases}(1+\theta_{1}^2)\sigma_Y^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta_{k}\sigma_Y^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+&= \begin{cases}(1+\frac{1}{\theta_X^2})\sigma_X^2 \theta^2\ \ \ \ for\ \ k = 0\\ \frac{1}{\theta_X}\sigma_X^2 \theta^2 \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
+&= \begin{cases}(\theta^2+\frac{\theta^2}{\theta^2})\sigma^2 \ \ \ \ \ \ \ \ for\ \ k = 0\\ \frac{\theta^2}{\theta}\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases} \\\\
 &= \begin{cases}(1+\theta^2)\sigma^2\ \ \ \ \ \ \ \ for\ \ k = 0\\ \theta\sigma^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ \ k=\pm1\\ 0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ k>1\ or\ k<-1 \end{cases}\\\\
-
 &Therefore,\ \gamma_{X}(k) = \gamma_{Y}(k)
 \end{aligned}
 $$
@@ -245,17 +239,7 @@ $$
 
 ### Question GE 2
 You are given the following time series model: X~t~ = $\phi$X~t−1~ + Z~t~. Let Y~t~ = X~2t~, that is, the original process observed only at even times. Show that Y~t~ is also an AR(1) model Y~t~ = $\phi$~∗~Y~t−1~ + Z~t~^∗^ and determine $\phi$^∗^ and Z~t~^∗^, that is, express $\phi$^∗^ and Z~t~^∗^ via $\phi$ and Z~t~
-```{r}
-Z=rnorm(100,0,1)
-X=Z[1:50]
-for(i in 1:50){
-  X[i] = Z[2*i-1]
-}
-i=7
-X[i]
-Z[2*i-1]
-```
-
+\
 $$
 \begin{aligned}
 X_t &= \phi X_{t−1} + Z_t\\
