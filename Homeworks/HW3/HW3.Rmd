@@ -71,15 +71,57 @@ $$
 & \ \ \ \ \ \ \ \ = \frac{\rho_X(2)-0.36}{1-0.36}\\
 &\rho_X(2) = (0.36)(0.64)+0.36 \\
 & \ \ \ \ \ \ \ \ \ \ = 0.5904\\\\
-
-ACF\rightarrow\ & \rho_X(1)=\phi_1\rho_X(1-0)\\
-ACF\rightarrow\ & \rho_X(2)=\phi_1\rho_X(2-1)+\phi_2\rho_X(2-2) \\
-& \ \ \ \ \ \ \ \ \ \  =\phi_1\rho_X(1)+\phi_2\rho_X(0)\\\\
-
-&\phi_{21} + \phi_{22}\rho_X(1)=\rho_X(1)\\
-&\phi_{21}\rho_X(1) + \phi_{22}=\rho_X(2)
 \end{aligned}
 $$
+$$
+\begin{aligned}
+ACF\rightarrow\ & \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
+& \rho_X(1)=\frac{\phi_1}{1-\phi_2} \\
+& -0.60 = \phi_1+\phi_2(-0.60)\\
+& -0.60 = \frac{\phi_1}{1-\phi_2}\\\\
+&\phi_1+\phi_2(-0.60) = \frac{\phi_1}{1-\phi_2}\\
+&\phi_1-0.60\phi_2-\phi_1\phi_2+0.60\phi_2^2=\phi_1\\
+&-0.60\phi_2+0.60\phi_2^2=\phi_1\phi_2\\
+&-0.60\phi_2(1-\phi_2)=\phi_1\phi_2\\
+&-0.60(1-\phi_2)=\phi_1\\
+***\phi_1***\ \ \ \ \ \ \ \ \ \ & \phi_1 = 0.60\phi_2 - 0.60
+\end{aligned}
+$$
+$$
+\begin{aligned}
+ACF\rightarrow\ & \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
+& \rho_X(2)=\frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\
+& 0.5904=\phi_1(-0.60) + \phi_2\\
+& 0.5904= \frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\\\
+\phi_1(-0.60) + \phi_2 & = \frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\\\
+-0.60\phi_1+\phi_2+0.60&\phi_1\phi_2-\phi_2^2 = \phi_1^2+\phi_2(1-\phi_2)\\
+-0.60\phi_1+\phi_2+0.60&\phi_1\phi_2-\phi_2^2 = \phi_1^2+\phi_2-\phi_2^2\\
+-0.60\phi_1+0.60&\phi_1\phi_2 = \phi_1^2\\
+0.60\phi_2-&0.60=\phi_1\\
+0.60\phi_2&=\phi_1+0.60\\
+\phi_2&=1 + \frac{\phi_1}{0.60}\\
+***\phi_1***\ \ \ \ \ \ \ \ \ \ \phi_2&=1+\frac53\phi_1
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&\phi_1 = 0.60\phi_2 - 0.60\\
+&\phi_2=1+\frac53\phi_1\\\\
+
+& 0.5904=\phi_1(-0.60) + \phi_2\\
+& 0.5904=-0.60(0.60\phi_2-0.60)+\phi_2\\
+& 0.5904-0.36=0.64\phi_2\\
+& 0.2304 = 0.64\phi_2\\
+&\phi_2=0.36\\\\
+
+&\phi_1 = 0.60\phi_2 - 0.60\\
+&\phi_1 = 0.60(0.36) - 0.60\\
+&\phi_1 = 0.216-0.60\\
+&\phi_1=-0.384\\
+\end{aligned}
+$$
+AR(2) Model: $X_t = -0.384\ X_{t-1} + 0.36\ X_{t-2} + Z_t$
 \
 \
 

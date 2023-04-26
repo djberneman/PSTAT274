@@ -438,9 +438,9 @@ model from given PACFs.<br />
 • Yule-Walker equations, in §4.3 of Lecture Notes and on slide 14, Week
 3, provide relationship between ACF and model coefficients.</em><br />
 </p>
-AR(2): X<sub>t</sub> = 0.6X<sub>t-1</sub> - 0.36X<sub>t-2</sub> +
-Z<sub>t</sub> $$
-<span class="math display">\[\begin{aligned}
+<p>AR(2): X<sub>t</sub> = 0.6X<sub>t-1</sub> - 0.36X<sub>t-2</sub> +
+Z<sub>t</sub> <span class="math display">\[
+\begin{aligned}
 \alpha(1):\ &amp; \phi_{11} = \rho_X(1)=-0.60\\
 \alpha(2): \ &amp; \phi_{22} =
 \frac{\rho_X(2)-(\rho_X(1))^2}{1-(\rho_X(1))^2} \\
@@ -448,15 +448,57 @@ Z<sub>t</sub> $$
 &amp; \ \ \ \ \ \ \ \ = \frac{\rho_X(2)-0.36}{1-0.36}\\
 &amp;\rho_X(2) = (0.36)(0.64)+0.36 \\
 &amp; \ \ \ \ \ \ \ \ \ \ = 0.5904\\\\
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+ACF\rightarrow\ &amp; \rho_X(1)=\phi_1+\phi_2\rho_X(1)\\
+&amp; \rho_X(1)=\frac{\phi_1}{1-\phi_2} \\
+&amp; -0.60 = \phi_1+\phi_2(-0.60)\\
+&amp; -0.60 = \frac{\phi_1}{1-\phi_2}\\\\
+&amp;\phi_1+\phi_2(-0.60) = \frac{\phi_1}{1-\phi_2}\\
+&amp;\phi_1-0.60\phi_2-\phi_1\phi_2+0.60\phi_2^2=\phi_1\\
+&amp;-0.60\phi_2+0.60\phi_2^2=\phi_1\phi_2\\
+&amp;-0.60\phi_2(1-\phi_2)=\phi_1\phi_2\\
+&amp;-0.60(1-\phi_2)=\phi_1\\
+***\phi_1***\ \ \ \ \ \ \ \ \ \ &amp; \phi_1 = 0.60\phi_2 - 0.60
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+ACF\rightarrow\ &amp; \rho_X(2)=\phi_1\rho_X(1)+\phi_2\\
+&amp; \rho_X(2)=\frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\
+&amp; 0.5904=\phi_1(-0.60) + \phi_2\\
+&amp; 0.5904= \frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\\\
+\phi_1(-0.60) + \phi_2 &amp; =
+\frac{\phi_1^2+\phi_2(1-\phi_2)}{1-\phi_2}\\\\
+-0.60\phi_1+\phi_2+0.60&amp;\phi_1\phi_2-\phi_2^2 =
+\phi_1^2+\phi_2(1-\phi_2)\\
+-0.60\phi_1+\phi_2+0.60&amp;\phi_1\phi_2-\phi_2^2 =
+\phi_1^2+\phi_2-\phi_2^2\\
+-0.60\phi_1+0.60&amp;\phi_1\phi_2 = \phi_1^2\\
+0.60\phi_2-&amp;0.60=\phi_1\\
+0.60\phi_2&amp;=\phi_1+0.60\\
+\phi_2&amp;=1 + \frac{\phi_1}{0.60}\\
+***\phi_1***\ \ \ \ \ \ \ \ \ \ \phi_2&amp;=1+\frac53\phi_1
+\end{aligned}
+\]</span></p>
+$$
+<span class="math display">\[\begin{aligned}
+&amp;\phi_1 = 0.60\phi_2 - 0.60\\
+&amp;\phi_2=1+\frac53\phi_1\\\\
 
-ACF\rightarrow\ &amp; \rho_X(1)=\phi_1\rho_X(1-0)\\
-ACF\rightarrow\ &amp; \rho_X(2)=\phi_1\rho_X(2-1)+\phi_2\rho_X(2-2) \\
-&amp; \ \ \ \ \ \ \ \ \ \  =\phi_1\rho_X(1)+\phi_2\rho_X(0)\\\\
+&amp; 0.5904=\phi_1(-0.60) + \phi_2\\
+&amp; 0.5904=-0.60(0.60\phi_2-0.60)+\phi_2\\
+&amp; 0.5904-0.36=0.64\phi_2\\
+&amp; 0.2304 = 0.64\phi_2\\
+&amp;\phi_2=0.36\\\\
 
-&amp;\phi_{21} + \phi_{22}\rho_X(1)=\rho_X(1)\\
-&amp;\phi_{21}\rho_X(1) + \phi_{22}=\rho_X(2)
+&amp;\phi_1 = 0.60\phi_2 - 0.60\\
+&amp;\phi_1 = 0.60(0.36) - 0.60\\
+&amp;\phi_1 = 0.216-0.60\\
+&amp;\phi_1=-0.384\\
 \end{aligned}\]</span>
-<p>$$<br />
+<p>$$ AR(2) Model: <span class="math inline">\(X_t = -0.384\ X_{t-1} +
+0.36\ X_{t-2} + Z_t\)</span><br />
 <br />
 </p>
 </div>
@@ -626,9 +668,9 @@ for(i in 1:50){
 }
 i=7
 X[i]</code></pre>
-<pre><code>## [1] -0.5423029</code></pre>
+<pre><code>## [1] 0.667891</code></pre>
 <pre class="r"><code>Z[2*i-1]</code></pre>
-<pre><code>## [1] -0.5423029</code></pre>
+<pre><code>## [1] 0.667891</code></pre>
 <p><span class="math display">\[
 \begin{aligned}
 X_t &amp;= \phi X_{t−1} + Z_t\\
