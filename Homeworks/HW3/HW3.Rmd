@@ -193,3 +193,25 @@ $$
 
 ### Question GE 2
 You are given the following time series model: X~t~ = $\phi$X~t−1~ + Z~t~. Let Y~t~ = X~2t~, that is, the original process observed only at even times. Show that Y~t~ is also an AR(1) model Y~t~ = $\phi$~∗~Y~t−1~ + Z~t~^∗^ and determine $\phi$^∗^ and Z~t~^∗^, that is, express $\phi$^∗^ and Z~t~^∗^ via $\phi$ and Z~t~
+$$
+\begin{aligned}
+Let\ \ \ \ \ \ & X_t = \phi X_{t−1} + Z_t,\\
+& Y_t = X_{2t} = \phi X_{2(t−1)} + Z_{2t}\\\\
+& \text{For all t,s:}\\
+E[Z_t] = &E[Z_s]\ \ \ \ \&\ \ \ \ Var[Z_t] = Var[Z_s]\\
+\rightarrow\ E[Z_t] = &E[Z_{2t}]\ \ \ \ \&\ \ \ \ Var[Z_t] = Var[Z_{2t}]\\\\
+For\ µ_X:\\
+&E[X_t]= E[\phi X_{t-1}] + 0\\
+&E[X_t]= \phi E[X_{t-1}] \\
+& \frac{E[X_t]}{E[X_{t-1}]} = \phi\\
+& \frac{µ_X}{µ_X} = \phi\\
+& \phi = 1\\\\
+\rightarrow\ & E[X_t]= E[X_{t-1}]\\
+&\text{If t=2, then } E[X_2]= E[X_{2-1}]\\
+&\text{If t=3, then } E[X_3]= E[X_{3-1}]\\\\
+\rightarrow\ &E[X_t] = E[X_s],\ \ \text{for all t,s}\\
+\rightarrow\ &E[X_t] = E[X_{2(t-1)}],\ \ \text{for all t}\\
+\rightarrow\ X_t = X_{2(t-1)}
+\end{aligned}
+$$
+
