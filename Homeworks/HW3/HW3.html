@@ -411,7 +411,16 @@ information: ρ<sub>X</sub>(1) = 0.7, ρ<sub>X</sub>(2) = 0.3. Calculate
 θ<sub>1</sub> Z<sub>t−1</sub> are given in §5.1 of lecture notes and
 slide 24 of week 3.<br />
 Can you determine a recursive relation between ρ<sub>X</sub>(k) and
-ρ<sub>X</sub> (k−1)? Use it!</em><br />
+ρ<sub>X</sub> (k−1)? Use it!</em> <span class="math display">\[
+\text{For ARMA(1,1): }\ \rho_X(k) =
+\frac{(\phi_1+\theta_1)(1+\phi_1\theta_1)}{1+2\phi_1\theta_1+\theta_1^2}\
+\phi_1^{k-1} = Constant\  *\ \phi_1^{k-1}, \ k&gt;0\\
+\text{that is, } \rho_X(k+1)=\Phi_1\rho_X(k)\ \text{or } \rho_X(2)=
+\Phi_1\rho_X(1),\ \Phi_1=\rho_X(2)/\rho_X(1)\\
+\text{Given: }\\ \rho_X(1)= 0.7\ \&amp;\ \rho_X(2)=0.3,\\
+\phi_1 = 3/7
+\]</span></p>
+<p><br />
 <br />
 </p>
 </div>

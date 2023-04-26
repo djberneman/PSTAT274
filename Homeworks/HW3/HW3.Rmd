@@ -43,6 +43,16 @@ For a stationary ARMA(1,1) model, you are given the following information: ρ~X~
 
 *Hint: Formulas for ACF of ARMA (1,1) model X~t~ − $\phi_1$X~t−1~ = Z~t~ + θ~1~ Z~t−1~ are given in §5.1 of lecture notes and slide 24 of week 3.  \
 Can you determine a recursive relation between ρ~X~(k) and ρ~X~ (k−1)? Use it!*
+$$
+\begin{aligned}
+\text{For ARMA(1,1): }&\ \rho_X(k) = \frac{(\phi_1+\theta_1)(1+\phi_1\theta_1)}{1+2\phi_1\theta_1+\theta_1^2}\ \phi_1^{k-1} = Constant\  *\ \phi_1^{k-1}, \ k>0\\ 
+&\text{that is, } \rho_X(k+1)=\Phi_1\rho_X(k)\ \text{or } \rho_X(2)= \Phi_1\rho_X(1),\ \Phi_1=\rho_X(2)/\rho_X(1)\\\\
+&\text{Given: }\\ 
+&\rho_X(1)= 0.7\ \ \ \ \&\ \ \ \ \rho_X(2)=0.3,\\
+&\phi_1 = 3/7
+\end{aligned}
+$$
+
 \
 \
 
