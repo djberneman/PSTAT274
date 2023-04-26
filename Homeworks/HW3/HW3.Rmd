@@ -35,6 +35,7 @@ Determine which of the above statements are true.\
 (I)  False. The PACF for an AR(p) model at lag p cannot be equal to 0.
 (II)  True. The partial autocorrelation at lag k of an AR(p) time series is 0 at all lags k>p. Since p=3 and k=4, PACF $\phi_{4}=0$
 (III)  False. The partial autocorrelation at lag k of an AR(p) time series is 0 at all lags k>p.
+
 \
 \
 \
@@ -167,6 +168,9 @@ E[X_t] &= E[0.8X_{t-1} +2]\\
 µ_X &= 10
 \end{aligned}
 $$
+
+\
+\
 \
 \
 
@@ -184,15 +188,18 @@ X_t = Z_t\\
 \text{Since the model can be simplified, it is redundent.}
 $$
 \
-(II)  X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac19$ Z~t−2~; 
 \
+\
+\
+\
+(II)  X~t~ = $\frac12$ X~t−1~ +Z~t~ − $\frac19$ Z~t−2~; 
 $$
 X_t = \frac12 X_{t−1} + Z_t − \frac19 Z_{t−2}\\
 X_t - \frac12 X_{t−1} = Z_t − \frac19 Z_{t−2}\\
 X_t(1-0.5B)=Z_t(1-\frac19 B^2)\\
 \text{Since the model cannot be further simplified, it is not redundent.}
 $$
-\
+\ 
 (III) X~t~ = $-\frac56$X~t−1~ − $\frac16$X~t−2~+Z~t~ + $\frac{8}{12}$Z~t−1~ + $\frac{1}{12}$Z~t−2~.
 \
 $$
