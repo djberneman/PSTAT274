@@ -8,11 +8,57 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-. Data Import
-Lab 4 Assignment
-Pstat 174/274
+
+### Part 1: Data Import
 In this question we keep studying Task 1 in Lab 4 where we import monthly-australian-wine-sales-th.csv and use ts() command.
-1) Compare the plots of the series ‘wine1’ and ‘wine’ defined below, and state why we use ‘frequency=12’ in the lab material.
+
+```{r}
+wine.csv = read.table("monthly-australian-wine-sales-th.csv",
+sep=",", header=FALSE, skip=1, nrows=187)
+```
+
+#### Question 1
+Compare the plots of the series ‘wine1’ and ‘wine’ defined below, and state why we use ‘frequency=12’ in the lab material.
        wine1 = ts(wine.csv[,2], start = c(1980,1))
+       
+```{r}
+wine1 = ts(wine.csv[,2], start = c(1980,1), frequency = 12)
+plot.ts(wine1)
+```
        wine = ts(wine.csv[,2], start = c(1980,1), frequency = 12)
-2) If you have a daily data of wine sales, for example from Jan 1, 1981 to Dec 31,1983. What value would you put in ‘frequency=’ so that the plot shows the correct year index on x-axis?
+```{r}
+wine = ts(wine.csv[,2], start = c(1980,1))
+plot.ts(wine)
+```
+
+Both plots are visually identical. The only difference is the x-axis. The time for `wine1` ranges from the years 1980 through the middle of 1995. Meanwhile, the time for `wine` ranges from the years 1980 through 2167. In the data set, `wine.csv`, the time variable is in a date format "YYYY/MM". When creating the time series, the start time is 1980/01. If we use the default of `Frequency`, 1, then that tells the code that each successive observation occurs 1 year later. By changing `Frequency` to 12, the code is told that the each successive observation occurs 1/12 of a year later, which is what we want.
+\
+\
+
+#### Question 2
+If you have a daily data of wine sales, for example from Jan 1, 1981 to Dec 31,1983. What value would you put in ‘frequency=’ so that the plot shows the correct year index on x-axis?\
+
+If we had daily data, we would have to set the frequency to 365, which is the amount of days in a year.
+\
+\
+
+### Part 2: Data Tranformation
+We introduce the Time Series Data Library (TSDL) created by Professor Rob Hyndman.(https://rdrr.io/ github/FinYang/tsdl/f/vignettes/tsdl.Rmd)
+Run the following code to import quarterly Iowa nonfarm income in R:
+
+```{r}
+#install.packages("devtools") 
+install.packages("forecast") 
+devtools::install_github("FinYang/tsdl") 
+library(tsdl)
+library(forecast)
+```
+
+```{r}
+meta_tsdl$description[[1]]
+iowa.ts <- tsdl[[1]]
+
+ts.plot(wine1, main = "Box-Cox Transform") 
+ts.plot(wine.log, main = "Log Transform") 
+ts.plot(wine.sqrt, main = "Square Root Transform")
+```
