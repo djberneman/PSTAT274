@@ -58,7 +58,22 @@ library(forecast)
 meta_tsdl$description[[1]]
 iowa.ts <- tsdl[[1]]
 
-ts.plot(wine1, main = "Box-Cox Transform") 
+library(MASS)
+t = 1:length(wine1)
+fit = lm(wine1 ~ t)
+bcTransform = boxcox(wine1 ~ t,plotit = TRUE)
+
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+wine.bc = (1/lambda)*(wine1^lambda-1)
+
+#log transform
+wine.log = log(wine1)
+# square root transform
+wine.sqrt = sqrt(wine1)
+#Compare transforms
+op= par(mfrow=c(2,2))
+ts.plot(wine1, main = "Original Times Series") 
+ts.plot(wine.bc, main = "Box-Cox Transform") 
 ts.plot(wine.log, main = "Log Transform") 
 ts.plot(wine.sqrt, main = "Square Root Transform")
 ```
