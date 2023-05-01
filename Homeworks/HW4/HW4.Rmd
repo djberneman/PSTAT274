@@ -1,0 +1,45 @@
+---
+title: "PSTAT 174/274, Spring 2023: Homework #4"
+output: html_document
+date: '2023-05-01'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Note: In all problems, {Zt} ∼ WN(0,σZ2 ) denotes white noise, and B denotes the backshift operator BXt = Xt−1.
+
+1. For each of the models (1)-(3), write corresponding characteristic polynomials θ(z) and $\phi$(z). In other words, write models (1)-(3) as $\phi$(B)Xt = θ(B)Zt and specify polynomials θ(z) and φ(z). For each, identify the model as a certain (S)ARIMA model and determine whether the model in invertible and stationary:
+
+(1) Xt = −0.2Xt−1+Zt−2Zt−1; 
+
+(2) Xt = Xt−1+Zt−0.2Zt−1−0.7Zt−2; 
+
+(3) Xt = Xt−3+Zt+0.4Zt−1−0.45Zt−2.
+
+
+
+
+
+2. Identify the model equation corresponding to SARIMA (0, 0, 2)(0, 0, 1)12 model. A. Xt = Zt + θ1Zt−1 + θ12Zt−2.
+B. Xt = Zt + θ1Zt−1 + θ2Zt−2 + θ1θ2Zt−3.
+C. Xt = Zt + θ1Zt−1 + θ2Zt−2 + θ1θ2Zt−12.
+D. Xt = Zt + θ1Zt−2 + θ2Zt−12 + θ1θ2Zt−14. E. Xt = Zt + θ1Zt−1 + θ2Zt−11 + θ1θ2Zt−12.
+3. (a) For the following SARIMA(p, d, q)×(P, D, Q)s models, specify parameters p, d, q, P, D, Q and s, and write cor- responding equations. It is OK to leave equations in the form φ(B)Φ(Bs)(1−B)d(1−Bs)DXt = θ(B)Θ(Bs)Zt, Zt ∼ WN(0,σZ2 ).
+(i) SARIMA (1, 1, 0) × (1, 1, 2)6, (ii) SARIMA(0, 1, 1) × (0, 0, 3)12, (iii) SARIMA(2, 1, 2) × (2, 0, 1)4. (b) For the following processes {Xt}, identify SARIMA (p, d, q) × (P, D, Q)s model:
+(i) (1 − B12)2Xt = (1 − 0.3B)Zt; (ii) Xt = 0.5Xt−6 + Zt; (iii) (1 − 0.8B)(1 + 0.5B4)Xt = (1 − 1.5B)Zt.
+(c) You are given a time series model where PACF is zero except for lags 12 and 24. Which model will have this
+pattern?
+4. For the processes Xt = 0.4Xt−1 + Zt − 0.7Zt−1,
+(i) Simulate and plot 100 values of the processes;
+(ii) Compute and graph their theoretical ACF and PACF using R.
+(iii) Compute and graph their sample ACF and PACF using R. How do sample functions compare to their theoretical counterparts?
+(iv) Analyze smoothness of the simulated processes using their ACF’s.
+Please include the code with clear comments explaining the meaning of the code. Make sure to label the graphs.
+The following problems are for students enrolled in PSTAT 274 ONLY
+GE 1. Let {Yt} be the AR(1) plus noise time series defined by Yt = Xt +Wt, where {Wt} ∼ WN(0,σW2 ), {Xt} is theAR(1)processXt−φXt−1 =Zt,{Zt}∼WN(0,σZ2),|φ|<1,andE(WsZt)=0forallt,s.
+(a) Show that {Yt} is stationary and find its autocovariance function.
+(b) Show that the time series Ut := Yt − φYt−1 is 1-correlated (i.e., γU (h) = 0 for h > 1) and hence is MA(1) process.
+(c) Conclude from (b) that {Yt} is an ARMA(1,1) process and express the three parameters of this model in terms ofφ,σW2 andσZ2.
+GE 2. Find the ACVF, ACF and PACF for {Xt} when Xt = ΦXt−4 + Zt, |Φ| < 1.
