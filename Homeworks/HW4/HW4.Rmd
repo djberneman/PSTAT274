@@ -6,6 +6,10 @@ date: '2023-05-01'
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(FinTS)
+library(latex2exp)
+library(astsa)
+library(polynom)
 ```
 
 Note: In all problems, {Z~t~} ∼ WN(0,σ~Z~^2^ ) denotes white noise, and B denotes the backshift operator BX~t~ = X~t−1~.
@@ -24,7 +28,7 @@ $$
 \text{Find roots of }\phi (z)&:\ 1-0.2z\ \rightarrow\ \ |z| = 5 > 1\\
 &\text{The model is stationary}
 \end{aligned}
-$$)
+$$
 \
 (2) X~t~ = X~t−1~+Z~t~−0.2Z~t−1~−0.7Z~t−2~ 
 $$
@@ -37,7 +41,7 @@ $$
 \text{Find roots of }\theta (z)&:\ 1-0.2z-0.7z^2\ \rightarrow\ \ |z| =  (1.060879+0i -1.346593+0i) > 1\\
 &\text{The model is invertible.}
 \end{aligned}
-$$)
+$$
 \
 
 (3) X~t~ = X~t−3~+Z~t~+0.4Z~t−1~−0.45Z~t−2~.
@@ -53,7 +57,8 @@ $$
 \end{aligned}
 $$
 \
-2. Identify the model equation corresponding to SARIMA (0, 0, 2)(0, 0, 1)12 model. 
+### Question 2
+Identify the model equation corresponding to SARIMA (0, 0, 2)(0, 0, 1)12 model. 
 
 A. X~t~ = Z~t~ + θ~1~Z~t−1~ + θ~1~2Z~t−2~.
 B. X~t~ = Z~t~ + θ~1~Z~t−1~ + θ~2~Z~t−2~ + θ~1~θ~2~Z~t−3~.
@@ -70,71 +75,214 @@ The only option that matches is (D).
 \
 
 ### Question 3
-  (a) For the following SARIMA(p, d, q)×(P, D, Q)~s~ models, specify parameters p, d, q, P, D, Q and s, and write corresponding equations. It is OK to leave equations in the form.
-$\phi$(B)$\Phi$(B~s~)(1−B)~d~(1−B~s~)~D~X~t~ = θ(B)$\Theta$(B~s~)Z~t~, Z~t~ ∼ WN(0,σ~Z~^2^).
-
-|   (i) SARIMA(1, 1, 0) × (1, 1, 2)~6~, 
+  (a) For the following SARIMA(p, d, q)×(P, D, Q)~s~ models, specify parameters p, d, q, P, D, Q and s, and write corresponding equations. It is OK to leave equations in the form. $\phi(B)\Phi(B^s) (1−B)^d (1−B^s)^DX_t = θ(B)\Theta(B^s)Z_t$, Z~t~ ∼ WN(0,σ~Z~^2^).\
+\
+    (i) SARIMA(1, 1, 0) × (1, 1, 2)~6~,  
 $$
+\begin{cases}
+p=1\\ d=1\\ q=0\\ 
+\end{cases}
+\ \ \ \
+\begin{cases} 
+P=1\\ D=1\\ Q=2\\ s=6 
+\end{cases}\\
 (1-\Phi_1B^{12})(1-\theta_1B)(1-B)X_t=(1+\Theta_1B^{12}+\Theta_2B^{24})Z_t
 $$
 \
-|   (ii) SARIMA(0, 1, 1) × (0, 0, 3)~12~, 
+    (ii) SARIMA(0, 1, 1) × (0, 0, 3)~12~,
 $$
+\begin{cases}
+p=0\\ d=1\\ q=1\\ 
+\end{cases}
+\ \ \ \ 
+\begin{cases} 
+P=0\\ D=0\\ Q=3\\ s=12 
+\end{cases}\\
 (1-B)X_t=(1+\theta_1B)(1+\Theta_1B^{12}+\Theta_2B^{24}+\Theta_3B^{36})Z_t
 $$
 \
-|   (iii) SARIMA(2, 1, 2) × (2, 0, 1)~4~. 
-\
+    (iii) SARIMA(2, 1, 2) × (2, 0, 1)~4~
 $$
+\begin{cases}
+p=2\\ d=1\\ q=2\\ 
+\end{cases}
+\ \ \ \ 
+\begin{cases} 
+P=2\\ D=0\\ Q=1\\ s=4
+\end{cases}\\
 (1-\theta_1B-\theta_2B^2)(1-B)(1-\Phi_1B^4-\Phi_2B^8)X_t=(1+\theta_1B+\theta_2B^2)(1+\Theta_1B^4)Z_t
 $$
 \
-(b) For the following processes {X~t~}, identify SARIMA (p, d, q) × (P, D, Q)~s~ model:
-|   (i) (1 − B~12~)~2~Xt = (1 − 0.3B)Zt; 
+  (b) For the following processes {X~t~}, identify SARIMA (p, d, q) × (P, D, Q)~s~ model:\
+    (i) (1 − B^12^)^2X~t~ = (1 − 0.3B)Z~t~  
 \
-SARIMA(0,0,1)×(0,2,0)~12~
+$$SARIMA(0,0,1)×(0,2,0)_{12}$$
 \
-|   (ii) X~t~ = 0.5X~t−6~ + Z~t~; 
+    (ii) X~t~ = 0.5X~t−6~ + Z~t~ 
 \
 $$
 X_t=0.5X_{t-6}+Z_t\\
-(1-0.5B^6)X_t=Z_t
+(1-0.5B^6)X_t=Z_t\\
+SARIMA(0,0,0)×(1,0,0)_6
 $$
-SARIMA(0,0,0)×(1,0,0)~6~
 \
-|   (iii) (1 − 0.8B)(1 + 0.5B~4~)X~t~ = (1 − 1.5B)Z~t~.
+    (iii) (1 − 0.8B)(1 + 0.5B^4^)X~t~ = (1 − 1.5B)Z~t~.
 \
-SARIMA(1,0,1)×(1,0,0)~4~
+$$SARIMA(1,0,1)×(1,0,0)_4$$
 \
-(c) You are given a time series model where PACF is zero except for lags 12 and 24. Which model will have this
-pattern?
 
+  (c) You are given a time series model where PACF is zero except for lags 12 and 24. Which model will have this pattern?\
 
-mod2<-Arima(data,order=c(1, 0, 0), seasonal=list(order=c(2, 1, 0), period=12))
-Acf <- ARMAacf(order(c(1,2,1)), seasonal(c(1,2,1)))
-acf2AR(Acf)
-Acf <- ARMAacf(order(c(1,2,1)))
-ARMAacf(order = c(1,2,2), seasonal = c(1,2,2))
-acf(Arima(rnorm(10000,.5,), order = c(1,2,2), seasonal = c(1,2,2)))
-Z_t=rnorm(10000,0.5, 1.2)
-sarima(Z_t, 1,1,1,1,1,1,12)
-thepacf=ARMAacf(ar = c(1,.5,-.4), ma=c(),lag.max=30,pacf=T)
-acf(theacf, plot=FALSE, lag.max = 30)
-themodel = arima(Z_t, order = c(2,2,1), seasonal = list(order = c(2,1,1), period = 4))
-acf(type=c("partial"), themodel$residuals, plot=FALSE)
-acf(themodel$residuals, plot=FALSE)
+$$
+\rho_{12}=\rho_{24}=0\\
+SARIMA(0,0,0)×(2,0,0)
+$$
+\
+\
 
-(c) You are given a time series model where PACF is zero except for lags 12 and 24. Which model will have this
-pattern?
-4. For the processes Xt = 0.4Xt−1 + Zt − 0.7Zt−1,
-(i) Simulate and plot 100 values of the processes;
-(ii) Compute and graph their theoretical ACF and PACF using R.
-(iii) Compute and graph their sample ACF and PACF using R. How do sample functions compare to their theoretical counterparts?
-(iv) Analyze smoothness of the simulated processes using their ACF’s.
-Please include the code with clear comments explaining the meaning of the code. Make sure to label the graphs.
-The following problems are for students enrolled in PSTAT 274 ONLY
-GE 1. Let {Yt} be the AR(1) plus noise time series defined by Yt = Xt +Wt, where {Wt} ∼ WN(0,σW2 ), {Xt} is theAR(1)processXt−φXt−1 =Zt,{Zt}∼WN(0,σZ2),|φ|<1,andE(WsZt)=0forallt,s.
-(a) Show that {Yt} is stationary and find its autocovariance function.
-(b) Show that the time series Ut := Yt − φYt−1 is 1-correlated (i.e., γU (h) = 0 for h > 1) and hence is MA(1) process.
-(c) Conclude from (b) that {Yt} is an ARMA(1,1) process and express the three parameters of this model in terms ofφ,σW2 andσZ2.
-GE 2. Find the ACVF, ACF and PACF for {Xt} when Xt = ΦXt−4 + Zt, |Φ| < 1.
+### Question 4
+For the processes X~t~ = 0.4X~t−1~ + Z~t~ − 0.7Z~t−1~,\
+    (i) Simulate and plot 100 values of the processes\
+```{r}
+options(scipen = 9)
+set.seed(333)
+sample <- arima.sim(n=100, list(ar=c(0.4), ma=c(-0.7), sd=1))
+plot(sample)
+```
+\
+\
+   (ii) Compute and graph their theoretical ACF and PACF using R.\
+```{r}
+acf_model = ARMAacf(ar = 0.4, ma=c(-0.7), lag.max=10, pacf=FALSE)
+
+pacf_model = ARMAacf(ar = 0.4, ma=c(-0.7), lag.max=10, pacf=TRUE)
+
+par(mfrow=c(1,2))
+
+plotArmaTrueacf(list(ar = 0.4, ma=c(-0.7)), lag.max=10, pacf=FALSE, plot=TRUE,
+          xlab="Lag", ylab=c("ACF"),
+          ylim=c(-0.25, 0.6), xlim=c(0,10), type="h")
+
+plotArmaTrueacf(list(ar = 0.4, ma=c(-0.7)), lag.max=10, pacf=TRUE, plot=TRUE,
+          xlab="Lag", ylab=c("Partial ACF"),
+          ylim=c(-0.25, 0.6), xlim=c(1,10), type="h")
+title(main=TeX(r'(Theoretical ARMA(1,1): $\phi_1$ = 0.4, $\theta_1$ = -0.7)'), line=-1, outer=TRUE, cex=0.5)
+```
+\
+\
+    (iii) Compute and graph their sample ACF and PACF using R. How do sample functions compare to their theoretical counterparts?\
+```{r}
+acf2(sample, max.lag = 10, xlim=c(0,10), ylim=c(-0.25,0.6))
+acf2(sample, max.lag = 10, xlim=c(0,10), ylim=c(-0.25,0.6), plot=FALSE)
+```
+There are not enough sample observations for the sample pacf and acf to be a good estimation of the theoretical pacf and acf.
+\
+\
+    (iv) Analyze smoothness of the simulated processes using their ACF’s.
+Please include the code with clear comments explaining the meaning of the code. Make sure to label the graphs.\
+```{r}
+# Unaltered ACF
+plot(sample, ylab = TeX(r'($X_t$)'), xlab="Time")
+title(main=TeX(r'(Sample ARMA(1,1): $\phi$ = 0.4, $\theta$ = -0.7)'), line=-1, outer=TRUE, cex=0.5)
+
+# Smoothing by changing ma = -0.7 to ma = 0.7 
+sample2 <- arima.sim(n=100, list(ar=c(0.4), ma=c(0.7), sd=1))
+plot(sample2, ylab = TeX(r'($X_t$)'), xlab="Time")
+title(main=TeX(r'(Sample ARMA(1,1): $\phi$ = 0.4, $\theta$ = 0.7)'), line=-1, outer=TRUE, cex=0.5)
+```
+
+\
+\
+**The following problems are for students enrolled in PSTAT 274 ONLY**
+\
+
+### Question GE1
+Let {Y~t~} be the AR(1) plus noise time series defined by Y~t~ = X~t~ +W~t~, where {W~t~} ∼ WN(0, σ~W~^2^), {X~t~} is the AR(1) process X~t~ − $\phi$ X~t−1~ = Z~t~,\
+{Z~t~} ∼ WN(0, σ~Z~^2^), |$\phi$|<1, and E(W~s~Z~t~) = 0 for all t, s.\
+
+  (a) Show that {Y~t~} is stationary and find its autocovariance function.
+\
+$$
+\begin{aligned}
+\text{Given:} &\\
+&\begin{cases}
+X_t=\phi_1X_{t-1}+Z_t\\
+|\phi_1|<1\\
+Z_t=WN(0,\ \sigma_Z^2)\\
+Y_t=X_t+W_t\\
+W_t=WN(0,\ \sigma_W^2)\\
+E[W_sZ_t]=0\\
+\end{cases}\\\\
+X_t\ &\text{is a stationary AR(1) process}\\
+&\text{because } \phi(z) = 1-\phi_1z = 0\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1=\phi_1z\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1/\phi_1 = z\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \text{if } \phi_1<1,\ \text{then } 1/\phi_1 >1,\\
+&\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \text{thus }z>1\\
+\end{aligned}
+$$
+\
+$$
+\begin{aligned}
+Var[X_t] &= \gamma_X(0)= \frac{\sigma_Z^2}{1-\phi_1^2}\\\\
+E[Y_t]&=E[X_t+W_t]\\
+&= E[X_t]+E[W_t] = 0 \\\\
+Var[Y_t] &= Var[X_t+W_t]\\
+&= E[(\phi_1X_{t-1}+Z_t+W_t)X_{t-k}]\\
+&=E[\phi_1X_{t-1}X_{t-k}]\ +\  E[Z_tX_{t-k}]\ +\ E[W_tX_{t-k}]\\\\
+&for\ \ k=0: \ \ \ \
+\begin{cases}
+E[\phi_1X_{t-1}X_{t}] \ \ \ \ \ \ \ \ \ \ =  \phi_1\gamma_X(1) \\
+E[Z_tX_{t}] = E[Z_t^2] \ \ \ = \sigma_Z^2\\
+E[W_tX_{t}] = E[W_t^2] \ = \sigma_W^2
+\end{cases}\\\\
+& Var[Y_t]=\gamma_Y(0) =\phi_1^2\gamma_X(0)+\sigma_Z^2+\sigma_W^2\\\\
+\end{aligned}
+$$
+\
+E[\phi_1X_{t-1}X_{t-k}]\ +\ E[\phi_1X_{t-1}W_{t-k}]\ + \\
+& \ \ \ \ \ E[Z_tX_{t-k}]\ +\ E[Z_tW_{t-k}]\ + \ E[W_tX_{t-k}]\ + \\ 
+& \ \ \ \ \ E[W_tW_{t-k}]
+$$
+\begin{aligned}
+\text{If}\ \ &\phi_1^2\gamma_X(0) +\sigma_Z^2 =\frac{\phi_1^2\sigma_Z^2}{1-\phi_1^2} + \frac{\sigma_Z^2(1-\phi_1^2)}{1-\phi_1^2}= \frac{\sigma_Z^2}{1-\phi_1^2}, \\\\
+\text{then}\ \ &\phi_1^2\gamma_X(0) +\sigma_Z^2+\sigma_W^2 =\frac{\phi_1^2(\sigma_Z^2+\sigma_W^2)}{1-\phi_1^2} + \frac{(\sigma_Z^2+\sigma_W^2)(1-\phi_1^2)}{1-\phi_1^2}= \frac{\sigma_Z^2+\sigma_W^2}{1-\phi_1^2} \\\\
+&\gamma_Y(k)=\begin{cases}\frac{\sigma_Z^2+\sigma_W^2}{1-\phi_1^2} \ \ \ \ \ \ \ \ \ \ \ \ \text{for k=0}\\\\  \frac{\phi_1^k(\sigma_Z^2+\sigma_W^2)}{1-\phi_1^2}\ \ \ \ \ \ \ \text{for k}\geq1
+\end{cases}\ 
+\end{aligned}
+$$
+\  
+  (b) Show that the time series U~t~ := Y~t~ − $\phi Y_{t−1}$ is 1-correlated (i.e., γ~U~(h) = 0 for h > 1) and hence is MA(1) process.\
+$$
+\begin{aligned}
+U_t&=Y_t - \phi Y_{t-1}\\
+&= X_t+W_t-\phi (X_{t-1}+W_{t-1})\\
+&= X_t-\phi X_{t-1}+W_t-\phi W_{t-1}\\
+&=(1-\phi B)(X_t+W_t)\\
+\text{This is a MA(1) process with }& Z_t \text{ substituted for } X_t+W_t\\
+& \&\ X_t  \text{ substituted for }Y_t
+\end{aligned}
+$$
+\  
+  (c) Conclude from (b) that {Y~t~} is an ARMA(1,1) process and express the three parameters of this model in terms of $\phi$, σ~W~^2^ and σ~Z~^2^.
+\  
+$$
+U_t =(1-\phi B)(X_t+W_t)\\
+Y_t - \phi Y_{t-1} = (1-\phi B)(X_t+W_t)\\
+(1-\phi B)(Y_t) = (1-\phi B)(X_t+W_t)\\
+\text{Thus, it is an ARMA(1,1) Process}
+$$
+\
+\
+
+### Question GE2 
+Find the ACVF, ACF and PACF for {X~t~} when X~t~ = ΦX~t−4~ + Z~t~, |Φ| < 1.\
+
+$$
+X_t-\Phi X_{t-4}=Z_t\\
+= (1-\Phi B^{1*4})X_{t} = Z_t\\
+SARIMA(0,0,0) × (1,0,0)_4 
+$$
+```{r}
+ARMAacf(order=c(0,0,0), seasonal=list(c(1,0,0), period=4))
+```
