@@ -281,8 +281,30 @@ Find the ACVF, ACF and PACF for {X~t~} when X~t~ = ΦX~t−4~ + Z~t~, |Φ| < 1.\
 $$
 X_t-\Phi X_{t-4}=Z_t\\
 = (1-\Phi B^{1*4})X_{t} = Z_t\\
-SARIMA(0,0,0) × (1,0,0)_4 
+SARIMA(0,0,0) × (1,0,0)_4\\
+= AR(1)_4\\
+\gamma_X(h)= 
+\begin{cases}
+\frac{\sigma^2}{1-\Phi^2}\ \ \ for\ h = 0\\
+\frac{\Phi^k\sigma^2}{1-\Phi^2}\ \ \ for\ h=4k,\ k =1,2,3...
+\end{cases}\\
+$$
+
+$$
+\begin{aligned}
+\rho_X(h)= 
+\begin{cases}
+1 \ \ \ \ \ \ \ \ \ \ for\ k = 0\\
+\Phi^k\ \ \ for\ h=4k,\ k =1,2,3...\\
+\end{cases}\\\\\\
+PACF = \begin{cases}
+\Phi\ \ \ for\ h=4,\\
+0 \ \ \ \  otherwise
+\end{cases}\\\\\\
+\end{aligned}
 $$
 ```{r}
-ARMAacf(order=c(0,0,0), seasonal=list(c(1,0,0), period=4))
+phi=c(rep(0,3), 0.8)
+plotArmaTrueacf(list(ar = phi), lag.max=12, pacf=FALSE, plot=FALSE)
+plotArmaTrueacf(list(ar = phi), lag.max=10, pacf=TRUE, plot=FALSE)
 ```
