@@ -7,29 +7,50 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(FinTS)
+library(latex2exp)
+library(astsa)
+library(polynom)
 ```
 
 ### Question 1
 We will analyze monthly milk production measured in pounds per from Jan. 1962 to Dec. 1975 from the package tsdl as Lab 4 (if you want to re-install tsdl, please refer to Lab 4). Let’s denote the time series milk as X~t~.
 
 ```{r}
+#devtools::install_github("FinYang/tsdl") # install the `tsdl` package from github
 library(tsdl)
-milk <- subset(tsdl, 12, "Agriculture")[[3]] plot(milk)
+milk <- subset(tsdl, 12, "Agriculture")[[3]] 
+plot(milk)
 ```
 \
 ```{r}
 # To make it more stationary, we use the following code:
-dmilk <- diff(milk, 12) ddmilk <- diff(dmilk, 1)
+dmilk <- diff(milk, 12) 
+ddmilk <- diff(dmilk, 1)
+plot(ddmilk)
 ```
 \
 (a) Explain why the series milk looks not stationary.\
 
+`milk` looks stationary because it looks like it has a positive trend as well as seasonality.
 
 (b) Let Y~t~ be the series ddmilk, that is, Y~t~ = (1 − B)(1 − B~12~)X~t~. Plot the ACF and PACF of Y~t~ with lag.max = 50.\
+```{r}
+acf(ddmilk, lag.max=50)
+pacf(ddmilk, lag.max=50)
+```
 
 \
 (c) Now, we assume that Y~t~ corresponds to a SARIMA model. Determine possible candidate
 models SARIMA(p, d, q) × (P, D, Q)s for the series Y~t~.\
 
+SARIMA(0,1,0) x (0,1,0)~12~
+
+
 \
 (d) Choose one model for this data set, and write down your fitted model.\
+
+```{r}
+x = sarima(milk, 0,1,0,0,1,0,12)
+plot(x$fit$residuals)
+```
