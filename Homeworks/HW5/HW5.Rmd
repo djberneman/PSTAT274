@@ -14,6 +14,38 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Question 1
 Create a glossary of R-commands for time series. It should contain all commands that you learned so far in the labs, doing homework, and reviewing posted lecture slides. At the minimum, the glossary should include commands that allow
   – define working directory;
+```{r}
+# Install and add the following R-packages:
+
+# Packages for time series
+library(astsa)
+library(FinTS)
+library(ts.extend)
+library(devtools)
+devtools::install_github("FinYang/tsdl") 
+library(tsdl)
+library(distributional)
+
+
+library(tinytex)
+library(readr)
+library(latex2exp)
+library(png)
+library(pkgload)
+library(pkgconfig)
+library(pkgbuild)
+library(parallel)
+library(tools)
+
+library(polynom)
+library(dplyr)
+library(devtools)
+library(devtools)
+library(forecast) 
+devtools::install_github("FinYang/tsdl") 
+library(tsdl)
+library(MASS)
+```
   – read and plot data;
   – simulate and plot ARMA models;
   – add trend and mean line to the original time series plot;
@@ -25,7 +57,7 @@ Create a glossary of R-commands for time series. It should contain all commands 
   – perform MLE and check AICC associated with the model.\
   
   
-  
+
   
 
   
