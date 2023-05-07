@@ -71,6 +71,10 @@ title(main=TeX(r'(Sample $\phi$ = 0.4, $\theta$ = -0.7)'))
 # main = " "                        -> Plot title w/in plot function
 # title(main = " ")                 -> Plot title for previous constructed plot
 ```
+### Simulate and Plot ARMA models
+```{r}
+
+```
 
   
   
