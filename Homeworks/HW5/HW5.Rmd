@@ -15,36 +15,31 @@ knitr::opts_chunk$set(echo = TRUE)
 Create a glossary of R-commands for time series. It should contain all commands that you learned so far in the labs, doing homework, and reviewing posted lecture slides. At the minimum, the glossary should include commands that allow
   – define working directory;
 ```{r}
-# Install and add the following R-packages:
+# Install and  activate the following R-packages:
 
-# Packages for time series
 library(astsa)
-library(FinTS)
-library(ts.extend)
-library(devtools)
-devtools::install_github("FinYang/tsdl") 
-library(tsdl)
+#Applied Statistical Time Series Analysis
+
 library(distributional)
+# Vectorised distribution objects with tools for manipulating, visualizing, and using probability distributions. Designed to allow model prediction outputs to return distributions rather than their parameters, allowing users to directly interact with predictive distributions in a data-oriented workflow. 
 
+library(FinTS)
+# Plot the theoretical ACF corresponding to an ARMA model
 
-library(tinytex)
-library(readr)
+library(forecast) 
+# Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.
+
 library(latex2exp)
-library(png)
-library(pkgload)
-library(pkgconfig)
-library(pkgbuild)
-library(parallel)
-library(tools)
+# Use LaTeX Expressions in Plots
 
 library(polynom)
-library(dplyr)
-library(devtools)
-library(devtools)
-library(forecast) 
-devtools::install_github("FinYang/tsdl") 
-library(tsdl)
-library(MASS)
+# A Collection of Functions to Implement a Class for Univariate Polynomial Manipulations
+
+library(readr)
+# Read in data
+
+library(tinytex)
+# Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
 ```
   – read and plot data;
   – simulate and plot ARMA models;
