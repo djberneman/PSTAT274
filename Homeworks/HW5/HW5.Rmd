@@ -14,8 +14,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Question 1
 Create a glossary of R-commands for time series. It should contain all commands that you learned so far in the labs, doing homework, and reviewing posted lecture slides. At the minimum, the glossary should include commands that allow
   – define working directory;
+  – read and plot data;
+  – simulate and plot ARMA models;
+  – add trend and mean line to the original time series plot;
+  – calculate and plot theoretical acf/pacf for ARMA models;
+  – calculate and plot sample acf/pacf;
+  – check whether a particular model is causal/invertible (R commands to find and plot roots of polynomials) – perform Box-Cox transforms;
+  – perform differencing data at lags 1 and 12;
+  – perform Yule-Walker estimation and find standard deviations of the estimates.
+  – perform MLE and check AICC associated with the model.\
+
+### Packages
 ```{r}
-# Install and  activate the following R-packages:
+# Install and activate the following R-packages:
 
 library(astsa)
 #Applied Statistical Time Series Analysis
@@ -40,20 +51,26 @@ library(readr)
 
 library(tinytex)
 # Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
-```
-  – read and plot data;
-  – simulate and plot ARMA models;
-  – add trend and mean line to the original time series plot;
-  – calculate and plot theoretical acf/pacf for ARMA models;
-  – calculate and plot sample acf/pacf;
-  – check whether a particular model is causal/invertible (R commands to find and plot roots of polynomials) – perform Box-Cox transforms;
-  – perform differencing data at lags 1 and 12;
-  – perform Yule-Walker estimation and find standard deviations of the estimates.
-  – perform MLE and check AICC associated with the model.\
-  
-  
+```  
 
-  
+### Read and Plot Data
+```{r}
+# Read in data (File must be in the same working directory)
+uspop = read.csv("uspop.txt", header=FALSE) # (Must be in working directory)
+
+plot.ts(uspop)
+plot(uspop$V1) # requires data in the form of a vector
+tsplot(uspop$V1) # requires data in the form of a vector
+ts.plot(uspop$V1)
+title(main=TeX(r'(Sample $\phi$ = 0.4, $\theta$ = -0.7)'))
+# TeX(r'(...$ code $...))           -> Render text w/ latex code
+# ylab = " "                        -> change y-axis label
+# xlab = " "                        -> change x-axis label
+# ylim = c(a,b)                     -> change y-axis limits
+# xlim = c(a,b)                     -> change x-axis limits
+# main = " "                        -> Plot title w/in plot function
+# title(main = " ")                 -> Plot title for previous constructed plot
+```
 
   
   
