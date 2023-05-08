@@ -104,54 +104,70 @@ ts.plot(data, main=TeX(r'($\phi$)'), col="red")
 ### Simulate and Plot ARMA models
 auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, start.P, start.Q, stationary, seasonal, , allowmean, ic)\
 
-  - Use to fit and estimate model coefficients and parameters using an existing time series 
-  - `y` a univariate time series
-  - `d` Order of first-differencing. If missing, will choose a value based on test.
-  - `D` Order of seasonal-differencing. If missing, will choose a value based on season.test.
-  - `max.p` Maximum value of p
-  - `max.q` Maximum value of q
-  - `max.P` Maximum value of P
-  - `max.Q` Maximum value of Q
-  - `max.d` Maximum value of d
-  - `max.D` Maximum value of D
-  - `start.p` Starting value of p
-  - `start.q` Starting value of q
-  - `start.P` Starting value of P
-  - `start.Q` Starting value of Q
-  - `stationary` If TRUE, restricts search to stationary models.
-  - `seasonal` If FALSE, restricts search to non-seasonal models.
-  - `ic` Information criterion to be used in model selection. c("aicc", "aic", "bic")
-  - `allowmean`	If TRUE, models with a non-zero mean are considered.
-\
-asta::sarima()
-\
-  - `xdata`	univariate time series
-  - `p`	AR order (must be specified)
-  - `d`	difference order (must be specified)
-  - `q`	MA order (must be specified)
-  - `P`	SAR order; use only for seasonal models
-  - `D`	seasonal difference; use only for seasonal models
-  - `Q`	SMA order; use only for seasonal models
-  - `S`	seasonal period; use only for seasonal models
-  - `fixed` model with specified coefficients; see `sarima.sim`
+  - *Use to fit and estimate model coefficients and parameters using an existing time series *
+  - *`y` a univariate time series*
+  - *`d` Order of first-differencing. If missing, will choose a value based on test.*
+  - *`D` Order of seasonal-differencing. If missing, will choose a value based on season.test.*
+  - *`max.p` Maximum value of p*
+  - *`max.q` Maximum value of q*
+  - *`max.P` Maximum value of P*
+  - *`max.Q` Maximum value of Q*
+  - *`max.d` Maximum value of d*
+  - *`max.D` Maximum value of D*
+  - *`start.p` Starting value of p*
+  - *`start.q` Starting value of q*
+  - *`start.P` Starting value of P*
+  - *`start.Q` Starting value of Q*
+  - *`stationary` If TRUE, restricts search to stationary models.*
+  - *`seasonal` If FALSE, restricts search to non-seasonal models.*
+  - *`ic` Information criterion to be used in model selection. c("aicc", "aic", "bic")*
+  - *`allowmean`	If TRUE, models with a non-zero mean are considered.*
 \
 
-sarima.sim
+asta::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
+
+  - *`xdata`	univariate time series*
+  - *`p` AR order (must be specified)*
+  - *`d` difference order (must be specified)*
+  - *`q` MA order (must be specified)*
+  - *`P` SAR order; use only for seasonal models*
+  - *`D` seasonal difference; use only for seasonal models*
+  - *`Q` SMA order; use only for seasonal models*
+  - *`S` seasonal period; use only for seasonal models*
+  - *`fixed` model with specified coefficients; see `sarima.sim`*
+\
+
+sarima.sim(ar, d, ma, sar, D, sma, S, n, innov)\
+
+  - *`ar` coefficients of AR component (does not have to be specified)*
+  - *`d` order of regular difference (does not have to be specified)*
+  - *`ma` coefficients of MA component (does not have to be specified)*
+  - *`sar` coefficients of SAR component (does not have to be specified)*
+  - *`D` order of seasonal difference (does not have to be specified)*
+  - *`sma` coefficients of SMA component (does not have to be specified)*
+  - *`S` seasonal period (does not have to be specified)*
+  - *`n` desired sample size (defaults to 500)*
+  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
+\
+
+sarima.for(n.ahead, *same as sarima*)\
+
+  - *`n.ahead` forecast horizon (number of periods)*
+\
 
 ```{r}
-x = auto.arima(milk,trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0)
+milk <- subset(tsdl, 12, "Agriculture")[[3]] 
 
+x = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
+arima.sim
 plot(x$x-x$fitted)
 plot(x$residuals)
 y = astsa::sarima(milk, 0,1,0,0,1,0,12)
 plot(y$fit$residuals)
 points(type="l", x$residuals, col="red")
 
-plot(sarima(milk, 0,1,0,0,1,0,12))
 
-points(x$fitted, col="red")
-
-
+sarima.sim(innov)
 
 # x=GetFitARMA(milk, p=2, q=0)
 # ImpulseCoefficientsARMA(phi=c(0.9, -0.4), theta = c(0,0.8), 20)
@@ -166,10 +182,8 @@ points(x$fitted, col="red")
 # plot(x$fits)
 # acf2(milk)
 milk <- subset(tsdl, 12, "Agriculture")[[3]] 
-x = ARIMA(milk, order = c(2,1,0), seasonal=list(order=c(0,1,0), period=12), xreg = list(ar = c(0.4, 0.5), sar = c(0.7)))
 InvertibleQ(c(0.8, -0.5))
-polyroot(c(-0.5, 0.1, 1))
-plot(sarima(milk, 0,1,0,0,1,0,12))
+
 ```
 
 ### Functions
