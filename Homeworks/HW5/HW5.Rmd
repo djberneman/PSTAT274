@@ -12,30 +12,39 @@ knitr::opts_chunk$set(echo = TRUE)
 *Note: {Z~t~} ∼ WN(0, σ~Z~^2^) denotes white noise.*
 
 ### Question 1
-Create a glossary of R-commands for time series. It should contain all commands that you learned so far in the labs, doing homework, and reviewing posted lecture slides. At the minimum, the glossary should include commands that allow
-  – define working directory;
-  – read and plot data;
-  – simulate and plot ARMA models;
-  – add trend and mean line to the original time series plot;
-  – calculate and plot theoretical acf/pacf for ARMA models;
-  – calculate and plot sample acf/pacf;
-  – check whether a particular model is causal/invertible (R commands to find and plot roots of polynomials) – perform Box-Cox transforms;
-  – perform differencing data at lags 1 and 12;
-  – perform Yule-Walker estimation and find standard deviations of the estimates.
-  – perform MLE and check AICC associated with the model.\
+Create a glossary of R-commands for time series. It should contain all commands that you learned so far in the labs, doing homework, and reviewing posted lecture slides. At the minimum, the glossary should include commands that allow:\
+  
+  - define working directory
+  - read and plot data
+  - simulate and plot ARMA models\
+  - add trend and mean line to the original time series plot\
+  - calculate and plot theoretical acf/pacf for ARMA models\
+  - calculate and plot sample acf/pacf\
+  - check whether a particular model is\ causal/invertible (R commands to find and plot roots of polynomials)\
+  - perform Box-Cox transforms\
+  - perform differencing data at lags 1 and 12\
+  - perform Yule-Walker estimation and find standard deviations of the estimates\
+  - perform MLE and check AICC associated with the model\
 
-### Packages
-```{r}
+#### Packages
+```{r message=FALSE, warning=FALSE}
 # Install and activate the following R-packages:
 
 library(astsa)
 #Applied Statistical Time Series Analysis
+
+devtools::install_github("FinYang/tsdl")
+library(tsdl)
+# Practice time series
 
 library(distributional)
 # Vectorised distribution objects with tools for manipulating, visualizing, and using probability distributions. Designed to allow model prediction outputs to return distributions rather than their parameters, allowing users to directly interact with predictive distributions in a data-oriented workflow. 
 
 library(FinTS)
 # Plot the theoretical ACF corresponding to an ARMA model
+
+library(FitARMA)
+# mplements fast maximum likelihood algorithm for fitting ARMA time series.
 
 library(forecast) 
 # Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.
@@ -49,33 +58,188 @@ library(polynom)
 library(readr)
 # Read in data
 
+library(sarima)
+# Functions, classes and methods for time series modelling with ARIMA and related models. 
+
 library(tinytex)
 # Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
 ```  
 
-### Read and Plot Data
-```{r}
-# Read in data (File must be in the same working directory)
-uspop = read.csv("uspop.txt", header=FALSE) # (Must be in working directory)
+#### Read and Plot Data
 
-plot.ts(uspop)
-plot(uspop$V1) # requires data in the form of a vector
-tsplot(uspop$V1) # requires data in the form of a vector
-ts.plot(uspop$V1)
-title(main=TeX(r'(Sample $\phi$ = 0.4, $\theta$ = -0.7)'))
-# TeX(r'(...$ code $...))           -> Render text w/ latex code
-# ylab = " "                        -> change y-axis label
-# xlab = " "                        -> change x-axis label
-# ylim = c(a,b)                     -> change y-axis limits
-# xlim = c(a,b)                     -> change x-axis limits
-# main = " "                        -> Plot title w/in plot function
-# title(main = " ")                 -> Plot title for previous constructed plot
+read.csv(file = , header)\
+
+  - *`Read` in data (file must be in the same working directory)*\
+```{r}
+uspop = read.csv("uspop.txt", header=FALSE)
+head(uspop, 5)
 ```
+\
+ts(data = " ", start = numeric(0), end = numeric(0), frequency = numeric(0))\
+
+  - *`data` must be a vector, matrix, or data frame*
+  - *`start` is the time of the 1^st^ observation*
+  - *`frequency` is the number of observations per unit of time*
+\
+
+\
+plot(x, y, xlab = "...", ylab = "...", xlim = c( ), ylim = c( ), main = TeX( ), col = "...")\
+
+  - *`TeX(r'(...$ code $...)')` Render text w/ latex code in place of a string*
+  - *`xlab` changes the x-axis label*
+  - *`ylab` changes the y-axis label*
+  - *`xlim` specify the values on the x-axis*
+  - *`ylim` specify the values on the y-axis*
+  - *`main` changes the title of the plot*
+  - *`col` changes the color of the line*
+  - *can also use `plot.ts()` or `ts.plot()`*
+
+```{r, out.width = "30%", fig.align='center'}
+data = data.frame("months"=0:24)
+data = ts(data, start=1920, end = 1922, frequency=12)
+ts.plot(data, main=TeX(r'($\phi$)'), col="red")
+```
+
+
 ### Simulate and Plot ARMA models
-```{r}
+auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, start.P, start.Q, stationary, seasonal, , allowmean, ic)\
 
+  - Use to fit and estimate model coefficients and parameters using an existing time series 
+  - `y` a univariate time series
+  - `d` Order of first-differencing. If missing, will choose a value based on test.
+  - `D` Order of seasonal-differencing. If missing, will choose a value based on season.test.
+  - `max.p` Maximum value of p
+  - `max.q` Maximum value of q
+  - `max.P` Maximum value of P
+  - `max.Q` Maximum value of Q
+  - `max.d` Maximum value of d
+  - `max.D` Maximum value of D
+  - `start.p` Starting value of p
+  - `start.q` Starting value of q
+  - `start.P` Starting value of P
+  - `start.Q` Starting value of Q
+  - `stationary` If TRUE, restricts search to stationary models.
+  - `seasonal` If FALSE, restricts search to non-seasonal models.
+  - `ic` Information criterion to be used in model selection. c("aicc", "aic", "bic")
+  - `allowmean`	If TRUE, models with a non-zero mean are considered.
+\
+asta::sarima()
+\
+  - `xdata`	univariate time series
+  - `p`	AR order (must be specified)
+  - `d`	difference order (must be specified)
+  - `q`	MA order (must be specified)
+  - `P`	SAR order; use only for seasonal models
+  - `D`	seasonal difference; use only for seasonal models
+  - `Q`	SMA order; use only for seasonal models
+  - `S`	seasonal period; use only for seasonal models
+  - `fixed` model with specified coefficients; see `sarima.sim`
+\
+
+sarima.sim
+
+```{r}
+x = auto.arima(milk,trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0)
+
+plot(x$x-x$fitted)
+plot(x$residuals)
+y = astsa::sarima(milk, 0,1,0,0,1,0,12)
+plot(y$fit$residuals)
+points(type="l", x$residuals, col="red")
+
+plot(sarima(milk, 0,1,0,0,1,0,12))
+
+points(x$fitted, col="red")
+
+
+
+# x=GetFitARMA(milk, p=2, q=0)
+# ImpulseCoefficientsARMA(phi=c(0.9, -0.4), theta = c(0,0.8), 20)
+# ARMAacf(ar=c(0.9,-0.4), ma=c(0,0.8), pacf = TRUE, lag.max = 9)
+# tacvfARMA(phi=c(0.2, -0.6), theta = c(0.5, 0.6), maxLag = 10)
+# TacvfARMA(phi=c(01.2, -0.6), theta = c(0.5, 0.6), lag.max = 10)
+# x
+# 
+# polyroot(c(1,3,2))
+# x$fits
+# plot(milk)
+# plot(x$fits)
+# acf2(milk)
+milk <- subset(tsdl, 12, "Agriculture")[[3]] 
+x = ARIMA(milk, order = c(2,1,0), seasonal=list(order=c(0,1,0), period=12), xreg = list(ar = c(0.4, 0.5), sar = c(0.7)))
+InvertibleQ(c(0.8, -0.5))
+polyroot(c(-0.5, 0.1, 1))
+plot(sarima(milk, 0,1,0,0,1,0,12))
 ```
 
+### Functions
+
+**polyroot(c, b, a,...)**
+From: (a(1) - b(B) - c(B^2^)...)(X~t~ or Z~t~)
+For X~t~, time series is causal/stationary if |a, b, c| > 1
+For Z~t~, time series is invertible if |a, b, c| > 1
+
+```{r}
+signature(object = "Autocorrelations", convention = "ComboAutocorrelations", component = "missing")
+
+signature(object = "Autocorrelations", convention = "ComboAutocorrelations", component = "missing") 
+
+signature(object = "Autocorrelations", convention = "PartialAutocorrelations", component = "missing") 
+
+signature(object = "Autocovariances", convention = "Autocorrelations", component = "missing") 
+
+signature(object = "Autocovariances", convention = "ComboAutocorrelations", component = "missing")
+  
+signature(object = "Autocovariances", convention = "ComboAutocovariances", component = "missing")
+
+signature(object = "Autocovariances", convention = "PartialAutocorrelations", component = "missing") 
+
+signature(object = "ComboAutocorrelations", convention = "Autocorrelations", component = "missing") 
+
+signature(object = "ComboAutocorrelations", convention = "PartialAutocorrelations", component = "missing")
+
+signature(object = "ComboAutocovariances", convention = "Autocovariances", component = "missing") 
+
+signature(object = "ComboAutocovariances", convention = "PartialAutocovariances", component = "missing") 
+
+signature(object = "ComboAutocovariances", convention = "PartialVariances", component = "missing") 
+
+signature(object = "ComboAutocovariances", convention = "VirtualAutocovariances", component = "missing") 
+
+signature(object = "PartialAutocorrelations", convention = "Autocorrelations", component = "missing") 
+
+signature(object = "SarimaModel", convention = "ArFilter", component = "missing")
+
+signature(object = "SarimaModel", convention = "ArmaFilter", component = "missing")
+
+signature(object = "SarimaModel", convention = "MaFilter", component = "missing") 
+
+signature(object = "SarimaModel", convention = "SarimaFilter", component = "missing")
+
+signature(object = "VirtualAutocovariances", convention = "character", component = "missing") 
+
+signature(object = "VirtualAutocovariances", convention = "missing", component = "missing") 
+
+signature(object = "VirtualAutocovariances", convention = "VirtualAutocovariances", component = "missing")
+
+signature(object = "SarimaModel", convention = "ArModel", component = "missing") 
+
+signature(object = "SarimaModel", convention = "MaModel", component = "missing") 
+
+signature(object = "VirtualFilterModel", convention = "BD", component = "missing") 
+
+signature(object = "VirtualFilterModel", convention = "BJ", component = "missing") 
+
+signature(object = "VirtualFilterModel", convention = "character", component = "missing")
+
+signature(object = "VirtualFilterModel", convention = "missing", component = "missing")
+
+signature(object = "VirtualFilterModel", convention = "SP", component = "missing")
+
+signature(object = "ArmaModel", convention = "ArmaFilter", component = "missing")
+
+signature(object = "VirtualAutocovariances", convention = "Autocovariances", component = "missing")
+```
   
   
 2. Choose a dataset that you will be interested to analyze for your class final project. URLs of time series libraries are posted on Gaucho Space. Provide the following information about the project:
