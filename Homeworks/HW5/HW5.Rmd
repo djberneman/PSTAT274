@@ -27,6 +27,9 @@ Create a glossary of R-commands for time series. It should contain all commands 
   - perform MLE and check AICC associated with the model\
 
 #### Packages
+***`astsa`***\
+  Applied Statistical Time Series Analysis
+
 ```{r message=FALSE, warning=FALSE}
 # Install and activate the following R-packages:
 
@@ -185,26 +188,19 @@ sarima.for(n.ahead, *same as sarima*)\
 milk <- subset(tsdl, 12, "Agriculture")[[3]] 
 arima(milk, order=c(1,0,0), seasonal = list(order=c(1,1,1), period=12))
 x = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
-arima.sim
-plot(x$x-x$fitted)
 plot(x$residuals)
 y=astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
 acf(x$residuals)
 z = arima(milk, order=c(1,0,0), seasonal=list(order=c(1,1,1), period = 12), fixed = c(0.48, -0.7, 0.5))
 plot(y$fit$residuals)
 points(type="l", x$residuals, col="red")
-x
-y
 acf(z$residuals)
 sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
 sim
 plot(decompose(milk))
 plot(stl(milk, s.window="periodic"))
-plot(seasadj(milk), s.window="periodic")
-acf2(x$residuals)
-ts.plot(milk)
-nsdiffs(milk)
-astsa::trend(milk, lowess=TRUE, ylab="Southern Oscillation Index",  gg=TRUE)
+
+
 acf2(y$fit$residuals)
 acf(sim)
 acf(z$residuals)
