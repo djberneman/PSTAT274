@@ -146,6 +146,23 @@ astsa::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
   - *`fixed` model with specified coefficients; see `sarima.sim`*
 \
 
+ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
+
+  - *`ar` numeric vector of AR coefficients*
+  - *`ma` numeric vector of MA coefficients*
+  - *`lag.max` integer. Maximum lag required. Defaults to max(p, q+1), where p, q are the numbers of AR and MA terms respectively.*
+  - *`pacf` logical. Should the partial autocorrelations be returned?*
+\
+
+arima.sim(model, n, innov = rand.gen(n, ...), n.start = NA)\
+
+  - *`model` A list with component ar and/or ma giving the AR and MA coefficients respectively. Optionally a component order can be used. An empty list gives an ARIMA(0, 0, 0) model, that is white noise.*
+  - *`n` length of output series, before un-differencing. A strictly positive integer.*
+  - *`rand.gen` optional: a function to generate the innovations.*
+  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
+  - *`n.start` length of ‘burn-in’ period. If NA, the default, a reasonable value is computed. (set to 0 if `innov` is an existing time series*
+\
+
 sarima.sim(ar, d, ma, sar, D, sma, S, n, innov)\
 
   - *`ar` coefficients of AR component (does not have to be specified)*
@@ -181,6 +198,9 @@ y
 acf(z$residuals)
 sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
 sim
+plot(decompose(milk))
+plot(stl(milk, s.window="periodic"))
+plot(seasadj(milk), s.window="periodic")
 acf2(x$residuals)
 ts.plot(milk)
 nsdiffs(milk)
