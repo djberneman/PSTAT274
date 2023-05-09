@@ -25,67 +25,95 @@ Create a glossary of R-commands for time series. It should contain all commands 
   - perform differencing data at lags 1 and 12\
   - perform Yule-Walker estimation and find standard deviations of the estimates\
   - perform MLE and check AICC associated with the model\
+\
 
 #### Packages
-***`astsa`***\
-  Applied Statistical Time Series Analysis
+\
+**`astsa`**
 
+  - *Applied Statistical Time Series Analysis*\
+\
+
+**`tsdl`**
+
+  - *devtools::install_github("FinYang/tsdl")*
+  - *Library and practice with time series models*\
+\
+
+**`distributional`**
+
+  - *Vectorised distribution objects with tools for manipulating, visualizing, and using probability distributions. Designed to allow model prediction outputs to return distributions rather than their parameters, allowing users to directly interact with predictive distributions in a data-oriented workflow.*\
+\
+
+**`FinTS`**
+
+  - *Plot the theoretical ACF corresponding to an ARMA model*\
+\
+
+**`FitARMA`**
+
+  - *implements fast maximum likelihood algorithm for fitting ARMA time series*\
+\
+
+**`forecast`**
+
+  - *Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.*\
+\
+
+**`latex2exp`**
+
+  - *Use LaTeX Expressions in Plots*\
+\
+
+**`polynom`**
+
+  - *A Collection of Functions to Implement a Class for Univariate Polynomial Manipulations*\
+ \
+ 
+**`readr`**
+
+  - *Read in data*\
+\
+
+**`sarima`**
+
+  - *Functions, classes and methods for time series modelling with ARIMA and related models.*\
+\
+
+**`tinytex`**
+
+  - *Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents*
 ```{r message=FALSE, warning=FALSE}
-# Install and activate the following R-packages:
-
 library(astsa)
-#Applied Statistical Time Series Analysis
-
 devtools::install_github("FinYang/tsdl")
 library(tsdl)
-# Practice time series
-
 library(distributional)
-# Vectorised distribution objects with tools for manipulating, visualizing, and using probability distributions. Designed to allow model prediction outputs to return distributions rather than their parameters, allowing users to directly interact with predictive distributions in a data-oriented workflow. 
-
 library(FinTS)
-# Plot the theoretical ACF corresponding to an ARMA model
-
 library(FitARMA)
-# mplements fast maximum likelihood algorithm for fitting ARMA time series.
-
 library(forecast) 
-# Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.
-
 library(latex2exp)
-# Use LaTeX Expressions in Plots
-
 library(polynom)
-# A Collection of Functions to Implement a Class for Univariate Polynomial Manipulations
-
 library(readr)
-# Read in data
-
 library(sarima)
-# Functions, classes and methods for time series modelling with ARIMA and related models. 
-
 library(tinytex)
-# Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
 ```  
+\
 
 #### Read and Plot Data
+\
 
 read.csv(file = , header)\
 
   - *`Read` in data (file must be in the same working directory)*\
-```{r}
-uspop = read.csv("uspop.txt", header=FALSE)
-head(uspop, 5)
-```
 \
+
 ts(data = " ", start = numeric(0), end = numeric(0), frequency = numeric(0))\
 
   - *`data` must be a vector, matrix, or data frame*
   - *`start` is the time of the 1^st^ observation*
-  - *`frequency` is the number of observations per unit of time*
+  - *`frequency` is the number of observations per unit of time*\
 \
 
-\
 plot(x, y, xlab = "...", ylab = "...", xlim = c( ), ylim = c( ), main = TeX( ), col = "...")\
 
   - *`TeX(r'(...$ code $...)')` Render text w/ latex code in place of a string*
@@ -98,13 +126,24 @@ plot(x, y, xlab = "...", ylab = "...", xlim = c( ), ylim = c( ), main = TeX( ), 
   - *can also use `plot.ts()` or `ts.plot()`*
 
 ```{r, out.width = "30%", fig.align='center'}
+# read in data
+uspop = read.csv("uspop.txt", header=FALSE)
+head(milk, 5)
+
+# get data from library
+milk <- subset(tsdl, 12, "Agriculture")[[3]]
+
+# turn data into time series
 data = data.frame("months"=0:24)
 data = ts(data, start=1920, end = 1922, frequency=12)
 ts.plot(data, main=TeX(r'($\phi$)'), col="red")
+
 ```
 
 
 ### Simulate and Plot ARMA models
+\
+
 auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, start.P, start.Q, stationary, seasonal, , allowmean, ic)\
 
   - *Use to fit and estimate model coefficients and parameters using an existing time series *
@@ -125,7 +164,7 @@ auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, 
   - *`seasonal` If FALSE, restricts search to non-seasonal models.*
   - *`ic` Information criterion to be used in model selection. c("aicc", "aic", "bic")*
   - *`allowmean`	If TRUE, models with a non-zero mean are considered.*
-  - *`astsa::sarima` will provide more output values if parameters are known*
+  - *`astsa::sarima` will provide more output values if parameters are known*\
 \
 
 arima(x, order = c(p,d,q), seasonal = list(order = c(P,D,Q), period = S, fixed = c(phi_1.., theta_1..., Phi_1..., Theta_1...)))\
@@ -133,7 +172,7 @@ arima(x, order = c(p,d,q), seasonal = list(order = c(P,D,Q), period = S, fixed =
   - *`x` a univariate time series*
   - *`order` specification of the non-seasonal part of the ARIMA model (p,d,q)*
   - *`seasonal` specification of seasonal part of the ARIMA model plus the period (P,D,Q) S*
-  - *`fixed` numeric vector of equal length to the coefficients of the sum of the orders of ar, ma, sar, and sma, where NA specifies coefficients to be estimated*
+  - *`fixed` numeric vector of equal length to the coefficients of the sum of the orders of ar, ma, sar, and sma, where NA specifies coefficients to be estimated*\
 \
 
 astsa::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
@@ -146,7 +185,7 @@ astsa::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
   - *`D` seasonal difference; use only for seasonal models*
   - *`Q` SMA order; use only for seasonal models*
   - *`S` seasonal period; use only for seasonal models*
-  - *`fixed` model with specified coefficients; see `sarima.sim`*
+  - *`fixed` model with specified coefficients; see `sarima.sim`*\
 \
 
 ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
@@ -154,7 +193,7 @@ ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
   - *`ar` numeric vector of AR coefficients*
   - *`ma` numeric vector of MA coefficients*
   - *`lag.max` integer. Maximum lag required. Defaults to max(p, q+1), where p, q are the numbers of AR and MA terms respectively.*
-  - *`pacf` logical. Should the partial autocorrelations be returned?*
+  - *`pacf` logical. Should the partial autocorrelations be returned?*\
 \
 
 arima.sim(model, n, innov = rand.gen(n, ...), n.start = NA)\
@@ -163,7 +202,7 @@ arima.sim(model, n, innov = rand.gen(n, ...), n.start = NA)\
   - *`n` length of output series, before un-differencing. A strictly positive integer.*
   - *`rand.gen` optional: a function to generate the innovations.*
   - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
-  - *`n.start` length of ‘burn-in’ period. If NA, the default, a reasonable value is computed. (set to 0 if `innov` is an existing time series*
+  - *`n.start` length of ‘burn-in’ period. If NA, the default, a reasonable value is computed. (set to 0 if `innov` is an existing time series*\
 \
 
 sarima.sim(ar, d, ma, sar, D, sma, S, n, innov)\
@@ -176,7 +215,7 @@ sarima.sim(ar, d, ma, sar, D, sma, S, n, innov)\
   - *`sma` coefficients of SMA component (does not have to be specified)*
   - *`S` seasonal period (does not have to be specified)*
   - *`n` desired sample size (defaults to 500)*
-  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
+  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*\
 \
 
 sarima.for(n.ahead, *same as sarima*)\

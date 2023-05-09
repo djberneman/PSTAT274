@@ -390,47 +390,100 @@ find and plot roots of polynomials)<br />
 estimates<br />
 </li>
 <li>perform MLE and check AICC associated with the model<br />
+<br />
 </li>
 </ul>
 <div id="packages" class="section level4">
 <h4>Packages</h4>
-<p><strong><em><code>astsa</code></em></strong><br />
-Applied Statistical Time Series Analysis</p>
-<pre class="r"><code># Install and activate the following R-packages:
-
-library(astsa)
-#Applied Statistical Time Series Analysis
-
+<p><br />
+<strong><code>astsa</code></strong></p>
+<ul>
+<li><em>Applied Statistical Time Series Analysis</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>tsdl</code></strong></p>
+<ul>
+<li><em>devtools::install_github(“FinYang/tsdl”)</em></li>
+<li><em>Library and practice with time series models</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>distributional</code></strong></p>
+<ul>
+<li><em>Vectorised distribution objects with tools for manipulating,
+visualizing, and using probability distributions. Designed to allow
+model prediction outputs to return distributions rather than their
+parameters, allowing users to directly interact with predictive
+distributions in a data-oriented workflow.</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>FinTS</code></strong></p>
+<ul>
+<li><em>Plot the theoretical ACF corresponding to an ARMA
+model</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>FitARMA</code></strong></p>
+<ul>
+<li><em>implements fast maximum likelihood algorithm for fitting ARMA
+time series</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>forecast</code></strong></p>
+<ul>
+<li><em>Methods and tools for displaying and analysing univariate time
+series forecasts including exponential smoothing via state space models
+and automatic ARIMA modelling.</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>latex2exp</code></strong></p>
+<ul>
+<li><em>Use LaTeX Expressions in Plots</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>polynom</code></strong></p>
+<ul>
+<li><em>A Collection of Functions to Implement a Class for Univariate
+Polynomial Manipulations</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>readr</code></strong></p>
+<ul>
+<li><em>Read in data</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>sarima</code></strong></p>
+<ul>
+<li><em>Functions, classes and methods for time series modelling with
+ARIMA and related models.</em><br />
+<br />
+</li>
+</ul>
+<p><strong><code>tinytex</code></strong></p>
+<ul>
+<li><em>Helper Functions to Install and Maintain TeX Live, and Compile
+LaTeX Documents</em></li>
+</ul>
+<pre class="r"><code>library(astsa)
 devtools::install_github(&quot;FinYang/tsdl&quot;)
 library(tsdl)
-# Practice time series
-
 library(distributional)
-# Vectorised distribution objects with tools for manipulating, visualizing, and using probability distributions. Designed to allow model prediction outputs to return distributions rather than their parameters, allowing users to directly interact with predictive distributions in a data-oriented workflow. 
-
 library(FinTS)
-# Plot the theoretical ACF corresponding to an ARMA model
-
 library(FitARMA)
-# mplements fast maximum likelihood algorithm for fitting ARMA time series.
-
 library(forecast) 
-# Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.
-
 library(latex2exp)
-# Use LaTeX Expressions in Plots
-
 library(polynom)
-# A Collection of Functions to Implement a Class for Univariate Polynomial Manipulations
-
 library(readr)
-# Read in data
-
 library(sarima)
-# Functions, classes and methods for time series modelling with ARIMA and related models. 
-
-library(tinytex)
-# Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents</code></pre>
+library(tinytex)</code></pre>
 </div>
 <div id="read-and-plot-data" class="section level4">
 <h4>Read and Plot Data</h4>
