@@ -85,12 +85,14 @@ Create a glossary of R-commands for time series. It should contain all commands 
   - *Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents*
 ```{r message=FALSE, warning=FALSE}
 library(astsa)
+library(basicTrendline)
 devtools::install_github("FinYang/tsdl")
 library(tsdl)
 library(distributional)
 library(FinTS)
 library(FitARMA)
-library(forecast) 
+library(forecast)
+library(ggplot2)
 library(latex2exp)
 library(polynom)
 library(readr)
@@ -128,7 +130,7 @@ plot(x, y, xlab = "...", ylab = "...", xlim = c( ), ylim = c( ), main = TeX( ), 
 ```{r, out.width = "30%", fig.align='center'}
 # read in data
 uspop = read.csv("uspop.txt", header=FALSE)
-head(milk, 5)
+head(uspop, 5)
 
 # get data from library
 milk <- subset(tsdl, 12, "Agriculture")[[3]]
@@ -142,6 +144,24 @@ ts.plot(data, main=TeX(r'($\phi$)'), col="red")
 
 
 ### Simulate and Plot ARMA models
+\
+
+arima(x, order = c(p,d,q), seasonal = list(order = c(P,D,Q), period = S, fixed = c(phi_1.., theta_1..., Phi_1..., Theta_1...)))\
+
+  - *`x` a univariate time series*
+  - *`order` specification of the non-seasonal part of the ARIMA model (p,d,q)*
+  - *`seasonal` specification of seasonal part of the ARIMA model plus the period (P,D,Q) S*
+  - *`fixed` numeric vector of equal length to the coefficients of the sum of the orders of ar, ma, sar, and sma, where NA specifies coefficients to be estimated*\
+\
+
+arima.sim(model, n, innov = rand.gen(n, ...), n.start = NA)\
+
+  - *only useful to make a sample or theoretical model for pure ARIMA*
+  - *`model` A list with component ar and/or ma giving the AR and MA coefficients respectively. Optionally a component order can be used. An empty list gives an ARIMA(0, 0, 0) model, that is white noise.*
+  - *`n` length of output series, before un-differencing. A strictly positive integer.*
+  - *`rand.gen` optional: a function to generate the innovations.*
+  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
+  - *`n.start` length of ‘burn-in’ period. If NA, the default, a reasonable value is computed. (set to 0 if `innov` is an existing time series*\
 \
 
 auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, start.P, start.Q, stationary, seasonal, , allowmean, ic)\
@@ -167,15 +187,7 @@ auto.arima(y, d, D, max.p, max.q, max.P, max.Q, max.d, max.D, start.p, start.q, 
   - *`astsa::sarima` will provide more output values if parameters are known*\
 \
 
-arima(x, order = c(p,d,q), seasonal = list(order = c(P,D,Q), period = S, fixed = c(phi_1.., theta_1..., Phi_1..., Theta_1...)))\
-
-  - *`x` a univariate time series*
-  - *`order` specification of the non-seasonal part of the ARIMA model (p,d,q)*
-  - *`seasonal` specification of seasonal part of the ARIMA model plus the period (P,D,Q) S*
-  - *`fixed` numeric vector of equal length to the coefficients of the sum of the orders of ar, ma, sar, and sma, where NA specifies coefficients to be estimated*\
-\
-
-astsa::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
+astsa::sarima(xdata, p, d, q, P, D, Q, S)\
 
   - *`xdata`	univariate time series*
   - *`p` AR order (must be specified)*
@@ -184,38 +196,16 @@ astsa::sarima(xdata, p, d, q, P, D, Q, S, fixed)\
   - *`P` SAR order; use only for seasonal models*
   - *`D` seasonal difference; use only for seasonal models*
   - *`Q` SMA order; use only for seasonal models*
-  - *`S` seasonal period; use only for seasonal models*
-  - *`fixed` model with specified coefficients; see `sarima.sim`*\
+  - *`S` seasonal period; use only for seasonal models*\
 \
 
 ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
 
+  - *Use to calculate theoretical autocorrelations*
   - *`ar` numeric vector of AR coefficients*
   - *`ma` numeric vector of MA coefficients*
   - *`lag.max` integer. Maximum lag required. Defaults to max(p, q+1), where p, q are the numbers of AR and MA terms respectively.*
   - *`pacf` logical. Should the partial autocorrelations be returned?*\
-\
-
-arima.sim(model, n, innov = rand.gen(n, ...), n.start = NA)\
-
-  - *`model` A list with component ar and/or ma giving the AR and MA coefficients respectively. Optionally a component order can be used. An empty list gives an ARIMA(0, 0, 0) model, that is white noise.*
-  - *`n` length of output series, before un-differencing. A strictly positive integer.*
-  - *`rand.gen` optional: a function to generate the innovations.*
-  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*
-  - *`n.start` length of ‘burn-in’ period. If NA, the default, a reasonable value is computed. (set to 0 if `innov` is an existing time series*\
-\
-
-sarima.sim(ar, d, ma, sar, D, sma, S, n, innov)\
-
-  - *`ar` coefficients of AR component (does not have to be specified)*
-  - *`d` order of regular difference (does not have to be specified)*
-  - *`ma` coefficients of MA component (does not have to be specified)*
-  - *`sar` coefficients of SAR component (does not have to be specified)*
-  - *`D` order of seasonal difference (does not have to be specified)*
-  - *`sma` coefficients of SMA component (does not have to be specified)*
-  - *`S` seasonal period (does not have to be specified)*
-  - *`n` desired sample size (defaults to 500)*
-  - *`innov` an optional times series of innovations. If not provided, rand.gen is used.*\
 \
 
 sarima.for(n.ahead, *same as sarima*)\
@@ -224,8 +214,31 @@ sarima.for(n.ahead, *same as sarima*)\
 \
 
 ```{r}
-milk <- subset(tsdl, 12, "Agriculture")[[3]] 
+# auto.arima
+plot.ts(auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)$residuals)
+
+# arima
+arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12))
+
+# astsa::sarima
+astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
+
+acf(auto_arima$residuals)
+acf(arima$residuals)
+acf(astsa_sarima$fit$residuals)
+
+acf(sarima_sim)
+acf(auto_arima$residuals)
+auto_arima$coef
+acf(astsa_sarima$fit$residuals)
+
+
+model = list(order = c(1,0,0), seasonal = c(1,1,1)))n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
+plot.ts(smooth(milk))
+plot.ts(milk)
+lines(density(milk))
 arima(milk, order=c(1,0,0), seasonal = list(order=c(1,1,1), period=12))
+armaacf()
 x = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
 plot(x$residuals)
 y=astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
@@ -237,11 +250,13 @@ acf(z$residuals)
 sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
 sim
 plot(decompose(milk))
+ARMAacf(ar=0.6)
 plot(stl(milk, s.window="periodic"))
-
-
+trendline(x=1:156, y=milk)
+stat_smooth(milk)
 acf2(y$fit$residuals)
 acf(sim)
+milk[1]
 acf(z$residuals)
 # x=GetFitARMA(milk, p=2, q=0)
 # ImpulseCoefficientsARMA(phi=c(0.9, -0.4), theta = c(0,0.8), 20)
@@ -263,7 +278,13 @@ y$fit$coef
 pacf(y$fit$residuals)
 x
 y
-
+milk
+ggplot(milk, aes(x = 1:156, y = milk)) +
+  geom_point() +
+  geom_line(aes(x=1:156, y=milk))+
+  stat_smooth(method = 'loess', aes(colour = 'linear'), se = FALSE) +
+  stat_smooth(method = 'lm', formula = y ~ poly(x,2), aes(colour = 'polynomial'), se= FALSE) +
+  stat_smooth(method = 'nls', formula = y ~ a * log(x) + b, aes(colour = 'logarithmic'), se = FALSE, method.args = list(start = list(a = 1, b = 1))) 
 ```
 
 ### Functions
