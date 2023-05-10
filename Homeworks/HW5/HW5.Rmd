@@ -220,38 +220,39 @@ sarima.sim(ar = NULL, d = 0, ma = NULL, sar = NULL, D = 0, sma = NULL, S = NULL,
   - *`burnin` length of burn-in (a non-negative integer). If NA (the default) a reasonable value is selected.*\
 \
 
-sarima::sarima
-ar	
-coefficients of AR component (does not have to be specified)
-d	
-order of regular difference (does not have to be specified)
-ma	
-coefficients of MA component (does not have to be specified)
-sar	
-coefficients of SAR component (does not have to be specified)
-D	
-order of seasonal difference (does not have to be specified)
-sma	
-coefficients of SMA component (does not have to be specified)
-S	
-seasonal period (does not have to be specified)
-n	
-desired sample size (defaults to 500)
-rand.gen	
-optional; a function to generate the innovations (defaults to normal)
-innov	
-an optional times series of innovations. If not provided, rand.gen is used.
-burnin	
-length of burn-in (a non-negative integer). If NA (the default) a reasonable value is selected.
+sarima::sarima(model, data = NULL)\
 
+  - *`model` a model formula specifying the model.*
+  - *`data` a list or data frame, usually can be omitted.*
+    - *`ar(p)` autoregression term of order p*
+    - *`ma(q)` moving average term of order q*
+    - *`sar(s,p)` seasonal autoregression term (s seasons, order p)*
+    - *`sma(s,q)` seasonal moving average term (s seasons, order q)*
+    - *`i(d)` (1-B)^d*
+    - *`si(d)` (1-B^s)^d*
+    - *`s` seasonality*
+  - *For ar, ma, sar, sma, values of the coefficients can be specified by an unnamed argument after the parameters given in the descriptions above*
+  - *Argument `fixed` can be used to fix some of them. If it is a logical vector it should be of length one or have the same length as the coefficients*
+  
 ```{r, out.width = "30%", fig.align='center'}
 # auto.arima
 auto_arima = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
 
+# sarima_sarima
+sarima::sarima(model = milk ~ 
+                 ar(1, c(auto_arima$coef[1])) + sar(12, 1, c(auto_arima$coef[2])) + s(12)| sma(12, 1, auto_arima$coef[3]))
 # arima
 # need to check to see what is wrong
 arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
+modelOrder(milk, "SarimaFilter")
+as.SarimaModel(sim_sarima)
 
+sim_sarima = sim_sarima(model = list(ar=auto_arima$coef[1],  sar=auto_arima$coef[3], sma=auto_arima$coef[2], siorder=1, nseasons=12), n=156, x = milk, n.start=1)
+astsa_sarima$fit$residuals
+
+acf2(sim_sarima)
+  
+modelCoef(sim_sarima, convention = "Autocorrelations")
 # astsa::sarima
 astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
 
@@ -501,9 +502,16 @@ signature(object = "VirtualAutocovariances", convention = "Autocovariances", com
 ```
   
   
-2. Choose a dataset that you will be interested to analyze for your class final project. URLs of time series libraries are posted on Gaucho Space. Provide the following information about the project:
-(a) Data set description: briefly describe the data set you plan to use in your project.
-(b) Motivation and objectives: briefly explain why this data set is interesting or important. Provide a clear description of the problem you plan to address using this dataset (for example to forecast).
+### Question 2
+Choose a dataset that you will be interested to analyze for your class final project. URLs of time series libraries are posted on Gaucho Space. Provide the following information about the project:\
+
+  (a) Data set description: briefly describe the data set you plan to use in your project.\
+  I want to improve on my final project from PSTAT 231. In that project, my dataset was 2 combined time series of the number of deaths, cases, and vaccinations of the US population per month during the COVID pandemic. It also has the daily historic data and it can all be categorized by county and by state within the US.
+  
+  (b) Motivation and objectives: briefly explain why this data set is interesting or important. Provide a clear description of the problem you plan to address using this dataset (for example to forecast).\
+  On my previous project, my goal was to predict the future number of cases and deaths caused by COVID. Now that there are so many lesser strains and variants of COVID, I do not believe that the virus will go away any time soon. I predict that the cases and deaths will continuously decrease over time until cases of COVID become far less severe, and then eventual complete vaccination of the entire country will relegate COVID to a seasonal sickness such as the flu. I want to see how long it will take until the amount of cases and deaths caused by covid resembles those cause by the flu.
+  
+
 (c) Plot and examine the main features of the graph, checking in particular whether there is (i) a trend; (ii) a seasonal component, (iii) any apparent sharp changes in behavior. Explain in detail.
 (d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
