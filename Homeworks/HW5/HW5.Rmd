@@ -141,9 +141,9 @@ data = ts(data, start=1920, end = 1922, frequency=12)
 ts.plot(data, main=TeX(r'($\phi$)'), col="red")
 
 ```
+\
 
-
-### Simulate and Plot ARMA models
+### Simulate and Plot ARMA Models
 \
 
 arima(x, order = c(p,d,q), seasonal = list(order = c(P,D,Q), period = S, fixed = c(phi_1.., theta_1..., Phi_1..., Theta_1...)))\
@@ -199,6 +199,63 @@ astsa::sarima(xdata, p, d, q, P, D, Q, S)\
   - *`S` seasonal period; use only for seasonal models*\
 \
 
+sarima.for(n.ahead, *same as sarima*)\
+
+  - *`n.ahead` forecast horizon (number of periods)*
+\
+
+```{r, out.width = "30%", fig.align='center'}
+# auto.arima
+auto_arima = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
+
+# arima
+# need to check to see what is wrong
+arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
+
+# astsa::sarima
+astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
+
+# Check if methods have same result
+unique(astsa_sarima$fit$residuals == auto_arima$residuals)
+unique(astsa_sarima$fit$residuals == arima$residuals)
+```
+\
+
+#### Add Trend and Mean Line
+\
+decompose(x)\
+
+  - *`x` a time series*
+  - *returns the following components: seasonal, figure, trend, random*\
+\
+
+stl(x, s.window)\
+
+  - *`x` a time series*
+  - *`s.window` string character "periodic"*\
+\
+
+abline(a, b)\
+
+  - *`a` intercept of the line*
+  - *`b` slope of the line*
+  - *mean of a time series will have a = mean(time series) and b = 0*
+```{r, out.width = "30%", fig.align='center'}
+# Get trend line
+x = decompose(milk)
+
+# Plot time series
+plot.ts(milk)
+# Add trend line
+points(x$trend, type = "l", col="red")
+# Add Mean Line
+abline(a=mean(milk), b=0, col="blue")
+```
+\
+
+#### Calculate and Plot Theoretical acf/pacf for ARMA models
+\
+
 ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
 
   - *Use to calculate theoretical autocorrelations*
@@ -208,31 +265,15 @@ ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
   - *`pacf` logical. Should the partial autocorrelations be returned?*\
 \
 
-sarima.for(n.ahead, *same as sarima*)\
 
-  - *`n.ahead` forecast horizon (number of periods)*
-\
 
-```{r}
-# auto.arima
-plot.ts(auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)$residuals)
-
-# arima
-arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12))
-
-# astsa::sarima
-astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
-
-acf(auto_arima$residuals)
-acf(arima$residuals)
-acf(astsa_sarima$fit$residuals)
-
+arima$coef
 acf(sarima_sim)
 acf(auto_arima$residuals)
 auto_arima$coef
 acf(astsa_sarima$fit$residuals)
 
-
+ts.plot(milk)
 model = list(order = c(1,0,0), seasonal = c(1,1,1)))n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
 plot.ts(smooth(milk))
 plot.ts(milk)
@@ -250,6 +291,12 @@ acf(z$residuals)
 sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
 sim
 plot(decompose(milk))
+x = decompose(milk)
+plot.ts(milk)
+points(x$trend, type = "l", col="red")
+abline(a=mean(milk), b=0, type = "l", col="blue")
+
+
 ARMAacf(ar=0.6)
 plot(stl(milk, s.window="periodic"))
 trendline(x=1:156, y=milk)
