@@ -84,6 +84,18 @@ Create a glossary of R-commands for time series. It should contain all commands 
 
   - *Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents*
 ```{r message=FALSE, warning=FALSE}
+library(devtools)
+install.packages('astsa')
+install.packages('basicTrendline')
+install.packages('distributional')
+install.packages('FinTS')
+install.packages('FitARMA')
+install.packages("forecast")
+install.packages('ggplot2')
+install.packages('latex2exp')
+install.packages('polynom')
+install.packages('sarima')
+
 library(astsa)
 library(basicTrendline)
 devtools::install_github("FinYang/tsdl")
@@ -96,6 +108,7 @@ library(ggplot2)
 library(latex2exp)
 library(polynom)
 library(readr)
+library(readxl)
 library(sarima)
 library(tinytex)
 ```  
@@ -241,17 +254,18 @@ auto_arima = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start
 # sarima_sarima
 sarima::sarima(model = milk ~ 
                  ar(1, c(auto_arima$coef[1])) + sar(12, 1, c(auto_arima$coef[2])) + s(12)| sma(12, 1, auto_arima$coef[3]))
+
 # arima
 # need to check to see what is wrong
 arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
+
 modelOrder(milk, "SarimaFilter")
 as.SarimaModel(sim_sarima)
 
+# sim_sarima
 sim_sarima = sim_sarima(model = list(ar=auto_arima$coef[1],  sar=auto_arima$coef[3], sma=auto_arima$coef[2], siorder=1, nseasons=12), n=156, x = milk, n.start=1)
-astsa_sarima$fit$residuals
 
-acf2(sim_sarima)
-  
+new("SarimaModel",)
 modelCoef(sim_sarima, convention = "Autocorrelations")
 # astsa::sarima
 astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
@@ -287,8 +301,10 @@ x = decompose(milk)
 
 # Plot time series
 plot.ts(milk)
+
 # Add trend line
 points(x$trend, type = "l", col="red")
+
 # Add Mean Line
 abline(a=mean(milk), b=0, col="blue")
 ```
@@ -309,127 +325,127 @@ ARMAacf(ar = numeric(), ma = numeric(), lag.max = r, pacf = FALSE)\
 
 acf(x, )
 ```{r}
-
-#theoretical
-
-
-
-
-
-auto_arima1 = auto.arima(milk, trace = TRUE, max.p = 1, max.q = 0, max.P = 0, max.Q = 0, seasonal = FALSE)
-
-auto_arima1$fitted
-arima_sim1 = arima.sim(n = 156, model = list(order=c(1,1,0), ar = c(0.6152)), innov = milk, stationary)
-
-milk
-
-arima$residuals ==auto_arima$residuals
-# arima
-# need to check to see what is wrong
-arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
-
-for(x in 1:10){
-  if(sarima_acf[[1]][[x]] == auto_arima_acf[[1]][[x]]){
-    print(TRUE)
-  }
-  else{
-    print(FALSE)
-  }
-}
-arima_acf == auto_arima_acf
-
-arima_acf = acf(arima$residuals, plot=T, lag.max = 10)
-auto_arima_acf = acf(auto_arima$residuals, plot=T, lag.max = 10)
-sarima_acf = acf(astsa_sarima$fit$residuals, plot=T, lag.max = 10)
-
-# astsa::sarima
-astsa_sarima = astsa::sarima(milk, 1,0,0,, Model = TRUE)
-
-pacf(milk)
-plot(ARMAacf(ar = c(0.6, 0.3), ma = c(0.7, 0.6), pacf=T, lag.max = 15), type="h")
-abline(h=0)
-
-
-acf(arima.sim(n=100, model = list(order=c(2,0,2), ar = c(0.6, 0.3), ma = c(0.7, 0.6))))
-acf(arima)
-
-
-acf(auto_arima$fitted)
-
-acf(arima)
-
-
-abline
-plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=F)
-plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=T, plot=F)
-plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=F, plot=F)
-
-auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]
-arima$coef
-acf(sarima_sim)
-acf(auto_arima$residuals)
-auto_arima$coef
-acf(astsa_sarima$fit$residuals)
-
-ts.plot(milk)
-model = list(order = c(1,0,0), seasonal = c(1,1,1)))n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
-plot.ts(smooth(milk))
-plot.ts(milk)
-lines(density(milk))
-arima(milk, order=c(1,0,0), seasonal = list(order=c(1,1,1), period=12))
-armaacf()
-x = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
-plot(x$residuals)
-y=astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
-acf(x$residuals)
-z = arima(milk, order=c(1,0,0), seasonal=list(order=c(1,1,1), period = 12), fixed = c(0.48, -0.7, 0.5))
-plot(y$fit$residuals)
-points(type="l", x$residuals, col="red")
-acf(z$residuals)
-sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
-sim
-plot(decompose(milk))
-x = decompose(milk)
-plot.ts(milk)
-points(x$trend, type = "l", col="red")
-abline(a=mean(milk), b=0, type = "l", col="blue")
-
-
-ARMAacf(ar=0.6)
-plot(stl(milk, s.window="periodic"))
-trendline(x=1:156, y=milk)
-stat_smooth(milk)
-acf2(y$fit$residuals)
-acf(sim)
-milk[1]
-acf(z$residuals)
-# x=GetFitARMA(milk, p=2, q=0)
-# ImpulseCoefficientsARMA(phi=c(0.9, -0.4), theta = c(0,0.8), 20)
-# ARMAacf(ar=c(0.9,-0.4), ma=c(0,0.8), pacf = TRUE, lag.max = 9)
-# tacvfARMA(phi=c(0.2, -0.6), theta = c(0.5, 0.6), maxLag = 10)
-# TacvfARMA(phi=c(01.2, -0.6), theta = c(0.5, 0.6), lag.max = 10)
-# x
 # 
-# polyroot(c(1,3,2))
-# x$fits
-# plot(milk)
-# plot(x$fits)
-# acf2(milk)
-milk <- subset(tsdl, 12, "Agriculture")[[3]] 
-InvertibleQ(c(0.8, -0.5))
-z$coef
-x$coef
-y$fit$coef
-pacf(y$fit$residuals)
-x
-y
-milk
-ggplot(milk, aes(x = 1:156, y = milk)) +
-  geom_point() +
-  geom_line(aes(x=1:156, y=milk))+
-  stat_smooth(method = 'loess', aes(colour = 'linear'), se = FALSE) +
-  stat_smooth(method = 'lm', formula = y ~ poly(x,2), aes(colour = 'polynomial'), se= FALSE) +
-  stat_smooth(method = 'nls', formula = y ~ a * log(x) + b, aes(colour = 'logarithmic'), se = FALSE, method.args = list(start = list(a = 1, b = 1))) 
+# theoretical
+# 
+# 
+# 
+# 
+# 
+# auto_arima1 = auto.arima(milk, trace = TRUE, max.p = 1, max.q = 0, max.P = 0, max.Q = 0, seasonal = FALSE)
+# 
+# auto_arima1$fitted
+# arima_sim1 = arima.sim(n = 156, model = list(order=c(1,1,0), ar = c(0.6152)), innov = milk, stationary)
+# 
+# milk
+# 
+# arima$residuals ==auto_arima$residuals
+# # arima
+# # need to check to see what is wrong
+# arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
+# 
+# for(x in 1:10){
+#   if(sarima_acf[[1]][[x]] == auto_arima_acf[[1]][[x]]){
+#     print(TRUE)
+#   }
+#   else{
+#     print(FALSE)
+#   }
+# }
+# arima_acf == auto_arima_acf
+# 
+# arima_acf = acf(arima$residuals, plot=T, lag.max = 10)
+# auto_arima_acf = acf(auto_arima$residuals, plot=T, lag.max = 10)
+# sarima_acf = acf(astsa_sarima$fit$residuals, plot=T, lag.max = 10)
+# 
+# # astsa::sarima
+# astsa_sarima = astsa::sarima(milk, 1,0,0,, Model = TRUE)
+# 
+# pacf(milk)
+# plot(ARMAacf(ar = c(0.6, 0.3), ma = c(0.7, 0.6), pacf=T, lag.max = 15), type="h")
+# abline(h=0)
+# 
+# 
+# acf(arima.sim(n=100, model = list(order=c(2,0,2), ar = c(0.6, 0.3), ma = c(0.7, 0.6))))
+# acf(arima)
+# 
+# 
+# acf(auto_arima$fitted)
+# 
+# acf(arima)
+# 
+# 
+# abline
+# plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=F)
+# plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=T, plot=F)
+# plot(ARMAacf(ar = c(auto_arima$coef[1]), pacf=F, plot=F)
+# 
+# auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]
+# arima$coef
+# acf(sarima_sim)
+# acf(auto_arima$residuals)
+# auto_arima$coef
+# acf(astsa_sarima$fit$residuals)
+# 
+# ts.plot(milk)
+# model = list(order = c(1,0,0), seasonal = c(1,1,1)))n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
+# plot.ts(smooth(milk))
+# plot.ts(milk)
+# lines(density(milk))
+# arima(milk, order=c(1,0,0), seasonal = list(order=c(1,1,1), period=12))
+# armaacf()
+# x = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
+# plot(x$residuals)
+# y=astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
+# acf(x$residuals)
+# z = arima(milk, order=c(1,0,0), seasonal=list(order=c(1,1,1), period = 12), fixed = c(0.48, -0.7, 0.5))
+# plot(y$fit$residuals)
+# points(type="l", x$residuals, col="red")
+# acf(z$residuals)
+# sim = sarima.sim(n=156, ar=0.48, sar=-0.7, sma=0.5, S=12, D=1, innov = milk, burnin = 2)
+# sim
+# plot(decompose(milk))
+# x = decompose(milk)
+# plot.ts(milk)
+# points(x$trend, type = "l", col="red")
+# abline(a=mean(milk), b=0, type = "l", col="blue")
+# 
+# 
+# ARMAacf(ar=0.6)
+# plot(stl(milk, s.window="periodic"))
+# trendline(x=1:156, y=milk)
+# stat_smooth(milk)
+# acf2(y$fit$residuals)
+# acf(sim)
+# milk[1]
+# acf(z$residuals)
+# # x=GetFitARMA(milk, p=2, q=0)
+# # ImpulseCoefficientsARMA(phi=c(0.9, -0.4), theta = c(0,0.8), 20)
+# # ARMAacf(ar=c(0.9,-0.4), ma=c(0,0.8), pacf = TRUE, lag.max = 9)
+# # tacvfARMA(phi=c(0.2, -0.6), theta = c(0.5, 0.6), maxLag = 10)
+# # TacvfARMA(phi=c(01.2, -0.6), theta = c(0.5, 0.6), lag.max = 10)
+# # x
+# #
+# # polyroot(c(1,3,2))
+# # x$fits
+# # plot(milk)
+# # plot(x$fits)
+# # acf2(milk)
+# milk <- subset(tsdl, 12, "Agriculture")[[3]]
+# InvertibleQ(c(0.8, -0.5))
+# z$coef
+# x$coef
+# y$fit$coef
+# pacf(y$fit$residuals)
+# x
+# y
+# milk
+# ggplot(milk, aes(x = 1:156, y = milk)) +
+#   geom_point() +
+#   geom_line(aes(x=1:156, y=milk))+
+#   stat_smooth(method = 'loess', aes(colour = 'linear'), se = FALSE) +
+#   stat_smooth(method = 'lm', formula = y ~ poly(x,2), aes(colour = 'polynomial'), se= FALSE) +
+#   stat_smooth(method = 'nls', formula = y ~ a * log(x) + b, aes(colour = 'logarithmic'), se = FALSE, method.args = list(start = list(a = 1, b = 1)))
 ```
 
 ### Functions
@@ -506,13 +522,98 @@ signature(object = "VirtualAutocovariances", convention = "Autocovariances", com
 Choose a dataset that you will be interested to analyze for your class final project. URLs of time series libraries are posted on Gaucho Space. Provide the following information about the project:\
 
   (a) Data set description: briefly describe the data set you plan to use in your project.\
-  I want to improve on my final project from PSTAT 231. In that project, my dataset was 2 combined time series of the number of deaths, cases, and vaccinations of the US population per month during the COVID pandemic. It also has the daily historic data and it can all be categorized by county and by state within the US.
-  
+  I want to improve on my final project from PSTAT 231. In that project, my dataset was 2 combined time series of the number of deaths, cases, and vaccinations of the US population per month during the COVID pandemic. It also had the daily historic data and it was all categorized by county and by state within the US. For this project, I will use the daily time series of the smoothed new cases and smoothed new deaths entire United States taken from: https://github.com/owid/covid-19-data/blob/master/public/data/README.md
+\
+
   (b) Motivation and objectives: briefly explain why this data set is interesting or important. Provide a clear description of the problem you plan to address using this dataset (for example to forecast).\
   On my previous project, my goal was to predict the future number of cases and deaths caused by COVID. Now that there are so many lesser strains and variants of COVID, I do not believe that the virus will go away any time soon. I predict that the cases and deaths will continuously decrease over time until cases of COVID become far less severe, and then eventual complete vaccination of the entire country will relegate COVID to a seasonal sickness such as the flu. I want to see how long it will take until the amount of cases and deaths caused by covid resembles those cause by the flu.
-  
+\
 
 (c) Plot and examine the main features of the graph, checking in particular whether there is (i) a trend; (ii) a seasonal component, (iii) any apparent sharp changes in behavior. Explain in detail.
+```{r}
+covid <- read_xlsx("US_COVID_STATS.xlsx")
+covid_world <- read.csv("owid-covid-data 2.csv")
+
+covid_world[is.na(covid_world)] <- 0
+
+covid_world <- covid_world %>%
+  group_by(date) %>%
+  summarise(across(c(total_cases, new_cases, new_cases_smoothed, total_deaths, new_deaths, new_deaths_smoothed), sum))
+
+covid_world["Total_Case_Fatality_Rate"] = NA
+covid_world["New_Case_Fatality_Rate"] = NA
+covid_world["Smoothed_New_Case_Fatality_Rate"] = NA
+
+covid_world <- covid_world[1:1225,]
+
+for(i in 1:1225){
+  covid_world$Total_Case_Fatality_Rate[i] = covid_world$total_deaths[i] / covid_world$total_cases[i]
+  covid_world$New_Case_Fatality_Rate[i] = covid_world$new_deaths[i] / covid_world$new_cases[i]
+  covid_world$Smoothed_New_Case_Fatality_Rate[i] = covid_world$new_deaths_smoothed[i] / covid_world$new_cases_smoothed[i]}
+
+covid_world["365Day_Rolling_Fatality"]= NA
+
+for(i in 1:1225){
+  if(i >= 376){
+    covid_world$`365Day_Rolling_Fatality`[i] = mean(covid_world$New_Case_Fatality_Rate[(i-364):i], na.rm = TRUE)}
+  else{
+    covid_world$`365Day_Rolling_Fatality`[i] = NA
+  }}
+
+Rolling_Fatality <- covid_world[c("365Day_Rolling_Fatality")][376:1225,]
+
+Fatality_Rate = ts(Rolling_Fatality, start = c(2021, 14), frequency = 365)
+
+plot.ts(Fatality_Rate)
+
+auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)
+
+auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE)
+
+auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal = FALSE)
+
+save
+
+
+plot.ts(deaths1)
+plot.ts(deaths2)
+
+deaths1 = ts(covid$new_deaths, start = c(2020,3), frequency=365)
+deaths2 = ts(covid$new_deaths, start = c(2020,3))
+covid_world[is.na(covid_world)] <- 0
+deaths1[is.na(deaths)] <- 0
+deaths2[is.na(deaths)] <- 0
+
+auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)$coef
+
+auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE)$coef
+
+auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal = FALSE)$coef
+
+
+plot(stl(deaths, s.window="periodic"))
+cases <- covid[c("date", "new_cases_smoothed")]
+deaths <- covid[c("date", "new_deaths")]
+deaths_smoothed <- covid[c("date", "new_deaths_smoothed")]
+ts()
+
+auto_arima1 = auto.arima(deaths, trace = TRUE, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)
+
+auto_arima2 = auto.arima(deaths, trace = TRUE, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal=FALSE)
+
+auto_arima11$coef
+auto_arima12$coef
+auto_arima21$coef
+auto_arima22$coef
+
+plot(decompose(deaths))
+plot.ts(ts(deaths$new_deaths, start = c(2020, 3), frequency=365))
+plot.ts(ts(covid$new_deaths_smoothed, start = 2020, frequency=365))
+plot(covid_cases_deat
+ "new_deaths_smoothed")]
+ts.plot(x=covid_cases_deaths$date, y=covid_cases_deaths$new_cases_smoothed)
+```
+
 (d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
 If your dataset does not work for you, please comment why. For example, the dataset is too short, exhibits change of behavior, does not look like a second-order process, etc. You might review slide 47 of Week 4, Lecture 8.
