@@ -701,7 +701,9 @@ x = Deaths_sqrt$coef
 polyroot(c(1, x[1], x[2], x[3]))
 
 # Closest to being stationary; can possibly be made stationary if some of the coefficients are given a slight change
-polyroot(c(1, Deaths_model4[1]+.01, Deaths_model4[2]-.005, Deaths_model4[3]+.015, Deaths_model4[4]-.023))
+polyroot(c(1, Deaths_model3$coef[1], Deaths_model3$coef[2], Deaths_model3$coef[3], Deaths_model3$coef[4]))
+
+polyroot(c(1, Deaths_model3$coef[1]+.01, Deaths_model3$coef[2]-.005, Deaths_model3$coef[3]+.015, Deaths_model3$coef[4]-.023))
 ```
 \
 For both series, I attempted boxcox, square root, and log transformations. Some of them failed to work, while others would provide me with a series that when estimating the ARIMA order and coefficients, I would get an ARMA(0,0). For the ones the provided me with a legitimate ARIMA model, I used the polyroot function with the estimated coefficients to see if any transformed series was stationary, but none of them were.  
