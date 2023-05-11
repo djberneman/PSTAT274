@@ -101,11 +101,13 @@ library(basicTrendline)
 devtools::install_github("FinYang/tsdl")
 library(tsdl)
 library(distributional)
+library(dplyr)
 library(FinTS)
 library(FitARMA)
 library(forecast)
 library(ggplot2)
 library(latex2exp)
+library(MASS)
 library(polynom)
 library(readr)
 library(readxl)
@@ -566,55 +568,52 @@ Fatality_Rate = ts(Rolling_Fatality, start = c(2021, 14), frequency = 365)
 
 plot.ts(Fatality_Rate)
 
-auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)
+ARIMA_model <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
 
-auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE)
+plot(decompose(Fatality_Rate))
 
-auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal = FALSE)
+# The following series is an alternative time series for the project
 
-save
-
-
-plot.ts(deaths1)
-plot.ts(deaths2)
-
-deaths1 = ts(covid$new_deaths, start = c(2020,3), frequency=365)
-deaths2 = ts(covid$new_deaths, start = c(2020,3))
-covid_world[is.na(covid_world)] <- 0
-deaths1[is.na(deaths)] <- 0
-deaths2[is.na(deaths)] <- 0
+deaths1 = ts(covid_world$new_deaths, start = c(2020,3), frequency=365)
+deaths2 = ts(covid_world$new_deaths, start = c(2020,3))
 
 auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)$coef
 
 auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE)$coef
 
-auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal = FALSE)$coef
+plot(stl(deaths1, s.window="periodic"))
+plot(decompose(deaths1, type="multiplicative"))
+plot(decompose(deaths1, type="additive"))
+```
+\
+Neither of the time series are seasonal even though they both show a seasonal component within their decomposed plots. They both have a trend. The first trend it linear, while the second trend looks similar to a normal distribution. There are no easily observable changes in behavior, but I suspect that there should be one the coincides with the creation of the vaccine.\
 
+(d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?\
 
-plot(stl(deaths, s.window="periodic"))
-cases <- covid[c("date", "new_cases_smoothed")]
-deaths <- covid[c("date", "new_deaths")]
-deaths_smoothed <- covid[c("date", "new_deaths_smoothed")]
-ts()
+```{r}
+ARIMA_model2 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+polyroot()
 
-auto_arima1 = auto.arima(deaths, trace = TRUE, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)
+t = 1:length(Fatality_Rate)
+fit = lm(Fatality_Rate ~ t)
+bcTransform = boxcox(Fatality_Rate ~ t,plotit = TRUE)
 
-auto_arima2 = auto.arima(deaths, trace = TRUE, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal=FALSE)
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+wine.bc = (1/lambda)*(Fatality_Rate^lambda-1)
 
-auto_arima11$coef
-auto_arima12$coef
-auto_arima21$coef
-auto_arima22$coef
+#log transform
+wine.log = log(Fatality_Rate)
+# square root transform
+wine.sqrt = sqrt(Fatality_Rate)
+#Compare transforms
+op= par(mfrow=c(2,2))
+ts.plot(Fatality_Rate, main = "Original Times Series") 
+ts.plot(wine.bc, main = "Box-Cox Transform") 
+ts.plot(wine.log, main = "Log Transform") 
+ts.plot(wine.sqrt, main = "Square Root Transform")
 
-plot(decompose(deaths))
-plot.ts(ts(deaths$new_deaths, start = c(2020, 3), frequency=365))
-plot.ts(ts(covid$new_deaths_smoothed, start = 2020, frequency=365))
-plot(covid_cases_deat
- "new_deaths_smoothed")]
-ts.plot(x=covid_cases_deaths$date, y=covid_cases_deaths$new_cases_smoothed)
 ```
 
-(d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
 If your dataset does not work for you, please comment why. For example, the dataset is too short, exhibits change of behavior, does not look like a second-order process, etc. You might review slide 47 of Week 4, Lecture 8.
 Note that you may change the project dataset in the future. This question is designed to help you start planning your the project. Please include plots of corresponding theoretical acfs and the corresponding R code.
