@@ -546,44 +546,48 @@ covid_world["Total_Case_Fatality_Rate"] = NA
 covid_world["New_Case_Fatality_Rate"] = NA
 covid_world["Smoothed_New_Case_Fatality_Rate"] = NA
 
-covid_world <- covid_world[1:1225,]
+covid_world <- covid_world[12:1225,]
 
-for(i in 1:1225){
+for(i in 1:1214){
   covid_world$Total_Case_Fatality_Rate[i] = covid_world$total_deaths[i] / covid_world$total_cases[i]
   covid_world$New_Case_Fatality_Rate[i] = covid_world$new_deaths[i] / covid_world$new_cases[i]
   covid_world$Smoothed_New_Case_Fatality_Rate[i] = covid_world$new_deaths_smoothed[i] / covid_world$new_cases_smoothed[i]}
 
 covid_world["365Day_Rolling_Fatality"]= NA
 
-for(i in 1:1225){
-  if(i >= 376){
-    covid_world$`365Day_Rolling_Fatality`[i] = mean(covid_world$New_Case_Fatality_Rate[(i-364):i], na.rm = TRUE)}
+for(i in 1:1214){
+  if(i >= 365){
+    covid_world$`365Day_Rolling_Fatality`[i] = mean(covid_world$Smoothed_New_Case_Fatality_Rate[(i-364):i], na.rm = TRUE)}
   else{
     covid_world$`365Day_Rolling_Fatality`[i] = NA
   }}
 
-Rolling_Fatality <- covid_world[c("365Day_Rolling_Fatality")][376:1225,]
+Mortality = ts(covid_world$Smoothed_New_Case_Fatality_Rate)
 
-Fatality_Rate = ts(Rolling_Fatality, start = c(2021, 14))
+plot.ts(Mortality)
+plot(stl(Mortality, s.window="periodic"))
+plot(decompose(Mortality, type="multiplicative"))
+plot(decompose(Mortality, type="additive"))
 
-plot.ts(Fatality_Rate)
+Rolling_Mortality = ts(covid_world$`365Day_Rolling_Fatality`)[365:1214]
 
-ARIMA_model <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+plot.ts(Rolling_Mortality)
 
-plot(decompose(Fatality_Rate))
+# The next 3 functions do not work unless my frequency is 2 or more
+# plot(stl(Rolling_Mortality, s.window="periodic"))
+# plot(decompose(Rolling_Mortality, type="multiplicative"))
+# plot(decompose(Rolling_Mortality, type="additive"))
 
 # The following series is an alternative time series for the project
 
-deaths1 = ts(covid_world$new_deaths, start = c(2020,3), frequency=365)
-deaths2 = ts(covid_world$new_deaths, start = c(2020,3))
+Deaths = ts(covid_world$new_deaths)
 
-auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)$coef
+plot.ts(Deaths)
 
-auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE)$coef
-
-plot(stl(deaths1, s.window="periodic"))
-plot(decompose(deaths1, type="multiplicative"))
-plot(decompose(deaths1, type="additive"))
+# The next 3 functions do not work unless my frequency is 2 or more
+# plot(stl(Deaths, s.window="periodic"))
+# plot(decompose(Deaths, type="multiplicative"))
+# plot(decompose(Deaths, type="additive"))
 ```
 \
 Neither of the time series are seasonal even though they both show a seasonal component within their decomposed plots. They both have a trend. The first trend it linear, while the second trend looks similar to a normal distribution. There are no easily observable changes in behavior, but I suspect that there should be one the coincides with the creation of the vaccine.\
@@ -591,91 +595,113 @@ Neither of the time series are seasonal even though they both show a seasonal co
 (d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?\
 
 ```{r}
-ARIMA_modelF_1 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+Mortality_model1 <- auto.arima(Mortality, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
 
-polyroot(c(1, ARIMA_modelF_1$coef[1], ARIMA_modelF_1$coef[2], ARIMA_modelF_1$coef[3], ARIMA_modelF_1$coef[4], ARIMA_modelF_1$coef[5]))
+polyroot(c(1, Mortality_model1$coef[1], Mortality_model1$coef[2], Mortality_model1$coef[3], Mortality_model1$coef[4], Mortality_model1$coef[5]))
 
-
-ARIMA_modelF_2 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)
-
-polyroot(c(1, ARIMA_modelF_2$coef[1], ARIMA_modelF_2$coef[2], ARIMA_modelF_2$coef[3], ARIMA_modelF_2$coef[4], ARIMA_modelF_2$coef[5]))
+acf2(Mortality_model1$residuals, max.lag = 400)
 
 
-ARIMA_modelF_3 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+Mortality_model3 <- auto.arima(Mortality, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
-polyroot(c(1, ARIMA_modelF_1$coef[1], ARIMA_modelF_1$coef[2], ARIMA_modelF_1$coef[3], ARIMA_modelF_1$coef[4], ARIMA_modelF_1$coef[5]))
+polyroot(c(1, Mortality_model3$coef[1], Mortality_model3$coef[2]))
 
-
-ARIMA_modelF_4 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)$coef
+acf2(Mortality_model3$residuals, max.lag = 400)
 
 
 
-ARIMA_model_1 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+Rolling_Mortality_model1 <- auto.arima(Rolling_Mortality, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
 
-polyroot(c(1, ARIMA_model_1$coef[1], ARIMA_model_1$coef[2], ARIMA_model_1$coef[3], ARIMA_model_1$coef[4], ARIMA_model_1$coef[5]))
+polyroot(c(1, Rolling_Mortality_model1$coef[1], Rolling_Mortality_model1$coef[2], Rolling_Mortality_model1$coef[3], Rolling_Mortality_model1$coef[4], Rolling_Mortality_model1$coef[5]))
 
+acf2(Rolling_Mortality_model1$residuals, max.lag = 400)
 
-ARIMA_model_2 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)
-
-polyroot(c(1, ARIMA_model_2$coef[1], ARIMA_model_2$coef[2], ARIMA_model_2$coef[3], ARIMA_model_2$coef[4], ARIMA_model_2$coef[5]))
-
-
-ARIMA_model_3 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
-
-polyroot(c(1, ARIMA_model_3$coef[1], ARIMA_model_3$coef[2], ARIMA_model_3$coef[3], ARIMA_model_3$coef[4]))
+Rolling_Mortality_model3 <- auto.arima(Rolling_Mortality, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
 
-ARIMA_model_4 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)
 
-polyroot(c(1, ARIMA_model_4$coef[1], ARIMA_model_4$coef[2], ARIMA_model_4$coef[3], ARIMA_model_4$coef[4]))
+Deaths_model1 <- auto.arima(Deaths, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+
+polyroot(c(1, Deaths_model1$coef[1], Deaths_model1$coef[2], Deaths_model1$coef[3], Deaths_model1$coef[4], Deaths_model1$coef[5]))
+
+acf2(Deaths_model1$residuals, max.lag = 400)
+
+Deaths_model3 <- auto.arima(Deaths, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+polyroot(c(1, Deaths_model3$coef[1], Deaths_model3$coef[2], Deaths_model3$coef[3], Deaths_model3$coef[4]))
+
+acf2(Deaths_model3$residuals, max.lag = 400)
 
 
-ARIMA_model1 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+# Transform Mortality
+t = 1:length(Mortality)
+fit = lm(Mortality ~ t)
 
-
-ARIMA_model2 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE, trace=TRUE)
-
-polyroot(c(1, ARIMA_model2$coef[1], ARIMA_model2$coef[2], ARIMA_model2$coef[3], ARIMA_model2$coef[4]))
-
-t = 1:length(resid)
-fit = lm(resid ~ t)
-bcTransform = boxcox(resid ~ t,plotit = TRUE)
+# Box-Cox Transform
+bcTransform = boxcox(Mortality ~ t,plotit = TRUE)
 
 lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
-resid.bc = (1/lambda)*(resid^lambda-1)
+Mortality.bc = (1/lambda)*(Mortality^lambda-1)
 
-ARIMA_model1_box <- auto.arima(resid.bc, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+Mortality_box <- auto.arima(Mortality.bc, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
-#log transform
-resid.log = log(resid)
-ARIMA_model1_log <- auto.arima(resid.log, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
-
-
-# square root transform
-resid.sqrt = sqrt(resid)
-ARIMA_model1_sqrt <- auto.arima(resid.sqrt, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
-
-coef_1 = ARIMA_model1_sqrt$coef
-
-polyroot(c(1, coef_1[1], coef_1[2], coef_1[3], coef_1[4]))
-
+acf2(Mortality_box$residuals, max.lag = 1200)
 
 #log transform
-deaths1.log = log(deaths1)
+Mortality.log = log(Mortality)
+Mortality_log <- auto.arima(Mortality.log, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
-#No suitable arima models found
-# ARIMA_model2_log <- auto.arima(deaths1.log, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+acf2(Mortality_log$residuals, max.lag=1200)
 
 # square root transform
-deaths1.sqrt = sqrt(deaths1)
+Mortality.sqrt = sqrt(Mortality)
+Mortality_sqrt <- auto.arima(Mortality.sqrt, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
-ARIMA_model2_sqrt <- auto.arima(deaths1.sqrt, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+acf2(Mortality_sqrt$residuals, max.lag = 1200)
 
-x = ARIMA_model2_sqrt$coef
+
+# Transform Rolling_Mortality
+t = 1:length(Rolling_Mortality)
+fit = lm(Rolling_Mortality ~ t)
+
+# Box-Cox Transform
+bcTransform = boxcox(Rolling_Mortality ~ t,plotit = TRUE)
+
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+Rolling_Mortality.bc = (1/lambda)*(Rolling_Mortality^lambda-1)
+
+Rolling_Mortality_box <- auto.arima(Rolling_Mortality.bc, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+acf2(Rolling_Mortality_box$residuals, max.lag = 800)
+
+#log transform
+Rolling_Mortality.log = log(Rolling_Mortality)
+Rolling_Mortality_log <- auto.arima(Rolling_Mortality.log, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+acf2(Rolling_Mortality_log$residuals, max.lag=800)
+
+# square root transform
+Rolling_Mortality.sqrt = sqrt(Rolling_Mortality)
+Rolling_Mortality_sqrt <- auto.arima(Rolling_Mortality.sqrt, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+acf2(Rolling_Mortality_sqrt$residuals, max.lag = 800)
+
+
+
+# Transform Deaths
+
+# square root transform
+Deaths.sqrt = sqrt(Deaths)
+
+Deaths_sqrt <- auto.arima(Deaths.sqrt, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+acf2(Deaths_sqrt$residuals, max.lag = 800)
+
+x = Deaths_sqrt$coef
 polyroot(c(1, x[1], x[2], x[3]))
 
 # Closest to being stationary; can possibly be made stationary if some of the coefficients are given a slight change
-polyroot(c(1, ARIMA_model_4[1]+.01, ARIMA_model_4[2]-.005, ARIMA_model_4[3]+.015, ARIMA_model_4[4]-.023))
+polyroot(c(1, Deaths_model4[1]+.01, Deaths_model4[2]-.005, Deaths_model4[3]+.015, Deaths_model4[4]-.023))
 ```
 \
 For both series, I attempted boxcox, square root, and log transformations. Some of them failed to work, while others would provide me with a series that when estimating the ARIMA order and coefficients, I would get an ARMA(0,0). For the ones the provided me with a legitimate ARIMA model, I used the polyroot function with the estimated coefficients to see if any transformed series was stationary, but none of them were.  
@@ -683,8 +709,8 @@ For both series, I attempted boxcox, square root, and log transformations. Some 
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
 If your dataset does not work for you, please comment why. For example, the dataset is too short, exhibits change of behavior, does not look like a second-order process, etc. You might review slide 47 of Week 4, Lecture 8.
 ```{r}
-acf2(ARIMA_model_4$residuals , max.lag = 50)
-acf2(deaths2 , max.lag = 50)
+acf2(Deaths_model4$residuals , max.lag = 50)
+acf2(Deaths , max.lag = 50)
 deaths
 ```
 
