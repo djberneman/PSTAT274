@@ -564,7 +564,7 @@ for(i in 1:1225){
 
 Rolling_Fatality <- covid_world[c("365Day_Rolling_Fatality")][376:1225,]
 
-Fatality_Rate = ts(Rolling_Fatality, start = c(2021, 14), frequency = 365)
+Fatality_Rate = ts(Rolling_Fatality, start = c(2021, 14))
 
 plot.ts(Fatality_Rate)
 
@@ -591,54 +591,49 @@ Neither of the time series are seasonal even though they both show a seasonal co
 (d) Use any necessary transformations to get stationary series. Give a detailed explanation to justify your choice of a particular procedure. If you have used transformation, justify why. If you have used differencing, what lag did you use? Why? Is your series stationary now?\
 
 ```{r}
-ARIMA_model_1 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)$coef
+ARIMA_modelF_1 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
 
-polyroot(c(1, ARIMA_model_1[1], ARIMA_model_1[2], ARIMA_model_1[3], ARIMA_model_1[4], ARIMA_model_1[5]))
-
-
-ARIMA_model_2 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)$coef
-
-polyroot(c(1, ARIMA_model_2[1], ARIMA_model_2[2], ARIMA_model_2[3], ARIMA_model_2[4], ARIMA_model_2[5]))
+polyroot(c(1, ARIMA_modelF_1$coef[1], ARIMA_modelF_1$coef[2], ARIMA_modelF_1$coef[3], ARIMA_modelF_1$coef[4], ARIMA_modelF_1$coef[5]))
 
 
-ARIMA_model_3 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+ARIMA_modelF_2 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)
 
-polyroot(c(1, ARIMA_model_1[1], ARIMA_model_1[2], ARIMA_model_1[3], ARIMA_model_1[4], ARIMA_model_1[5]))
-
-
-ARIMA_model_4 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)$coef
+polyroot(c(1, ARIMA_modelF_2$coef[1], ARIMA_modelF_2$coef[2], ARIMA_modelF_2$coef[3], ARIMA_modelF_2$coef[4], ARIMA_modelF_2$coef[5]))
 
 
+ARIMA_modelF_3 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
-ARIMA_model_1 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)$coef
-
-polyroot(c(1, ARIMA_model_1[1], ARIMA_model_1[2], ARIMA_model_1[3], ARIMA_model_1[4], ARIMA_model_1[5]))
-
-
-ARIMA_model_2 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)$coef
-
-polyroot(c(1, ARIMA_model_2[1], ARIMA_model_2[2], ARIMA_model_2[3], ARIMA_model_2[4], ARIMA_model_2[5]))
+polyroot(c(1, ARIMA_modelF_1$coef[1], ARIMA_modelF_1$coef[2], ARIMA_modelF_1$coef[3], ARIMA_modelF_1$coef[4], ARIMA_modelF_1$coef[5]))
 
 
-ARIMA_model_3 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
-
-polyroot(c(1, ARIMA_model_1[1], ARIMA_model_1[2], ARIMA_model_1[3], ARIMA_model_1[4], ARIMA_model_1[5]))
-
-
-ARIMA_model_4 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)$coef
+ARIMA_modelF_4 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)$coef
 
 
 
-coef = ARIMA_model$coef
-resid = ARIMA_model$residuals
+ARIMA_model_1 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+
+polyroot(c(1, ARIMA_model_1$coef[1], ARIMA_model_1$coef[2], ARIMA_model_1$coef[3], ARIMA_model_1$coef[4], ARIMA_model_1$coef[5]))
 
 
-polyroot(c(1, coef[1], coef[2], coef[3], coef[4], coef[5]))
+ARIMA_model_2 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = FALSE, trace = TRUE)
+
+polyroot(c(1, ARIMA_model_2$coef[1], ARIMA_model_2$coef[2], ARIMA_model_2$coef[3], ARIMA_model_2$coef[4], ARIMA_model_2$coef[5]))
+
+
+ARIMA_model_3 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
+
+polyroot(c(1, ARIMA_model_3$coef[1], ARIMA_model_3$coef[2], ARIMA_model_3$coef[3], ARIMA_model_3$coef[4]))
+
+
+ARIMA_model_4 <- auto.arima(deaths2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = FALSE, trace = TRUE)
+
+polyroot(c(1, ARIMA_model_4$coef[1], ARIMA_model_4$coef[2], ARIMA_model_4$coef[3], ARIMA_model_4$coef[4]))
+
 
 ARIMA_model1 <- auto.arima(Fatality_Rate, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, trace = TRUE)
 
 
-ARIMA_model2 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE)
+ARIMA_model2 <- auto.arima(deaths1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary = TRUE, seasonal=TRUE, trace=TRUE)
 
 polyroot(c(1, ARIMA_model2$coef[1], ARIMA_model2$coef[2], ARIMA_model2$coef[3], ARIMA_model2$coef[4]))
 
@@ -664,13 +659,6 @@ coef_1 = ARIMA_model1_sqrt$coef
 
 polyroot(c(1, coef_1[1], coef_1[2], coef_1[3], coef_1[4]))
 
-#Compare transforms
-op= par(mfrow=c(2,2))
-ts.plot(Fatality_Rate, main = "Original Times Series") 
-ts.plot(Fatality_Rate.bc, main = "Box-Cox Transform") 
-ts.plot(Fatality_Rate.log, main = "Log Transform") 
-ts.plot(Fatality_Rate.sqrt, main = "Square Root Transform")
-
 
 #log transform
 deaths1.log = log(deaths1)
@@ -686,12 +674,20 @@ ARIMA_model2_sqrt <- auto.arima(deaths1.sqrt, start.p = 0, start.q = 0, start.P 
 x = ARIMA_model2_sqrt$coef
 polyroot(c(1, x[1], x[2], x[3]))
 
+# Closest to being stationary; can possibly be made stationary if some of the coefficients are given a slight change
+polyroot(c(1, ARIMA_model_4[1]+.01, ARIMA_model_4[2]-.005, ARIMA_model_4[3]+.015, ARIMA_model_4[4]-.023))
 ```
 \
-For both series, I attempted boxcox, square root, and log transformations. Some of them failed to work, while others would provide me with a series that when estimating the ARIMA order and coefficients, I would get an ARMA(0,0). For the ones the provided me with a legitimate ARIMA model, I used the polyroot function with the estimated coefficients to see if the series was stationary, but none of them were.  
+For both series, I attempted boxcox, square root, and log transformations. Some of them failed to work, while others would provide me with a series that when estimating the ARIMA order and coefficients, I would get an ARMA(0,0). For the ones the provided me with a legitimate ARIMA model, I used the polyroot function with the estimated coefficients to see if any transformed series was stationary, but none of them were.  
 
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
 If your dataset does not work for you, please comment why. For example, the dataset is too short, exhibits change of behavior, does not look like a second-order process, etc. You might review slide 47 of Week 4, Lecture 8.
+```{r}
+acf2(ARIMA_model_4$residuals , max.lag = 50)
+acf2(deaths2 , max.lag = 50)
+deaths
+```
+
 Note that you may change the project dataset in the future. This question is designed to help you start planning your the project. Please include plots of corresponding theoretical acfs and the corresponding R code.
 3. An ARMA(3, 0) model is fit to the following quarterly time series:
   The estimated coefficients are:
