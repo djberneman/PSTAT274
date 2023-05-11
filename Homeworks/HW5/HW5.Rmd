@@ -85,16 +85,16 @@ Create a glossary of R-commands for time series. It should contain all commands 
   - *Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents*
 ```{r message=FALSE, warning=FALSE}
 library(devtools)
-install.packages('astsa')
-install.packages('basicTrendline')
-install.packages('distributional')
-install.packages('FinTS')
-install.packages('FitARMA')
-install.packages("forecast")
-install.packages('ggplot2')
-install.packages('latex2exp')
-install.packages('polynom')
-install.packages('sarima')
+# install.packages('astsa')
+# install.packages('basicTrendline')
+# install.packages('distributional')
+# install.packages('FinTS')
+# install.packages('FitARMA')
+# install.packages("forecast")
+# install.packages('ggplot2')
+# install.packages('latex2exp')
+# install.packages('polynom')
+# install.packages('sarima')
 
 library(astsa)
 library(basicTrendline)
@@ -254,21 +254,16 @@ sarima::sarima(model, data = NULL)\
 auto_arima = auto.arima(milk, trace = TRUE, D=1, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, seasonal = TRUE)
 
 # sarima_sarima
-sarima::sarima(model = milk ~ 
-                 ar(1, c(auto_arima$coef[1])) + sar(12, 1, c(auto_arima$coef[2])) + s(12)| sma(12, 1, auto_arima$coef[3]))
+# sarima::sarima(model = milk ~ 
+#                  ar(1, c(auto_arima$coef[1])) + sar(12, 1, c(auto_arima$coef[2])) + s(12)| sma(12, 1, auto_arima$coef[3]))
 
 # arima
 # need to check to see what is wrong
 arima = arima(milk, order=c(1,0,0), seasonal = list(order = c(1,1,1), period=12), fixed = c(auto_arima$coef[1], auto_arima$coef[2], auto_arima$coef[3]), include.mean=TRUE, transform.pars=TRUE)
 
-modelOrder(milk, "SarimaFilter")
-as.SarimaModel(sim_sarima)
-
 # sim_sarima
 sim_sarima = sim_sarima(model = list(ar=auto_arima$coef[1],  sar=auto_arima$coef[3], sma=auto_arima$coef[2], siorder=1, nseasons=12), n=156, x = milk, n.start=1)
 
-new("SarimaModel",)
-modelCoef(sim_sarima, convention = "Autocorrelations")
 # astsa::sarima
 astsa_sarima = astsa::sarima(milk, 1,0,0,1,1,1,12, Model = TRUE)
 
@@ -565,9 +560,11 @@ for(i in 1:1214){
 Mortality = ts(covid_world$Smoothed_New_Case_Fatality_Rate)
 
 plot.ts(Mortality)
-plot(stl(Mortality, s.window="periodic"))
-plot(decompose(Mortality, type="multiplicative"))
-plot(decompose(Mortality, type="additive"))
+
+# The next 3 functions do not work unless my frequency is 2 or more
+# plot(stl(Mortality, s.window="periodic"))
+# plot(decompose(Mortality, type="multiplicative"))
+# plot(decompose(Mortality, type="additive"))
 
 Rolling_Mortality = ts(covid_world$`365Day_Rolling_Fatality`)[365:1214]
 
@@ -711,9 +708,7 @@ For both series, I attempted boxcox, square root, and log transformations. Some 
 (e) Plot and analyze the ACF and PACF to preliminary identify your model(s): Plot ACF/PACF. What model(s) do they suggest? Explain your choice of p and q here.
 If your dataset does not work for you, please comment why. For example, the dataset is too short, exhibits change of behavior, does not look like a second-order process, etc. You might review slide 47 of Week 4, Lecture 8.
 ```{r}
-acf2(Deaths_model4$residuals , max.lag = 50)
-acf2(Deaths , max.lag = 50)
-deaths
+
 ```
 
 Note that you may change the project dataset in the future. This question is designed to help you start planning your the project. Please include plots of corresponding theoretical acfs and the corresponding R code.
