@@ -516,16 +516,85 @@ fit.ar2$aic
 fit.ar3$aic
 fit.ar4$aic
 
-arima(Mortality.diff2, order=c(12,1,0))
-AICc()
+fit.ar1 <- arima(Mortality.diff, order=c(12,1,0))
+fit.ar2 <- arima(Mortality.diff, order=c(10,1,0))
+fit.ar3 <- arima(Mortality.diff, order=c(12,0,0))
+fit.ar4 <- arima(Mortality.diff, order=c(10,0,0))
+
+fit.ma5 <- arima(Mortality.diff, order=c(0,0,9))
+fit.ma6 <- arima(Mortality.diff, order=c(0,0,10))
+fit.ma7 <- arima(Mortality.diff, order=c(0,0,11))
+fit.ma8 <- arima(Mortality.diff, order=c(0,0,12))
+
+fit.arma9 <- arima(Mortality.diff, order=c(12,1,9))
+fit.arma10 <- arima(Mortality.diff, order=c(12,1,10))
+fit.arma11 <- arima(Mortality.diff, order=c(12,1,11))
+fit.arma12 <- arima(Mortality.diff, order=c(12,1,12))
+
+fit.arma13 <- arima(Mortality.diff, order=c(12,0,9))
+fit.arma14 <- arima(Mortality.diff, order=c(12,0,10))
+fit.arma15 <- arima(Mortality.diff, order=c(12,0,11))
+fit.arma16 <- arima(Mortality.diff, order=c(12,0,12))
+
+fit.arma17 <- arima(Mortality.diff, order=c(10,1,9))
+fit.arma18 <- arima(Mortality.diff, order=c(10,1,10))
+fit.arma19 <- arima(Mortality.diff, order=c(10,1,11))
+fit.arma20 <- arima(Mortality.diff, order=c(10,1,12))
+
+fit.arma21 <- arima(Mortality.diff, order=c(10,0,9))
+fit.arma22 <- arima(Mortality.diff, order=c(10,0,10))
+fit.arma23 <- arima(Mortality.diff, order=c(10,0,11))
+fit.arma24 <- arima(Mortality.diff, order=c(10,0,12))
+
+Data <- data.frame(c(AICc(fit.ar1),
+AICc(fit.ar2),
+AICc(fit.ar3),
+AICc(fit.ar4),
+AICc(fit.ma5),
+AICc(fit.ma6),
+AICc(fit.ma7),
+AICc(fit.ma8),
+AICc(fit.arma9),
+AICc(fit.arma10),
+AICc(fit.arma11),
+AICc(fit.arma12),
+AICc(fit.arma13),
+AICc(fit.arma14),
+AICc(fit.arma15),
+AICc(fit.arma16),
+AICc(fit.arma17),
+AICc(fit.arma18),
+AICc(fit.arma19),
+AICc(fit.arma20),
+AICc(fit.arma21),
+AICc(fit.arma22),
+AICc(fit.arma23),
+AICc(fit.arma24)))
+
+Data[,2] = c(1:24)
+
 
 source("innovations.R")
 
 acvf = acf(Mortality, plot=FALSE, lag.max = length(Mortality))$acf[,1,1] * var(Mortality) 
 m = length(acvf)
 lh.ia = innovations.algorithm(m+1, acvf)
-lh.ia$thetas[5,1:5] # Preliminary estimates of coefficients for MA(9)
+lh.ia$thetas[9,1:9] # Preliminary estimates of coefficients for MA(9)
+lh.ia$thetas[10,1:10] # Preliminary estimates of coefficients for MA(10)
+lh.ia$thetas[11,1:11] # Preliminary estimates of coefficients for MA(11)
+lh.ia$thetas[12,1:12] # Preliminary estimates of coefficients for MA(12)
 
+fit.ma9 <- arima(Mortality.diff, order=c(0,0,9))
+fit.ma10 <- arima(Mortality.diff, order=c(0,0,10))
+fit.ma11 <- arima(Mortality.diff, order=c(0,0,11))
+fit.ma12 <- arima(Mortality.diff, order=c(0,0,12))
+
+
+
+
+
+install.packages("MuMIn")
+library(MuMIn)
 ```
 \
 There was a sharp change in behavior for my original dataset. This was the time during the pandemic when the vaccine had not been created yet. It was decided that only the daily cases and deaths after the release of the vaccine should be included within the model.
