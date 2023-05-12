@@ -97,6 +97,8 @@ library(devtools)
 # install.packages('sarima')
 library(profvis)
 library(htmlwidgets)
+install.packages("MuMIn")
+library(MuMIn)
 library(astsa)
 library(basicTrendline)
 devtools::install_github("FinYang/tsdl")
@@ -556,20 +558,37 @@ AICc(fit.ma7),
 AICc(fit.ma8),
 AICc(fit.arma9),
 AICc(fit.arma10),
-AICc(fit.arma11),
-AICc(fit.arma12),
 AICc(fit.arma13),
-AICc(fit.arma14),
-AICc(fit.arma15),
 AICc(fit.arma16),
 AICc(fit.arma17),
 AICc(fit.arma18),
 AICc(fit.arma19),
 AICc(fit.arma20),
-AICc(fit.arma21),
 AICc(fit.arma22),
 AICc(fit.arma23),
 AICc(fit.arma24)))
+
+acf1 = acf2(fit.ar1$residuals)
+acf2 = acf2(fit.ar2$residuals)
+acf3 = acf2(fit.ar3$residuals)
+acf4 = acf2(fit.ar4$residuals)
+acf5 = acf2(fit.ma5$residuals)
+acf6 = acf2(fit.ma6$residuals)
+acf7 = acf2(fit.ma7$residuals)
+acf8 = acf2(fit.ma8$residuals)
+acf9 = acf2(fit.arma9$residuals)
+acf10 = acf2(fit.arma10$residuals)
+acf13 = acf2(fit.arma13$residuals)
+acf16 = acf2(fit.arma16$residuals)
+acf17 = acf2(fit.arma17$residuals)
+acf18 = acf2(fit.arma18$residuals)
+acf19 = acf2(fit.arma19$residuals)
+acf20 = acf2(fit.arma20$residuals)
+acf22 = acf2(fit.arma22$residuals)
+acf23 = acf2(fit.arma23$residuals)
+acf24 = acf2(fit.arma24$residuals)
+
+acf25 = acf2(arima(Mortality.diff, order=c(5,0,5))$residuals)
 
 Data[,2] = c(1:24)
 
@@ -583,18 +602,6 @@ lh.ia$thetas[9,1:9] # Preliminary estimates of coefficients for MA(9)
 lh.ia$thetas[10,1:10] # Preliminary estimates of coefficients for MA(10)
 lh.ia$thetas[11,1:11] # Preliminary estimates of coefficients for MA(11)
 lh.ia$thetas[12,1:12] # Preliminary estimates of coefficients for MA(12)
-
-fit.ma9 <- arima(Mortality.diff, order=c(0,0,9))
-fit.ma10 <- arima(Mortality.diff, order=c(0,0,10))
-fit.ma11 <- arima(Mortality.diff, order=c(0,0,11))
-fit.ma12 <- arima(Mortality.diff, order=c(0,0,12))
-
-
-
-
-
-install.packages("MuMIn")
-library(MuMIn)
 ```
 \
 There was a sharp change in behavior for my original dataset. This was the time during the pandemic when the vaccine had not been created yet. It was decided that only the daily cases and deaths after the release of the vaccine should be included within the model.
@@ -608,7 +615,7 @@ Neither of the time series are seasonal even though they both show a seasonal co
 
 # Mortality models
 # Model 1
-Mortality_model1 <- auto.arima(Mortality.diff2, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
+Mortality_model1 <- auto.arima(Mortality.diff, start.p = 0, start.q = 0, start.P = 0, start.Q = 0, stationary=FALSE, seasonal = TRUE, trace = TRUE)
 
 Mortality_model1$coef
 
