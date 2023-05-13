@@ -643,38 +643,101 @@ acf24 = acf2(fit.arma25_9$residuals)
 \
 I used the ar() function to estimate the amount of ar coefficients I should have in my model. The same thing was done using the innovations.R function. I then used the arima function to estimate the coefficients of each different combination of ar and ma orders. It was found that ARIMA(29, 0, 10) made the differenced time series stationary, but there was a concern about many oof the coefficients having NAN values for their standard errors. After seeing that the standard errors for the last few autoregressive coefficients were very small, I tested the effects of decreasing the order by one. This lead me to arrive at ARIMA(25, 0, 10), which was also stationary. By observing the coefficients and seeing that among the many NAN standard error values the 10th moving average coefficient also had NAN as the value for the standard error, I decided to decrease the moving average order by one. Upon doing so, the model remained stationary and there were no NAN values for the standard errors of the coefficients. Therefore, the fitted model for my time series is ARIMA(25,0,9).
 \
+\
 
 ### Question 3
 An ARMA(3, 0) model is fit to the following quarterly time series:
-  The estimated coefficients are:
-ar1 ar2 0.252 0.061
-ar3 intercept -0.202 2.637
-Year 2018 2019 2020
-Quarter 1 3.53
-0.98 2.91
-Quarter 2 1.33
-3.61 2.12
-Quarter 3 1.85 3.44 4.62
-Quarter 4 0.61 3.38 2.93
-      Forecast the value for Quarter 1 of 2021. Give full explanation on how you arrived to your answer. Show calculations.
-A. Less that 3.00 B. At least 3.00, but less than 3.25 C. At least 3.25, but less than 3.50 D. Atleast 3.50, but less than 3.75 E. At least 3.75.
-Important: For models with AR part, the ”intercept” reported in standard output of R is a misnomer. It is actually the mean of the process, so that the fitted model is
-Xt − 2.637 = 0.252(Xt−1 − 2.637) + 0.061(Xt−2 − 2.637) − 0.202(Xt−3 − 2.637) + Zt.
-4. You are given the following information about an AR(1) model with mean 0: ρ(2) = 0.215, ρ(3) = −0.100, XT = −0.431. Calculate the forecasted value of XT+1.
-5. The five models, AR(1), ARMA(1, 1), ARMA(1, 2), ARMA(2, 3), and ARMA(4, 3) are fitted to the same time series.
-The models are ranked using Akaike Information Criterion (AIC): AIC
-Model Loglikelihood
+```{r}
+frame <- data.frame(matrix(ncol=5, nrow=3))
+colnames(frame) = c("Year", "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4")
+
+frame$Year = c(2018, 2019, 2020)
+frame$`Quarter 1`= c(3.53, 0.98, 2.91)
+frame$`Quarter 2`= c(1.33, 3.61, 2.12)
+frame$`Quarter 3`= c(1.85, 3.44, 4.62)
+frame$`Quarter 4`= c(0.61, 3.38, 2.93)
+frame
+
+frame2 <- data.frame(matrix(ncol=4, nrow=1))
+colnames(frame2) = c("ar1", "ar2", "ar3", "Intercept")
+frame2[1,] = c(0.252, 0.061, -0.202, 2.637)
+frame2
+```
+\
+Forecast the value for Quarter 1 of 2021. Give full explanation on how you arrived to your answer. Show calculations.\
+
+A. Less that 3.00\
+B. At least 3.00, but less than 3.25\
+C. At least 3.25, but less than 3.50\
+D. Atleast 3.50, but less than 3.75\
+E. At least 3.75.\
+\
+Important: For models with AR part, the ”intercept” reported in standard output of R is a misnomer. It is actually the mean of the process, so that the fitted model is\
+
+X~t~ − 2.637 = 0.252(X~t−1~ − 2.637) + 0.061(X~t−2~ − 2.637) − 0.202(X~t−3~ − 2.637) + Z~t~.\
+
+$$
+\begin{aligned}
+&\ \ \ \ \ E[X_{n+1}|X_1, X_2,...,X_n]\\
+&= E[\phi_1X_n + \phi_2X_{n-1}+...+\phi_pX_{n+1-p}+ Z_{n+1}|X_1,X_2,...,X_n]\\
+& = 0.252(3.53) + 0.061(0.98) - 0.202(2.91) + 2.637\\
+& = 2.99852
+\end{aligned}
+$$
+\
+\
+
+### Question 4
+You are given the following information about an AR(1) model with mean 0: ρ(2) = 0.215, ρ(3) = −0.100, X~T~ = −0.431. Calculate the forecasted value of X ~T+1~.\
+$$
+\begin{aligned}
+\text{For an AR(1) model, } \rho_k = \phi_1^k\\
+\sqrt{0.215} = \pm 0.46368\\
+(-0.100)^{1/3} = -0.46368\\
+X_{t+1} = -0.46368 * -0.431\\
+= 0.20
+
+\end{aligned}
+$$
+\
+\
+
+### Question 5
+The five models, AR(1), ARMA(1, 1), ARMA(1, 2), ARMA(2, 3), and ARMA(4, 3) are fitted to the same time series.
+The models are ranked using Akaike Information Criterion (AIC): AIC = −2 × log-likelihood+2 ×(p + q + 2).\
 You are given the following information:
+```{r}
+frame2 = data.frame(matrix(ncol=2, nrow=5))
+colnames(frame2) = c("Model", "Loglikelihood")
+frame2$Model=c("AR(1)", "ARMA(1,1)", "ARMA(1,2)", "ARMA(2,3)", "ARMA(4,3)")
+frame2$Loglikelihood=c(-650, -641, -636, -630, -629)
+frame2
+```
+\
 Determine the best model.
-= −2× log-likelihood+2 ×(p + q + 2).
-   AR(1)
-ARMA(1, 1) -641
-ARMA(1, 2) -636
-ARMA(2, 3) -630
-ARMA(4, 3) -629
--650
-  The following problems are for students enrolled in PSTAT 274 ONLY
-G1. Suppose that in a sample of size 100, we obtain ρˆ(1) = 0.438 and ρˆ(2) = 0.145. Assuming that the data were generated from an MA(1) model, construct approximate 95% confidence intervals for both ρ(1) and ρ(2). Based on these two confidence intervals, are the data consistent with an MA(1) model with θ = 0.6?
+$$
+\begin{aligned}
+\ \ \ \ \ \ \ \ \ \ \text{AIC[AR(1)]} &= -2 * -650 + 2*(1+2)\\
+&=1306\\
+\text{AIC[ARMA(1,1)]} &= -2 * -641 + 2*(1+1+2)\\
+&=1290\\
+\text{AIC[ARMA(1,2)]} &= -2 * -636 + 2*(1+2+2)\\
+&=1282\\
+\text{AIC[ARMA(2,3)]} &= -2 * -630 + 2*(2+3+2)\\
+&=1274\\
+\text{AIC[ARMA(4,3)]} &= -2 * -629 + 2*(4+3+2)\\
+&=1276\\\\
+\text{The best model is AR(1)}
+\end{aligned}
+$$
+\
+
+ *The following problems are for students enrolled in PSTAT 274 ONLY*
+\
+\
+
+### Question G1
+Suppose that in a sample of size 100, we obtain $\hat{ρ}$(1) = 0.438 and $\hat{ρ}$(2) = 0.145. Assuming that the data were generated from an MA(1) model, construct approximate 95% confidence intervals for both ρ(1) and ρ(2). Based on these two confidence intervals, are the data consistent with an MA(1) model with θ = 0.6?
 Help: (i) Bartlett’s formula, was discussed in §10.3, slides 52, 55 and 56, of week 4. It gives distribution of sample acfs: For
 h
 is approximately N(ρ,n−1W) with the elements of matrix W computed by Bartelett’s formula:
