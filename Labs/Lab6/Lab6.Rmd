@@ -1,12 +1,14 @@
 ---
 title: "Lab 6 Assignment"
-Author: "Dylan Berneman"
+author: "Dylan Berneman"
 output: html_document
 date: '2023-05-13'
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(astsa)
 ```
 
 ### Question 1
@@ -48,16 +50,6 @@ var(Mortality)
 # variance is stable
 # just to check for transformations
 
-# box-cox
-t = 1:length(Mortality)
-fit = lm(Mortality ~ t)
-bcTransform = boxcox(Mortality ~ t,plotit = TRUE)
-
-lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
-Mortality.bc = (1/lambda)*(Mortality^lambda-1)
-# variance is much greater than the original series
-var(Mortality.bc)
-
 # square root transform
 Mortality.Sqrt = sqrt(Mortality)
 # variance is much greater than the original series
@@ -89,29 +81,40 @@ var(Mortality.diff) < var(Mortality.diff2)
 
 # Match ACF to theoretical
 Mortality.diff_acf1 = acf2(Mortality.diff)
-# Theoretical
-
-for(i in 0:10){
-  for(x in 0:10){
-    plot = acf2(arima(Mortality.diff, order = c(i, 0, x))$residuals)
-  }
-}
-acf2(arima(Mortality.diff, order=c(4,0,4))$residuals)
-
 ``` 
-```{r}
-acf2=acf2(Mortality.diff)
+\
+Then match theoretical p/acf to sample p/acf to find p and q\
 
-```
-    - transform the time series
-  abline(reg=lm(model~time(model)))
-  plot(aggregate(model,FUN=mean))
-  adf.test(tsData) 
-  ndi
+  • Step 2 Model identification\
+      - Find a theoretical stationary model that has similar acf/pacf to the sample\
+      
+  • Step 3 Model estimation\
+    - Use arima, yw, innovation algorithm, and mle to estimate the model coefficients\
+    
+  • Step 4 Model selection\
+    - Use AICc to find the model with the lowest value.\
+    
+  • Step 5 Model diagnostics\
+    - Examine normal Q-Q plot
+    - Ran Shapiro-Wilk test of normality
+    -check sample acf/pacf of residuals resembles WN 95% ci
+    - Portmanteau tests\
+    
+  • Step 6 Data forecast\
+    - Forecast future observations\
+\    
+    
+  (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is  differencing once at lag 1 sufficient to make the data stationary? If yes, justify it. If no, try to make it stationary. Please write related R Codes.
   
-  • Step 2 Model identification
-  • Step 3 Model estimation
-  • Step 4 Model selection
-  • Step 5 Model diagnostics
-  • Step 6 Data forecast
-  (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is di
+```{r}
+dowj_data <- scan("dowj.txt")
+dowj <- ts(dowj_data)
+ts.plot(dowj,main = "Dow Jones Index")
+acf = acf2(dowj)
+dowj.diff = diff(dowj, 1)
+ts.plot(dowj.diff,main = "Dow Jones Index")
+abline(reg=lm(dowj.diff~time(dowj.diff)), col="red")
+acf2 = acf2(dowj.diff)
+```
+\
+Differencing once at lag 1 is enough to make the time series stationary. As can be seen in the acf and pacf of the differenced time series, a majority of the values at each lag are within the confidence interval.
