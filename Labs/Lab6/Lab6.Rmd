@@ -1,0 +1,26 @@
+---
+title: "Lab 6 Assignment"
+Author: "Dylan Berneman"
+output: html_document
+date: '2023-05-13'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+
+(a) Summarize how you would carry out the following steps in time series analysis. You can describe briefly by words, or write down R commands you would use to implement these steps.\
+
+  • Step 1 Data processing (make the data stationary)
+  
+  abline(reg=lm(model~time(model)))
+  plot(aggregate(model,FUN=mean))
+  
+  • Step 2 Model identification
+  • Step 3 Model estimation
+  • Step 4 Model selection
+  • Step 5 Model diagnostics
+  • Step 6 Data forecast
+  (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is di
