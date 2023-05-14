@@ -485,7 +485,7 @@ for(i in 1:1225){
 covid <- covid[346:1225,]
 
 Mortality = ts(covid$Smoothed_New_Case_Fatality_Rate)
-
+frequency(Mortality)
 plot.ts(Mortality)
 Mortality_acf1 = acf2(Mortality)
 var(Mortality)

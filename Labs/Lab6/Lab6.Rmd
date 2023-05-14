@@ -14,9 +14,100 @@ knitr::opts_chunk$set(echo = TRUE)
 (a) Summarize how you would carry out the following steps in time series analysis. You can describe briefly by words, or write down R commands you would use to implement these steps.\
 
   • Step 1 Data processing (make the data stationary)
-  
+```{r}
+covid <- read.csv("owid-covid-data 2.csv")
+
+covid[(is.na(covid))]<-0
+
+covid <- covid %>%
+  group_by(date) %>%
+  summarise(across(c(total_cases, new_cases, new_cases_smoothed, total_deaths, new_deaths, new_deaths_smoothed), sum))
+
+covid["Smoothed_New_Case_Fatality_Rate"] = NA
+
+for(i in 1:1225){
+  covid$Smoothed_New_Case_Fatality_Rate[i] = covid$new_deaths_smoothed[i] / covid$new_cases_smoothed[i]}
+
+covid <- covid[346:1225,]
+
+Mortality = ts(covid$Smoothed_New_Case_Fatality_Rate)
+
+# check for seasonality
+frequency(Mortality)
+
+# plot w/ mean line
+plot.ts(Mortality)
+abline(reg=lm(Mortality~time(Mortality)), col="red")
+
+# plot acf
+Mortality_acf1 = acf2(Mortality)
+
+# get variance
+var(Mortality)
+
+# variance is stable
+# just to check for transformations
+
+# box-cox
+t = 1:length(Mortality)
+fit = lm(Mortality ~ t)
+bcTransform = boxcox(Mortality ~ t,plotit = TRUE)
+
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+Mortality.bc = (1/lambda)*(Mortality^lambda-1)
+# variance is much greater than the original series
+var(Mortality.bc)
+
+# square root transform
+Mortality.Sqrt = sqrt(Mortality)
+# variance is much greater than the original series
+var(Mortality.Sqrt)
+
+# log transform
+Mortality.log = log(Mortality)
+# variance is much greater than the original series
+var(Mortality.log)
+
+# try differencing
+Mortality.diff = diff(Mortality, 1)
+
+# stop once mean is a horizontal line
+plot.ts(Mortality.diff)
+abline(reg=lm(Mortality.diff~time(Mortality.diff)), col="red")
+
+# smaller variance than the original
+var(Mortality.diff)
+
+Mortality.diff2 = diff(Mortality, 2)
+plot.ts(Mortality.diff2)
+abline(reg=lm(Mortality.diff2~time(Mortality.diff2)), col="red")
+# larger variance than 1st difference
+var(Mortality.diff2)
+
+# Diff = 1
+var(Mortality.diff) < var(Mortality.diff2)
+
+# Match ACF to theoretical
+Mortality.diff_acf1 = acf2(Mortality.diff)
+# Theoretical
+
+for(i in 0:10){
+  for(x in 0:10){
+    plot = acf2(arima(Mortality.diff, order = c(i, 0, x))$residuals)
+  }
+}
+acf2(arima(Mortality.diff, order=c(4,0,4))$residuals)
+
+``` 
+```{r}
+acf2=acf2(Mortality.diff)
+
+```
+    - transform the time series
   abline(reg=lm(model~time(model)))
   plot(aggregate(model,FUN=mean))
+  adf.test(tsData) 
+  ndi
   
   • Step 2 Model identification
   • Step 3 Model estimation
