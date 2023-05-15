@@ -24,52 +24,65 @@ The three models AR(2), MA(1), and ARMA(2,1) are fitted to the following time se
 \
 
 
-AR(2)\
+**AR(2)**\
 
 |  | ar1 | ar2 | intercept | 
 |:-------:|:------:|:-----------:|:---------:|
 |  | 0.2618 | 0.0868 | 104.227 |
 | st. error | 0.3289 | 0.3326 | 2.372 |
 | $\sigma^2$ = 25.02 |  | log likelihood = -36.4 |  |
+\
 
+**MA(1)**\
 
+|  | ma1 | intercept | 
+|:-------:|:------:|:-----------:|
+|  | 0.1899 | 103.798 |
+| st. error | 0.2574 | 1.7373 |
+| $\sigma^2$ = 25.66 |  | log likelihood = -36.51 |
 
-  Year 2010 2011 2012
-Quarter 1 112
-101 106
-Quarter 2 104
-101 106
-Quarter 3 100 105 108
-Quarter 4 96
-94 110
-st. error σ2 = 25.66
-  The results using R are as follows: AR(2):
-MA(1):
-intercept 103.798
-1.7373
-log likelihood = -36.51
-      st. error σ2 = 25.02
-ARMA(2,1):
-intercept 104.227 2.372
-ar2 0.4437
-0.33267
-log likelihood = -36.02
-ma1 0.1899 0.2574
-ar1 0.2618 0.3289
-ar2 0.0868 0.3326
-log likelihood = -36.4
-ar1 -0.5547
-0.3329
-      st. error σ2 = 21.31
-intercept 0.235 2.4584
-ma1
-0.9779 104.4542
-   The models are ranked using Akaike Information Criterion, Corrected for bias (AICC) (see §11.3 of Lecture Notes or slide 32 of week 5).
-AICC = −2× log-likelihood+2 × rn where n is the sample size and r is the number of free parameters, n−r−1
-most often r = p + q + 1.
-Determine the order from the best to worst model. Give full explanation on how you arrived to your
-answer. Show calculations.
-A. AR(2), MA(1), ARMA (2,1) B. AR(2), ARMA (2,1), MA(1) C. MA(1), AR(2), ARMA (2,1) D. MA(1), ARMA (2,1), AR(2) E. ARMA (2,1), AR(2), MA(1).
+\
+
+**ARMA(2,1)**\
+
+|  | ar1 | ar2 | ma1 | intercept | 
+|:-------:|:------:|:-----------:|:---------:|:-----:|
+|  | -0.5547 | 0.4437 | 0.9779 | 104.4542 |
+| st. error | 0.3329 | 0.33267 | 0.235 | 2.4584 |
+| $\sigma^2$ = 21.31 |  | log likelihood = -36.02 |  |
+\
+
+The models are ranked using Akaike Information Criterion, Corrected for bias (AICC) (see §11.3 of Lecture Notes or slide 32 of week 5).\
+AICC = −2× log-likelihood+2 × $\frac{rn}{n-r-1}$ where n is the sample size and r is the number of free parameters, n−r−1
+most often r = p + q + 1.\
+Determine the order from the best to worst model. Give full explanation on how you arrived to your answer. Show calculations.\
+
+  (A) AR(2), MA(1), ARMA (2,1) 
+  (B) AR(2), ARMA (2,1), MA(1) 
+  (C) MA(1), AR(2), ARMA (2,1) 
+  (D) MA(1), ARMA (2,1), AR(2) 
+  (E) ARMA (2,1), AR(2), MA(1)\
+  
+$$
+\begin{aligned}
+\text{AICC}:&\\\\
+\text{AR(2)}:& \ \ p=2,\ q=0,\ r=3,\ n=12\  \\
+&=-2 * -36.4 + 2 * \frac{3*12}{12-3-1}\\
+&=72.8 + 9\\
+&=81.8\\\\
+\text{MA(1)}:& \ \ p=0,\ q=1,\ r=2,\ n=12\  \\
+&=-2 * -36.51 + 2 * \frac{2*12}{12-2-1}\\
+&=73.02 + 48/9\\
+&=78.353\\\\
+\text{ARMA(2,1)}:& \ \ p=2,\ q=1,\ r=4,\ n=12\  \\
+&=-2 * -36.02 + 2 * \frac{4*12}{12-4-1}\\
+&=72.04 + 96/7\\
+&=85.754\\\\
+\text{Order:}&\ \text{ARMA(2,1), AR(2), MA(1)}\\\\
+Answer:\ E.
+\end{aligned}
+$$
+
 2. In modeling the weekly sales of a certain commodity over the past six months, the time series model Xt − φ1Xt−1 = Zt + θ1Zt−1 was thought to be appropriate. Suppose the model was fitted and the autocorrelations of the residuals were:
 k 12345678 ρˆWˆ (k) -.04 -.50 .03 -.01 .01 .02 .03 -.01 st. dev ρˆWˆ (k) .08 .10 .11 .11 .11 .11 .11 .11
 Is the assumed model really appropriate? If not, how would you modify the model? Explain.
