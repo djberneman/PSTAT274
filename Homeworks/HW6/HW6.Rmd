@@ -82,13 +82,49 @@ $$
 Answer:\ E.
 \end{aligned}
 $$
+\
+\
 
-2. In modeling the weekly sales of a certain commodity over the past six months, the time series model Xt − φ1Xt−1 = Zt + θ1Zt−1 was thought to be appropriate. Suppose the model was fitted and the autocorrelations of the residuals were:
-k 12345678 ρˆWˆ (k) -.04 -.50 .03 -.01 .01 .02 .03 -.01 st. dev ρˆWˆ (k) .08 .10 .11 .11 .11 .11 .11 .11
-Is the assumed model really appropriate? If not, how would you modify the model? Explain.
-Hint: Check slides 8 - 9 of Lecture 11 for the 95% confidence intervals for autocorrelation function of the fitted residuals. You might also find slide 26 of Week 2 and slide 15 of Lecture 11 useful.
-3. Suppose that in a sample of size 100 from an AR(1) process with mean μ, φ = 0.6, and σ2 = 2, we obtain x ̄100 = 0.271. Construct an approximate 95% confidence interval for μ. Are the data compatible with the hypothesis that μ = 0?
-Help: (i) Here σ2 ≡ σZ2 is the variance of noise Zt.
+### Question 3
+In modeling the weekly sales of a certain commodity over the past six months, the time series model X~t~ − $\phi$~1~X~t−1~ = Z~t~ + θ~1~Z~t−1~ was thought to be appropriate. Suppose the model was fitted and the autocorrelations of the residuals were:\
+
+| k | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| $\hat{\rho}_{\hat{W}}(k)$ | -.04 | -.50 | .03 | -.01 | .01 | .02 | .03 | -.01 |
+| st. dev $\hat{\rho}_{\hat{W}}(k)$ | .08 | .10 | .11 | .11 | .11 | .11 | .11 | .11 |
+\
+Is the assumed model really appropriate? If not, how would you modify the model? Explain.\
+
+*Hint: Check slides 8 - 9 of Lecture 11 for the 95% confidence intervals for autocorrelation function of the fitted residuals. You might also find slide 26 of Week 2 and slide 15 of Lecture 11 useful.*\
+
+$$
+\begin{aligned}
+& \text{For each lag, check if the coefficient is significant}\\\\
+&\text{Significant if } |\frac{acf[x]}{std. dev[x]}| \ge 1.96\\\\
+&\text{lag 1 }: |\frac{-0.04}{0.08}| = 0.5 \ngeq 1.96\\
+&\text{lag 2 }: |\frac{-0.50}{0.10}| = 5 \geq 1.96\\
+&\text{lag 3 }: |\frac{0.03}{0.11}| = 0.2727 \ngeq 1.96\\
+&\text{lag 4 }: |\frac{-0.01}{0.11}| = 0.0909 \ngeq 1.96\\
+&\text{lag 5 }: |\frac{-0.04}{0.08}| = 0.0909 \ngeq 1.96\\
+&\text{lag 6 }: |\frac{0.01}{0.11}| = 0.1818 \ngeq 1.96\\
+&\text{lag 7 }: |\frac{0.02}{0.11}| = 0.2727 \ngeq 1.96\\
+&\text{lag 8 }: |\frac{0.03}{0.11}| = 0.0909 \ngeq 1.96\\\\
+&\text{Since the first and only significant acf value occurs at lag 2,}\\
+&\text{then that means that the coefficients values of}\ \phi_1 \&\ \theta_1 = 0.\\
+&\text{This implies that the next significant lag value should be the}\\
+&\text{minimum order of the ARMA model. Since all other acf values}\\
+&\text{can be considered to be 0, this should actually be an MA(2) model}\\
+&\text{of the form: } X_t = Z_t - \theta_1Z_{t-2}.\\
+&\text{Therefore, the assumed model is not appropriate.}
+\end{aligned}
+$$
+\
+\
+
+### Question 3 
+Suppose that in a sample of size 100 from an AR(1) process with mean μ, $\phi$ = 0.6, and σ^2^ = 2, we obtain $\bar{x}_100 = 0.271. Construct an approximate 95% confidence interval for μ. Are the data compatible with the hypothesis that μ = 0?\
+
+*Help: (i) Here σ2 ≡ σZ2 is the variance of noise Zt.*
 (ii) Large sample distribution of X ̄n is given as follows (See, for example, slide 48 or §10.1 of Week 4): For n large, distribution of the sample mean X ̄n is approximately normal with mean μ ≡ EXt and variance n−1v, where v ≈ γX (0) + 2 P∞h=1 γX (h).
 (iii) For ACVF for AR(1) process see slide 43 of Week 2.
   

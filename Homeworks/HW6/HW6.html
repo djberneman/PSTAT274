@@ -399,7 +399,7 @@ following time series:</p>
 </table>
 <p><br />
 </p>
-<p>AR(2)<br />
+<p><strong>AR(2)</strong><br />
 </p>
 <table>
 <thead>
@@ -432,39 +432,199 @@ following time series:</p>
 </tr>
 </tbody>
 </table>
-<p>Year 2010 2011 2012 Quarter 1 112 101 106 Quarter 2 104 101 106
-Quarter 3 100 105 108 Quarter 4 96 94 110 st. error σ2 = 25.66 The
-results using R are as follows: AR(2): MA(1): intercept 103.798 1.7373
-log likelihood = -36.51 st. error σ2 = 25.02 ARMA(2,1): intercept
-104.227 2.372 ar2 0.4437 0.33267 log likelihood = -36.02 ma1 0.1899
-0.2574 ar1 0.2618 0.3289 ar2 0.0868 0.3326 log likelihood = -36.4 ar1
--0.5547 0.3329 st. error σ2 = 21.31 intercept 0.235 2.4584 ma1 0.9779
-104.4542 The models are ranked using Akaike Information Criterion,
-Corrected for bias (AICC) (see §11.3 of Lecture Notes or slide 32 of
-week 5). AICC = −2× log-likelihood+2 × rn where n is the sample size and
-r is the number of free parameters, n−r−1 most often r = p + q + 1.
+<p><br />
+</p>
+<p><strong>MA(1)</strong><br />
+</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"></th>
+<th align="center">ma1</th>
+<th align="center">intercept</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">0.1899</td>
+<td align="center">103.798</td>
+</tr>
+<tr class="even">
+<td align="center">st. error</td>
+<td align="center">0.2574</td>
+<td align="center">1.7373</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\sigma^2\)</span> =
+25.66</td>
+<td align="center"></td>
+<td align="center">log likelihood = -36.51</td>
+</tr>
+</tbody>
+</table>
+<p><br />
+</p>
+<p><strong>ARMA(2,1)</strong><br />
+</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"></th>
+<th align="center">ar1</th>
+<th align="center">ar2</th>
+<th align="center">ma1</th>
+<th align="center">intercept</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">-0.5547</td>
+<td align="center">0.4437</td>
+<td align="center">0.9779</td>
+<td align="center">104.4542</td>
+</tr>
+<tr class="even">
+<td align="center">st. error</td>
+<td align="center">0.3329</td>
+<td align="center">0.33267</td>
+<td align="center">0.235</td>
+<td align="center">2.4584</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\sigma^2\)</span> =
+21.31</td>
+<td align="center"></td>
+<td align="center">log likelihood = -36.02</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p><br />
+</p>
+<p>The models are ranked using Akaike Information Criterion, Corrected
+for bias (AICC) (see §11.3 of Lecture Notes or slide 32 of week
+5).<br />
+AICC = −2× log-likelihood+2 × <span class="math inline">\(\frac{rn}{n-r-1}\)</span> where n is the sample
+size and r is the number of free parameters, n−r−1 most often r = p + q
++ 1.<br />
 Determine the order from the best to worst model. Give full explanation
-on how you arrived to your answer. Show calculations. A. AR(2), MA(1),
-ARMA (2,1) B. AR(2), ARMA (2,1), MA(1) C. MA(1), AR(2), ARMA (2,1) D.
-MA(1), ARMA (2,1), AR(2) E. ARMA (2,1), AR(2), MA(1). 2. In modeling the
-weekly sales of a certain commodity over the past six months, the time
-series model Xt − φ1Xt−1 = Zt + θ1Zt−1 was thought to be appropriate.
-Suppose the model was fitted and the autocorrelations of the residuals
-were: k 12345678 ρˆWˆ (k) -.04 -.50 .03 -.01 .01 .02 .03 -.01 st. dev
-ρˆWˆ (k) .08 .10 .11 .11 .11 .11 .11 .11 Is the assumed model really
-appropriate? If not, how would you modify the model? Explain. Hint:
-Check slides 8 - 9 of Lecture 11 for the 95% confidence intervals for
-autocorrelation function of the fitted residuals. You might also find
-slide 26 of Week 2 and slide 15 of Lecture 11 useful. 3. Suppose that in
-a sample of size 100 from an AR(1) process with mean μ, φ = 0.6, and σ2
-= 2, we obtain x ̄100 = 0.271. Construct an approximate 95% confidence
-interval for μ. Are the data compatible with the hypothesis that μ = 0?
-Help: (i) Here σ2 ≡ σZ2 is the variance of noise Zt. (ii) Large sample
-distribution of X ̄n is given as follows (See, for example, slide 48 or
-§10.1 of Week 4): For n large, distribution of the sample mean X ̄n is
-approximately normal with mean μ ≡ EXt and variance n−1v, where v ≈ γX
-(0) + 2 P∞h=1 γX (h). (iii) For ACVF for AR(1) process see slide 43 of
-Week 2.</p>
+on how you arrived to your answer. Show calculations.<br />
+</p>
+<ol style="list-style-type: upper-alpha">
+<li>AR(2), MA(1), ARMA (2,1)</li>
+<li>AR(2), ARMA (2,1), MA(1)</li>
+<li>MA(1), AR(2), ARMA (2,1)</li>
+<li>MA(1), ARMA (2,1), AR(2)</li>
+<li>ARMA (2,1), AR(2), MA(1)<br />
+</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+\text{AICC}:&amp;\\\\
+\text{AR(2)}:&amp; \ \ p=2,\ q=0,\ r=3,\ n=12\  \\
+&amp;=-2 * -36.4 + 2 * \frac{3*12}{12-3-1}\\
+&amp;=72.8 + 9\\
+&amp;=81.8\\\\
+\text{MA(1)}:&amp; \ \ p=0,\ q=1,\ r=2,\ n=12\  \\
+&amp;=-2 * -36.51 + 2 * \frac{2*12}{12-2-1}\\
+&amp;=73.02 + 48/9\\
+&amp;=78.353\\\\
+\text{ARMA(2,1)}:&amp; \ \ p=2,\ q=1,\ r=4,\ n=12\  \\
+&amp;=-2 * -36.02 + 2 * \frac{4*12}{12-4-1}\\
+&amp;=72.04 + 96/7\\
+&amp;=85.754\\\\
+\text{Order:}&amp;\ \text{ARMA(2,1), AR(2), MA(1)}\\\\
+Answer:\ E.
+\end{aligned}
+\]</span><br />
+<br />
+</p>
+</div>
+<div id="question-3" class="section level3">
+<h3>Question 3</h3>
+<p>In modeling the weekly sales of a certain commodity over the past six
+months, the time series model X<sub>t</sub> −
+φ<sub>1</sub>X<sub>t−1</sub> = Z<sub>t</sub> +
+θ<sub>1</sub>Z<sub>t−1</sub> was thought to be appropriate. Suppose the
+model was fitted and the autocorrelations of the residuals were:<br />
+</p>
+<table style="width:100%;">
+<colgroup>
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">k</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+<th align="center">7</th>
+<th align="center">8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\hat{\rho}_{\hat{W}}(k)\)</span></td>
+<td align="center">-.04</td>
+<td align="center">-.50</td>
+<td align="center">.03</td>
+<td align="center">-.01</td>
+<td align="center">.01</td>
+<td align="center">.02</td>
+<td align="center">.03</td>
+<td align="center">-.01</td>
+</tr>
+<tr class="even">
+<td align="center">st. dev <span class="math inline">\(\hat{\rho}_{\hat{W}}(k)\)</span></td>
+<td align="center">.08</td>
+<td align="center">.10</td>
+<td align="center">.11</td>
+<td align="center">.11</td>
+<td align="center">.11</td>
+<td align="center">.11</td>
+<td align="center">.11</td>
+<td align="center">.11</td>
+</tr>
+</tbody>
+</table>
+<p><br />
+Is the assumed model really appropriate? If not, how would you modify
+the model? Explain.<br />
+</p>
+<p><em>Hint: Check slides 8 - 9 of Lecture 11 for the 95% confidence
+intervals for autocorrelation function of the fitted residuals. You
+might also find slide 26 of Week 2 and slide 15 of Lecture 11
+useful.</em><br />
+</p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="question-3-1" class="section level3">
+<h3>Question 3</h3>
+<p>Suppose that in a sample of size 100 from an AR(1) process with mean
+μ, φ = 0.6, and σ2 = 2, we obtain x ̄100 = 0.271. Construct an
+approximate 95% confidence interval for μ. Are the data compatible with
+the hypothesis that μ = 0? Help: (i) Here σ2 ≡ σZ2 is the variance of
+noise Zt. (ii) Large sample distribution of X ̄n is given as follows
+(See, for example, slide 48 or §10.1 of Week 4): For n large,
+distribution of the sample mean X ̄n is approximately normal with mean μ
+≡ EXt and variance n−1v, where v ≈ γX (0) + 2 P∞h=1 γX (h). (iii) For
+ACVF for AR(1) process see slide 43 of Week 2.</p>
 <p>The following problem is for students enrolled in PSTAT 274 ONLY G1.
 Two hundred observations of a time series, X1, . . . , X200, gave the
 following sample statistics: sam- ple mean: x ̄200 = 3.82; sample
