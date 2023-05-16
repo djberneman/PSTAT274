@@ -124,10 +124,28 @@ $$
 ### Question 3 
 Suppose that in a sample of size 100 from an AR(1) process with mean μ, $\phi$ = 0.6, and σ^2^ = 2, we obtain $\bar{x}_100 = 0.271. Construct an approximate 95% confidence interval for μ. Are the data compatible with the hypothesis that μ = 0?\
 
+
+
 *Help: (i) Here σ2 ≡ σZ2 is the variance of noise Zt.*
 (ii) Large sample distribution of X ̄n is given as follows (See, for example, slide 48 or §10.1 of Week 4): For n large, distribution of the sample mean X ̄n is approximately normal with mean μ ≡ EXt and variance n−1v, where v ≈ γX (0) + 2 P∞h=1 γX (h).
 (iii) For ACVF for AR(1) process see slide 43 of Week 2.
-  
+
+
+$$
+\begin{aligned}
+&\text{Confidence Interval for } \mu:\ 
+(\bar{X}_n\ \pm\ 1.96\ v^{1/2}/\sqrt{n})\\
+&n=100;\ \ \bar{X}_n = \bar{X}_{100}=0.271;\\
+&\hat{v} = \hat{\gamma}_X(0)+2\sum_{1\leq\ h}^{n}(1-\frac{h}{n})\hat{\gamma}_X(h)\\
+& \ \ \ \hat{\gamma}_X(0) = \hat{\sigma}_X^2;\ \ \hat{\gamma}_X(h)= \phi_1^h\hat{\gamma}_X(0);\ \ h=1\\\\
+&\hat{v}=2 + 2\sum_{1}^{100}(1-\frac{1}{n})\hat{\sigma}_X^2\phi_1\\
+& \ \  = 2 + 2(1.2)\sum_{1}^{100}\frac{n-1}{n}
+
+
+\end{aligned}
+$$
+
+
 The following problem is for students enrolled in PSTAT 274 ONLY
 G1. Two hundred observations of a time series, X1, . . . , X200, gave the following sample statistics: sam- ple mean: x ̄200 = 3.82; sample variance: γˆ(0) = 1.15; sample ACF: ρˆ(1) = .427, ρˆ(2) = .475, ρˆ(3) = .169.
 (a) Based on these sample statistics, is it reasonable to suppose that {Xt − μ} is a white noise? (b) Assuming that {Xt − μ} can be modeled as the AR(2) process,
