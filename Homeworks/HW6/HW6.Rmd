@@ -133,18 +133,36 @@ Suppose that in a sample of size 100 from an AR(1) process with mean μ, $\phi$ 
 
 $$
 \begin{aligned}
+\text{Given: }& n=100,\\
+& \phi_1=0.6,\\
+&\sigma^2=2,\\
+&\bar{X}_{100}=0.271\\\\
+\text{For stationary time series X,}&\\
+&\text{Sample Mean: }\bar{X}_n \\\\
+&\text{Confidence Interval: For n large, distribution of the sample mean }\bar{X}_n\\
+& \text{is approximately normal with mean µ = }E[X_t]\ \text{and variance } n^{-1}v\\\\
 &\text{Confidence Interval for } \mu:\ 
 (\bar{X}_n\ \pm\ 1.96\ v^{1/2}/\sqrt{n})\\
-&n=100;\ \ \bar{X}_n = \bar{X}_{100}=0.271;\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = (\bar{X}_n\ \pm\ 1.96\ (vn^{-1})^{1/2})\\\\
+
+
 &\hat{v} = \hat{\gamma}_X(0)+2\sum_{1\leq\ h}^{n}(1-\frac{h}{n})\hat{\gamma}_X(h)\\
-& \ \ \ \hat{\gamma}_X(0) = \hat{\sigma}_X^2;\ \ \hat{\gamma}_X(h)= \phi_1^h\hat{\gamma}_X(0);\ \ h=1\\\\
+& \ \ \ \hat{\gamma}_X(0) = \hat{\sigma}_X^2;\ \ \hat{\gamma}_X(h)= \phi_1^h\hat{\gamma}_X(0);\ \\\\
 &\hat{v}=2 + 2\sum_{1}^{100}(1-\frac{1}{n})\hat{\sigma}_X^2\phi_1\\
-& \ \  = 2 + 2(1.2)\sum_{1}^{100}\frac{n-1}{n}
+& \ \  = 2 + 2(1.2)\sum_{1}^{100}\frac{n-1}{n}\\
+& \ \ = 2 + 2.4(94.812)\\
+& \ \ = 229.55\\
+&v_{1/2} = 15.151;\\
+&\text{CI}:\ (0.271\ \pm\ 1.96(15.151)/10)\\
+& 
 
 
 \end{aligned}
 $$
-
+```{r}
+acf(model=list(ar=(0.6)), type="covariance", plot=FALSE)
+polyroot(c(1, 0.6))
+```
 
 The following problem is for students enrolled in PSTAT 274 ONLY
 G1. Two hundred observations of a time series, X1, . . . , X200, gave the following sample statistics: sam- ple mean: x ̄200 = 3.82; sample variance: γˆ(0) = 1.15; sample ACF: ρˆ(1) = .427, ρˆ(2) = .475, ρˆ(3) = .169.
