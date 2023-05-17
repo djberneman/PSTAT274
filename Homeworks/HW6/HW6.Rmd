@@ -7,11 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(latex2exp)
-library(astsa)
-library(tsPI)
-library(FitARMA)
-library(forecast)
 ```
 
 ### Question 1
@@ -128,8 +123,8 @@ Suppose that in a sample of size 100 from an AR(1) process with mean μ, $\phi$ 
 
 
 
-*Help: (i) Here σ^2^ ≡ σ~Z~^2^ is the variance of noise Zt.*
-*(ii) Large sample distribution of $\bar{X}_n$ is given as follows (See, for example, slide 48 or §10.1 of Week 4): For n large, distribution of the sample mean $\bar{X}_n$ is approximately normal with mean μ ≡ EXt and variance n^−1^v, where v ≈ γ~X~(0) + 2 $\sum_{h=1}^{\infty}$ γ~X~(h).*
+*Help: (i) Here σ^2^ ≡ σ~Z~^2^ is the variance of noise Zt.*\
+*(ii) Large sample distribution of $\bar{X}_n$ is given as follows (See, for example, slide 48 or §10.1 of Week 4): For n large, distribution of the sample mean $\bar{X}_n$ is approximately normal with mean μ ≡ EXt and variance n^−1^v, where v ≈ γ~X~(0) + 2 $\sum_{h=1}^{\infty}$ γ~X~(h).*\
 *(iii) For ACVF for AR(1) process see slide 43 of Week 2.*
 
 
@@ -154,7 +149,7 @@ $$
 & \ \ = 3.125 + 6.25(0.6*\frac{1-0.6^{100}}{1-0.6})\\
 & \ \ = 3.125 + 4(1.5)\\
 & \ \ = 12.5\\
-&\hat{v}^{1/2} = 3.536\\\\
+&v^{1/2} = 3.536\\\\
 &\text{CI}:\ (0.271\ \pm\ 1.96(3.536)/10)\\
 & \ \ \ \ \ \ \ \ \  (0.271\ \pm\ 0.693)\\ 
 & \ \ \ \ \ \ \ \ \  (-0.422,\ 0.964)\\\\
@@ -198,7 +193,6 @@ $$
 & \rho_X(1) = \phi_1+\phi_2\rho_X(1)\\
 &0.427 = \phi_1+\phi_2(0.427)\\
 & \phi_1=0.427(1-\phi_2)\\\\
-
 & \rho_X(2) = \phi_1\rho_X(1)+\phi_2\\
 &0.475 = \phi_1(0.427)+\phi_2\\
 &0.475 = 0.427(1-\phi_2)(0.427)+\phi_2\\
@@ -210,11 +204,30 @@ $$
 & \ \ \ \ =0.427(1-0.3579)\\
 & \ \ \ \ =0.427(0.64207)\\
 & \ \ \ \ =0.2742\\\\
-
 & \mu = 3.82,\ \ \ \ \ \ \phi_1 = 0.2742,\ \ \ \ \ \ \phi_2=0.3579
 \end{aligned}
 $$
-
 \
 
-  (c) Assuming that the data was generated from an AR(2) model, derive estimates of the PACF for all lags h ≥ 1.
+  (c) Assuming that the data was generated from an AR(2) model, derive estimates of the PACF for all lags h ≥ 1.\
+  
+$$
+\begin{aligned}
+\text{PACF of AR(2) } &=
+\begin{cases}
+\phi_1/(1-\phi_2)\ \ \ \ \ for\ h=1\\
+\phi_2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h \ge 3
+\end{cases}\\\\
+& = \begin{cases}
+0.2742/(1-0.3579)\ \ \ \ \ for\ h=1\\
+0.3579\ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h \ge 3
+\end{cases}\\\\
+& = \begin{cases}
+0.427\ \ \ \ \ \ \ \  \ \ for\ h=1\\
+0.3579\ \ \ \ \ \ \ \ for\ h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h \ge 3
+\end{cases}\\
+\end{aligned}
+$$

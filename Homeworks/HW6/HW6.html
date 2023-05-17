@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dylan Berneman" />
 
-<meta name="date" content="2023-05-15" />
+<meta name="date" content="2023-05-17" />
 
 <title>PSTAT 174/274 Spring 2023 Homework 6</title>
 
@@ -354,7 +354,7 @@ display: none;
 
 <h1 class="title toc-ignore">PSTAT 174/274 Spring 2023 Homework 6</h1>
 <h4 class="author">Dylan Berneman</h4>
-<h4 class="date">2023-05-15</h4>
+<h4 class="date">2023-05-17</h4>
 
 </div>
 
@@ -546,10 +546,10 @@ Answer:\ E.
 <div id="question-3" class="section level3">
 <h3>Question 3</h3>
 <p>In modeling the weekly sales of a certain commodity over the past six
-months, the time series model X<sub>t</sub> −
-φ<sub>1</sub>X<sub>t−1</sub> = Z<sub>t</sub> +
-θ<sub>1</sub>Z<sub>t−1</sub> was thought to be appropriate. Suppose the
-model was fitted and the autocorrelations of the residuals were:<br />
+months, the time series model X<sub>t</sub> − <span class="math inline">\(\phi\)</span><sub>1</sub>X<sub>t−1</sub> =
+Z<sub>t</sub> + θ<sub>1</sub>Z<sub>t−1</sub> was thought to be
+appropriate. Suppose the model was fitted and the autocorrelations of
+the residuals were:<br />
 </p>
 <table style="width:100%;">
 <colgroup>
@@ -610,31 +610,178 @@ intervals for autocorrelation function of the fitted residuals. You
 might also find slide 26 of Week 2 and slide 15 of Lecture 11
 useful.</em><br />
 </p>
-<p><br />
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \text{For each lag, check if the coefficient is significant}\\\\
+&amp;\text{Significant if } |\frac{acf[x]}{std. dev[x]}| \ge 1.96\\\\
+&amp;\text{lag 1 }: |\frac{-0.04}{0.08}| = 0.5 \ngeq 1.96\\
+&amp;\text{lag 2 }: |\frac{-0.50}{0.10}| = 5 \geq 1.96\\
+&amp;\text{lag 3 }: |\frac{0.03}{0.11}| = 0.2727 \ngeq 1.96\\
+&amp;\text{lag 4 }: |\frac{-0.01}{0.11}| = 0.0909 \ngeq 1.96\\
+&amp;\text{lag 5 }: |\frac{-0.04}{0.08}| = 0.0909 \ngeq 1.96\\
+&amp;\text{lag 6 }: |\frac{0.01}{0.11}| = 0.1818 \ngeq 1.96\\
+&amp;\text{lag 7 }: |\frac{0.02}{0.11}| = 0.2727 \ngeq 1.96\\
+&amp;\text{lag 8 }: |\frac{0.03}{0.11}| = 0.0909 \ngeq 1.96\\\\
+&amp;\text{Since the first and only significant acf value occurs at lag
+2,}\\
+&amp;\text{then that means that the coefficients values of}\ \phi_1
+\&amp;\ \theta_1 = 0.\\
+&amp;\text{This implies that the next significant lag value should be
+the}\\
+&amp;\text{minimum order of the ARMA model. Since all other acf
+values}\\
+&amp;\text{can be considered to be 0, this should actually be an MA(2)
+model}\\
+&amp;\text{of the form: } X_t = Z_t - \theta_1Z_{t-2}.\\
+&amp;\text{Therefore, the assumed model is not appropriate.}
+\end{aligned}
+\]</span><br />
 <br />
 </p>
 </div>
 <div id="question-3-1" class="section level3">
 <h3>Question 3</h3>
 <p>Suppose that in a sample of size 100 from an AR(1) process with mean
-μ, φ = 0.6, and σ2 = 2, we obtain x ̄100 = 0.271. Construct an
-approximate 95% confidence interval for μ. Are the data compatible with
-the hypothesis that μ = 0? Help: (i) Here σ2 ≡ σZ2 is the variance of
-noise Zt. (ii) Large sample distribution of X ̄n is given as follows
-(See, for example, slide 48 or §10.1 of Week 4): For n large,
-distribution of the sample mean X ̄n is approximately normal with mean μ
-≡ EXt and variance n−1v, where v ≈ γX (0) + 2 P∞h=1 γX (h). (iii) For
-ACVF for AR(1) process see slide 43 of Week 2.</p>
-<p>The following problem is for students enrolled in PSTAT 274 ONLY G1.
-Two hundred observations of a time series, X1, . . . , X200, gave the
-following sample statistics: sam- ple mean: x ̄200 = 3.82; sample
-variance: γˆ(0) = 1.15; sample ACF: ρˆ(1) = .427, ρˆ(2) = .475, ρˆ(3) =
-.169. (a) Based on these sample statistics, is it reasonable to suppose
-that {Xt − μ} is a white noise? (b) Assuming that {Xt − μ} can be
-modeled as the AR(2) process, Xt −μ−φ1(Xt−1 −μ)−φ2(Xt−2 −μ)=Zt, where Zt
-∼ IID(0, σZ2 ), find estimates of μ, φ1, φ2, and σZ2 . (c) Assuming that
-the data was generated from an AR(2) model, derive estimates of the PACF
-for all lags h ≥ 1.</p>
+μ, <span class="math inline">\(\phi\)</span> = 0.6, and σ<sup>2</sup> =
+2, we obtain <span class="math inline">\(\bar{x}_{100}\)</span> = 0.271.
+Construct an approximate 95% confidence interval for μ. Are the data
+compatible with the hypothesis that μ = 0?<br />
+</p>
+<p><em>Help: (i) Here σ<sup>2</sup> ≡ σ<sub>Z</sub><sup>2</sup> is the
+variance of noise Zt.</em><br />
+<em>(ii) Large sample distribution of <span class="math inline">\(\bar{X}_n\)</span> is given as follows (See, for
+example, slide 48 or §10.1 of Week 4): For n large, distribution of the
+sample mean <span class="math inline">\(\bar{X}_n\)</span> is
+approximately normal with mean μ ≡ EXt and variance n<sup>−1</sup>v,
+where v ≈ γ<sub>X</sub>(0) + 2 <span class="math inline">\(\sum_{h=1}^{\infty}\)</span>
+γ<sub>X</sub>(h).</em><br />
+<em>(iii) For ACVF for AR(1) process see slide 43 of Week 2.</em></p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\text{Given: } n=100,\\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \phi_1=0.6,\\
+&amp; \ \ \ \ \ \ \ \ \ \ \ \sigma^2=2,\\
+&amp; \ \ \ \ \ \ \ \bar{X}_{100}=0.271\\\\
+&amp;\text{For stationary time series X:}&amp;\\
+&amp;\bullet\ \text{Sample Mean: }\bar{X}_n \\
+&amp;\bullet\ \text{Confidence Interval: For n large, distribution of
+the sample mean }\bar{X}_n\\
+&amp;\ \ \ \ \  \text{is approximately normal with mean µ = }E[X_t]\
+\text{and variance } n^{-1}v\\\\
+&amp;\text{Confidence Interval for } \mu:\
+(\bar{X}_n\ \pm\ 1.96\ v^{1/2}/\sqrt{n})\\
+&amp; v = \gamma_X(0)+2\sum_{1\leq\ h}^{n}\gamma_X(h)\\\\
+&amp; \gamma_X(0) = \frac{\sigma_X^2}{1-\phi_1^2}\ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \gamma_X(h)= \phi_1^h\gamma_X(0);\ \\
+&amp;\ \ \ \ \ \ \ \ \ \ = \frac{2}{1-0.6^2}\ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \  = 0.6^h*3.125\\
+&amp;\ \ \ \ \ \ \ \ \ \ = 3.125 \\
+&amp;v=3.125 + 2\sum_{h=1}^{n=100}0.6^h*3.125\\
+&amp; \ \  = 3.125 + 6.25\sum_{1}^{100}0.6^h\\
+&amp; \ \ = 3.125 + 6.25(0.6*\frac{1-0.6^{100}}{1-0.6})\\
+&amp; \ \ = 3.125 + 4(1.5)\\
+&amp; \ \ = 12.5\\
+&amp;v^{1/2} = 3.536\\\\
+&amp;\text{CI}:\ (0.271\ \pm\ 1.96(3.536)/10)\\
+&amp; \ \ \ \ \ \ \ \ \  (0.271\ \pm\ 0.693)\\
+&amp; \ \ \ \ \ \ \ \ \  (-0.422,\ 0.964)\\\\
+&amp;\text{The data is compatible with the hypothesis that µ=0}
+\end{aligned}
+\]</span><br />
+<br />
+</p>
+<p><strong>The following problem is for students enrolled in PSTAT 274
+ONLY</strong><br />
+</p>
+</div>
+<div id="question-g1" class="section level3">
+<h3>Question G1</h3>
+<p>Two hundred observations of a time series, X<sub>1</sub>, . . . ,
+X<sub>200</sub>, gave the following sample statistics: sample mean:
+<span class="math inline">\(\bar{X}_200\)</span> = 3.82; sample
+variance: <span class="math inline">\(\hat{γ}(0)\)</span> = 1.15; sample
+ACF: <span class="math inline">\(\hat{ρ}(1)\)</span> = .427, <span class="math inline">\(\hat{ρ}(2)\)</span> = .475, <span class="math inline">\(\hat{ρ}(3)\)</span> = .169.<br />
+</p>
+<ol style="list-style-type: lower-alpha">
+<li>Based on these sample statistics, is it reasonable to suppose that
+{X<sub>t</sub> − μ} is a white noise?<br />
+</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\text{For white noise, sample ACFs should be within the interval:
+}\\
+&amp;\ \ \ \ \pm 1.96/n^{1/2}\\
+&amp; = \pm 1.96/200^{1/2}\\
+&amp;= \pm 1.96/14.14\\
+&amp;= \pm 0.1386\\
+&amp; (-0.1386,\ 0.1386)\\\\
+&amp;\text{Since none of the three sample ACFs are within this
+interval,}\\
+&amp;\text{it is not reasonable to assume that }X_t-\mu\ \text{is a
+white noise.}
+\end{aligned}
+\]</span><br />
+<br />
+</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Assuming that {Xt − μ} can be modeled as the AR(2) process,
+X<sub>t</sub> −μ−<span class="math inline">\(\phi_1\)</span>(X<sub>t−1</sub> −μ)−<span class="math inline">\(\phi_2\)</span>(X<sub>t−2</sub> −μ)=Z<sub>t</sub>,
+where Z<sub>t</sub> ∼ IID(0, σ<sub>Z</sub><sup>2</sup> ), find estimates
+of μ, <span class="math inline">\(\phi_1\)</span>, <span class="math inline">\(\phi_2\)</span>, and σ<sub>Z</sub><sup>2</sup>
+.<br />
+</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\text{If the series can be modeled as the AR(2) process,}\\
+&amp;\text{then the ACF at lags 1 and 2 should be }\hat{ρ}(1) = 0.427\
+\&amp;\ \hat{ρ}(2) = 0.475.\\
+&amp; \rho_X(1) = \phi_1+\phi_2\rho_X(1)\\
+&amp;0.427 = \phi_1+\phi_2(0.427)\\
+&amp; \phi_1=0.427(1-\phi_2)\\\\
+&amp; \rho_X(2) = \phi_1\rho_X(1)+\phi_2\\
+&amp;0.475 = \phi_1(0.427)+\phi_2\\
+&amp;0.475 = 0.427(1-\phi_2)(0.427)+\phi_2\\
+&amp;0.475 = 0.182329-0.182329\phi_2+\phi_2\\
+&amp;0.292671=0.817671\phi_2\\
+&amp;\phi_2 = 0.292671/0.817671\\
+&amp; \ \ \ \ = 0.3579\\\\
+&amp; \phi_1=0.427(1-\phi_2)\\
+&amp; \ \ \ \ =0.427(1-0.3579)\\
+&amp; \ \ \ \ =0.427(0.64207)\\
+&amp; \ \ \ \ =0.2742\\\\
+&amp; \mu = 3.82,\ \ \ \ \ \ \phi_1 = 0.2742,\ \ \ \ \ \ \phi_2=0.3579
+\end{aligned}
+\]</span><br />
+</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Assuming that the data was generated from an AR(2) model, derive
+estimates of the PACF for all lags h ≥ 1.<br />
+</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+\text{PACF of AR(2) } &amp;=
+\begin{cases}
+\phi_1/(1-\phi_2)\ \ \ \ \ for\ h=1\\
+\phi_2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h \ge 3
+\end{cases}\\\\
+&amp; = \begin{cases}
+0.2742/(1-0.3579)\ \ \ \ \ for\ h=1\\
+0.3579\ \ \ \ \ \ \  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\
+h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ for\ h \ge 3
+\end{cases}\\\\
+&amp; = \begin{cases}
+0.427\ \ \ \ \ \ \ \  \ \ for\ h=1\\
+0.3579\ \ \ \ \ \ \ \ for\ h=2\\
+0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ h \ge 3
+\end{cases}\\
+\end{aligned}
+\]</span></p>
 </div>
 
 
