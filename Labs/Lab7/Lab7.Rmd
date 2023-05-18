@@ -1,0 +1,82 @@
+---
+title: "Lab Assignment 7"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Question 1
+We will again analyze adjusted monthly milk production measured in pounds per from Jan. 1962 to Dec. 1975. And we can import the dataset from tsdl package as milk in R, and denote the milk time series as X~t~. For comparison, we split the dataset into training set train and testing set test. The training set is used for model building, and the testing set is used for prediction verification and comparision.\
+
+```{r}
+devtools::install_github("FinYang/tsdl")
+library(tsdl)
+milk <- subset(tsdl, 12, "Agriculture")[[3]] 
+train <- milk[1:150]
+test <- milk[151:156]
+ts.plot(train, ylab = "Monthly milk production")
+```
+\
+
+From the above graph, we can conclude that X~t~ is non-stationary because of the upward trend and seasonality. (You can think about whether we need to transform the series or not.) To make it more stationary, we need to remove trend and seasonality with the following code:\
+
+```{r}
+dmilk <- diff(train, 12)
+ddmilk <- diff(dmilk, 1)
+```
+
+
+Let Y~t~ denote the series ddmilk. Then, Y~t~ = (1 − B)(1 − B^12^)X~t~. As Lab Assignment 5, we can use SARIMA(0, 1, 0) × (1, 1, 1)~12~. Now, we will conduct model diagnostic analysis.\
+
+```{r}
+library(astsa)
+fit.i <- sarima(xdata=train, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
+```
+\
+
+  (a) Perform diagnostics on the chosen model fit. Do the residuals appear to be white noise? Are they normally distributed? You should conduct hypothesis testing and plot some graphs to answer this questions. (You can think about why we want to check normality of the residuals.)\
+  
+```{r}
+res <- fit.i$fit$residuals
+mean(res)
+var(res)
+
+par(mfrow=c(1, 1))
+ts.plot(res, main="Fitted Residuals")
+t <- 1:length(res)
+fit.res = lm(res~ t)
+abline(fit.res)
+abline(h = mean(res), col = "red")
+
+# ACF and PACF:
+par(mfrow=c(1, 2))
+acf(res, main="Autocorrelation")
+pacf(res, main="Partial Autocorrelation")
+
+# Test for independence of residuals
+Box.test(res, lag = 9, type = c("Box-Pierce"), fitdf = 1)
+Box.test(res, lag = 9, type = c("Ljung-Box"), fitdf = 1)
+res2 = res^2
+Box.test(res2, lag = 9, type = c("Ljung-Box"), fitdf = 0)
+
+# Test for normality of residuals
+shapiro.test(res)
+
+# Histogram and QQ-plot:
+par(mfrow=c(1,2))
+hist(res,main = "Histogram")
+qqnorm(res)
+qqline(res,col ="blue")
+```
+\
+
+  (b) Forecast the next 6 observations using sarima.for(), and plot your predictions. And you should also add true milk prodcution points in test.\
+  
+```{r}
+forecast <- sarima.for(train, n.ahead=6, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
+ts.plot(milk)
+points(forecast$pred, col="red")
+```
