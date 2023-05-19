@@ -7,13 +7,16 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+devtools::install_github("FinYang/tsdl")
+library(tsdl)
+library(dplyr)
+library(astsa)
+library(ggplot2)
 ```
 ### Question 1
 We will again analyze adjusted monthly milk production measured in pounds per from Jan. 1962 to Dec. 1975. And we can import the dataset from tsdl package as milk in R, and denote the milk time series as X~t~. For comparison, we split the dataset into training set train and testing set test. The training set is used for model building, and the testing set is used for prediction verification and comparision.\
 
 ```{r}
-devtools::install_github("FinYang/tsdl")
-library(tsdl)
 milk <- subset(tsdl, 12, "Agriculture")[[3]] 
 train <- milk[1:150]
 test <- milk[151:156]
@@ -32,7 +35,6 @@ ddmilk <- diff(dmilk, 1)
 Let Y~t~ denote the series ddmilk. Then, Y~t~ = (1 − B)(1 − B^12^)X~t~. As Lab Assignment 5, we can use SARIMA(0, 1, 0) × (1, 1, 1)~12~. Now, we will conduct model diagnostic analysis.\
 
 ```{r}
-library(astsa)
 fit.i <- sarima(xdata=train, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
 ```
 \
@@ -77,6 +79,30 @@ qqline(res,col ="blue")
   
 ```{r}
 forecast <- sarima.for(train, n.ahead=6, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
-ts.plot(milk)
+
+milk.pred=milk
+milk.pred[151:156]=forecast$pred
+
+
+plot(x=c(1:156), y=milk, xlab="Time")
+lines(x=c(1:156), y=milk)
 points(forecast$pred, col="red")
+
+data=data.frame("Time"=c(1:156), milk)
+
+forecast=data.frame(forecast)
+
+forecast<- forecast%>%
+  mutate("lcl" = forecast$pred - 1.96*forecast$se)
+forecast<- forecast%>%
+  mutate("ucl" = forecast$pred + 1.96*forecast$se)
+forecast["Time"] = c(151:156)
+
+frame = data.frame(matrix(ncol=5, nrow=1))
+colnames(frame) = colnames(forecast)
+frame[1, 1:5] <- c(data$milk[150], 0, data$milk[150], data$milk[150], data$Time[150])
+forecast =  rbind(frame, forecast)
+
+colors <- c("Forecasted" = "red", "Actual" = "grey")
+ggplot(data[140:156, 1:2], aes(Time, milk, color="grey")) + geom_line() + geom_point() + geom_line(data = forecast, aes(x=Time, y= pred, color="red")) + geom_point(data = forecast[2:7, 1:5], aes(x=Time, y= pred), color="red") + geom_ribbon(data = forecast, aes(x=Time, y=pred, ymin=lcl, ymax=ucl), color=NA, alpha=.2)+labs(color="Legend") + scale_color_manual(values = colors)
 ```
