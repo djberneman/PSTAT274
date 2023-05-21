@@ -9,9 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Xt =5+0.85Xt−1 −0.02Xt−3 +Zt,Zt ∼WN(0,σ2). The revenues for the last 4 years are as follows:
-Year Revenue 2019 20 2020 15 2021 22 2022 19
-
 ### Question 1
 Time series {X~t~} follows stationary AR(1) model X~t~ = $\phi_0$ + $\phi_1$X~t−1~ + Z~t~, Z~t~ ∼ N(0, σ~Z~^2^). Determine which of the following statements about this model is false.\
 
@@ -62,9 +59,41 @@ P_{101}X_{103}-P_{100}X_{103} & = 34.2-23.76\\
 \end{aligned}
 $$
 \
+\
 
-3. You are given the AR(3) model for Xt, a company’s revenue for year t:
-    Forecast the expected revenue for 2024. (Hint: review Example 13.2 of week 7, slide 11.)
+### Question 3
+You are given the AR(3) model for X~t~, a company’s revenue for year t: X~t~ = 5 + 0.85X~t−1~ −0.02X~t−3~ +Z~t~, Z~t~∼WN(0,σ^2^). The revenues for the last 4 years are as follows:\
+
+| Year | Revenue |
+|:----:|:-------:|
+| 2019 | 20 |
+| 2020 | 15 |
+| 2021 | 22 |
+| 2022 | 19 |
+\
+
+Forecast the expected revenue for 2024.\
+*(Hint: review Example 13.2 of week 7, slide 11.)*\
+
+$$
+\begin{aligned}
+X_t = 5 + & 0.85X_{t-1}-0.02X_{t-3}+Z_t\\\\
+P_nX_{n+1} &= E_n[X_{n+1}]\\
+P_{2022}X_{2023} &= E_{2022}[X_{2023}]\\
+& = E[5 + \phi_1X_{t-1}+\phi_2X_{t-3} +Z_{t}]\\
+& = E[5 + \phi_1X_{2022}+\phi_2X_{2020} +Z_{2022}]\\
+&= 5 + \phi_1X_{2022}+\phi_2X_{2020}\\
+&= 5 + 0.85(19)-0.02(15) + 0\\
+&= 20.85\\\\
+P_nX_{n+2} &= E_n[X_{n+2}]\\
+P_{2022}X_{2024} &= E_{2022}[X_{2024}]\\
+& = E[5 + \phi_1X_{t-1}+\phi_2X_{t-3} +Z_{t}]\\
+& = E[5 + \phi_1X_{2023}+\phi_2X_{2021} +Z_{2023}]\\
+&= 5 + \phi_1X_{2022}+\phi_2X_{2020}\\
+&= 5 + 0.85(20.85)-0.02(22) + 0\\
+&= 22.2825
+\end{aligned}
+$$
 4. A Gaussian AR(1) model was fitted to a time series based on a sample of size n. You are given
 φˆ = 0.8, μˆ = 2, σˆ2 = 9 × 10−4, x = 2.05. Write the 95% prediction interval for the observation three 1Zn
 periods ahead.
