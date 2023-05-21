@@ -13,24 +13,19 @@ knitr::opts_chunk$set(echo = TRUE)
 Time series {X~t~} follows stationary AR(1) model X~t~ = $\phi_0$ + $\phi_1$X~t−1~ + Z~t~, Z~t~ ∼ N(0, σ~Z~^2^). Determine which of the following statements about this model is false.\
 
   (A) the parameter $\phi_0$ must not equal 1.\
-  
-  - FALSE. The parameter $\phi_0$ is a constant that only affects the value of the mean of the AR(1) model. For a stationary process its mean does not depend on time, i.e., a constant.\
+    *- FALSE. The parameter $\phi_0$ is a constant that only affects the value of the mean of the AR(1) model. For a stationary process its mean does not depend on time, i.e., a constant.*\
   
   (B) The absolute value of the parameter $\phi_1$ must be less than 1.\
-  
-  - TRUE. In order to remain stationary, the coefficients of an AR(p) model must all have absolute values lower than 1, otherwise to ensure that the roots are outside of the unit circle.\
+    *- TRUE. In order to remain stationary, the coefficients of an AR(p) model must all have absolute values lower than 1, otherwise to ensure that the roots are outside of the unit circle.*\
   
   (C) If the parameter $\phi_1$ = 0, then the model reduces to a white noise process.\
-  
-  - TRUE. If $\phi_1=0$, then the equation of the model is simplified to $X_t=\phi_0+Z_t$ where $\phi_0$ is the drift.\
+    *- TRUE. If $\phi_1=0$, then the equation of the model is simplified to $X_t=\phi_0+Z_t$ where $\phi_0$ is the drift.*\
   
   (D) If the parameter $\phi_1$ = 1, then the model is a random walk.\
-  
-  - TRUE. If $\phi_1$ = 1, then the model can be simplified to a random walk with a drift of $\phi_0$.\
+    *- TRUE. If $\phi_1$ = 1, then the model can be simplified to a random walk with a drift of $\phi_0$.*\
   
   (E) Only the immediate past value X~t−1~, is used as a predictor for X~t~.\
-  
-  - TRUE\
+    *- TRUE*\
 \
   
 ### Question 2
@@ -70,11 +65,9 @@ You are given the AR(3) model for X~t~, a company’s revenue for year t: X~t~ =
 | 2020 | 15 |
 | 2021 | 22 |
 | 2022 | 19 |
+
+Forecast the expected revenue for 2024. *(Hint: review Example 13.2 of week 7, slide 11.)*\
 \
-
-Forecast the expected revenue for 2024.\
-*(Hint: review Example 13.2 of week 7, slide 11.)*\
-
 $$
 \begin{aligned}
 X_t = 5 + & 0.85X_{t-1}-0.02X_{t-3}+Z_t\\\\
@@ -94,11 +87,29 @@ P_{2022}X_{2024} &= E_{2022}[X_{2024}]\\
 &= 22.2825
 \end{aligned}
 $$
-4. A Gaussian AR(1) model was fitted to a time series based on a sample of size n. You are given
-φˆ = 0.8, μˆ = 2, σˆ2 = 9 × 10−4, x = 2.05. Write the 95% prediction interval for the observation three 1Zn
-periods ahead.
-Hint: review Example 13.1 of Week 7; slide 10. Do not forget that the mean is not 0!
-The following problem is for students enrolled in PSTAT 274 ONLY
-G1. A Gaussian AR(1) model was fitted to a time series based on a sample of size n = 51. You are given: μˆ = 16.75, φˆ = 0.75. The last observation was x = 20.25, and the sum of the squares of the
- 1 51
-51 residuals is 75.7. Determine the upper bound of the shortest 95% probability limit for the forecast of the observation two time periods ahead.
+\
+\
+
+### Question 4
+A Gaussian AR(1) model was fitted to a time series based on a sample of size n. You are given
+$\hat{\phi}_1$ = 0.8, $\hat{\mu}$ = 2, $\hat{\sigma}^2_Z$ = 9 × 10^−4^, x~n~ = 2.05. Write the 95% prediction interval for the observation three periods ahead.\
+
+*Hint: review Example 13.1 of Week 7; slide 10. Do not forget that the mean is not 0!*\
+
+$$
+\begin{aligned}
+
+\end{aligned}
+$$
+\
+
+**The following problem is for students enrolled in PSTAT 274 ONLY**\
+
+### Question G1
+A Gaussian AR(1) model was fitted to a time series based on a sample of size n = 51. You are given: $\hat{\mu}$  = 16.75, $\hat{\phi}_1$ = 0.75. The last observation was x~51~ = 20.25, and the sum of the squares of the 51 residuals is 75.7. Determine the upper bound of the shortest 95% probability limit for the forecast of the observation two time periods ahead.\
+
+$$
+\begin{aligned}
+
+\end{aligned}
+$$
