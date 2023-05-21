@@ -25,17 +25,22 @@ Time series {X~t~} follows stationary AR(1) model X~t~ = $\phi_0$ + $\phi_1$X~t�
   
   (C) If the parameter $\phi_1$ = 0, then the model reduces to a white noise process.\
   
-  - TRUE. If $\phi_1=0$, then the equation of the model is simplified to $X_t=\phi_0+Z_t
+  - TRUE. If $\phi_1=0$, then the equation of the model is simplified to $X_t=\phi_0+Z_t$ where $\phi_0$ is the drift.\
   
   (D) If the parameter $\phi_1$ = 1, then the model is a random walk.\
   
+  - TRUE. If $\phi_1$ = 1, then the model can be simplified to a random walk with a drift of $\phi_0$.\
   
   (E) Only the immediate past value X~t−1~, is used as a predictor for X~t~.\
   
+  - TRUE\
+\
   
-2. (Updating forecasts) You use AR(1) model Xt − 100 = 0.6(Xt−1 − 100) + Zt to represent a time series of 100 observations. You are given that X100 = 110. You later observe X101 = 95. Calculate
-P101X103 − P100X103.
-(Hint: review Example 13.1 on slides 9 - 10 of Week 7.)
+### Question 2
+(Updating forecasts) You use AR(1) model X~t~ − 100 = 0.6(X~t−1~ − 100) + Z~t~ to represent a time series of 100 observations. You are given that X~100~ = 110. You later observe X~101~ = 95. Calculate P~101~X~103~ − P~100~X~103~.\
+*(Hint: review Example 13.1 on slides 9 - 10 of Week 7.)*\
+
+
 3. You are given the AR(3) model for Xt, a company’s revenue for year t:
     Forecast the expected revenue for 2024. (Hint: review Example 13.2 of week 7, slide 11.)
 4. A Gaussian AR(1) model was fitted to a time series based on a sample of size n. You are given
