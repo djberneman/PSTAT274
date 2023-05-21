@@ -40,6 +40,28 @@ Time series {X~t~} follows stationary AR(1) model X~t~ = $\phi_0$ + $\phi_1$X~t�
 (Updating forecasts) You use AR(1) model X~t~ − 100 = 0.6(X~t−1~ − 100) + Z~t~ to represent a time series of 100 observations. You are given that X~100~ = 110. You later observe X~101~ = 95. Calculate P~101~X~103~ − P~100~X~103~.\
 *(Hint: review Example 13.1 on slides 9 - 10 of Week 7.)*\
 
+$$
+\begin{aligned}
+\text{For general h: }& P_nX_{n+h} = \phi_1^hX_n\\\\
+\phi_1 = 0.6;\ \ \ \ X_{100}=110;&\ \ \ \ X_{101}=95;\ \ \ \ Y_t=X_t-100\\\\
+&\text{Calculate }P_{101}X_{103}-P_{100}X_{103}\\\\
+&\text{First, solve for } P_{101}X_{103}:\\
+\hat{Y}_{101}(2) & = P_{101}Y_{101+2}\\
+&= \phi_1^2\ Y_{101}\\
+\hat{X}_{101}(3)&=0.6^3(X_{101}-100)\\
+&=100 + 0.216(110-100)\\
+&=102.16
+&\text{Next, solve for } P_{100}X_{103}\\
+\hat{Y}_{100}(3) & = P_{100}Y_{100+3}\\
+&= \phi_1^3\ Y_{100}\\
+\hat{X}_{100}(3)&=0.6^3(X_{100}-100)\\
+&=100 + 0.216(110-100)\\
+&=102.16
+
+
+\end{aligned}
+$$
+\
 
 3. You are given the AR(3) model for Xt, a company’s revenue for year t:
     Forecast the expected revenue for 2024. (Hint: review Example 13.2 of week 7, slide 11.)
