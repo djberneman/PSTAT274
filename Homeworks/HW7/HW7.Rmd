@@ -1,0 +1,48 @@
+---
+title: "PSTAT 174/274 Spring 2023: Homework 7"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Xt =5+0.85Xt−1 −0.02Xt−3 +Zt,Zt ∼WN(0,σ2). The revenues for the last 4 years are as follows:
+Year Revenue 2019 20 2020 15 2021 22 2022 19
+
+### Question 1
+Time series {X~t~} follows stationary AR(1) model X~t~ = $\phi_0$ + $\phi_1$X~t−1~ + Z~t~, Z~t~ ∼ N(0, σ~Z~^2^). Determine which of the following statements about this model is false.\
+
+  (A) the parameter $\phi_0$ must not equal 1.\
+  
+  - FALSE. The parameter $\phi_0$ is a constant that only affects the value of the mean of the AR(1) model. For a stationary process its mean does not depend on time, i.e., a constant.\
+  
+  (B) The absolute value of the parameter $\phi_1$ must be less than 1.\
+  
+  - TRUE. In order to remain stationary, the coefficients of an AR(p) model must all have absolute values lower than 1, otherwise to ensure that the roots are outside of the unit circle.\
+  
+  (C) If the parameter $\phi_1$ = 0, then the model reduces to a white noise process.\
+  
+  - TRUE. If $\phi_1=0$, then the equation of the model is simplified to $X_t=\phi_0+Z_t
+  
+  (D) If the parameter $\phi_1$ = 1, then the model is a random walk.\
+  
+  
+  (E) Only the immediate past value X~t−1~, is used as a predictor for X~t~.\
+  
+  
+2. (Updating forecasts) You use AR(1) model Xt − 100 = 0.6(Xt−1 − 100) + Zt to represent a time series of 100 observations. You are given that X100 = 110. You later observe X101 = 95. Calculate
+P101X103 − P100X103.
+(Hint: review Example 13.1 on slides 9 - 10 of Week 7.)
+3. You are given the AR(3) model for Xt, a company’s revenue for year t:
+    Forecast the expected revenue for 2024. (Hint: review Example 13.2 of week 7, slide 11.)
+4. A Gaussian AR(1) model was fitted to a time series based on a sample of size n. You are given
+φˆ = 0.8, μˆ = 2, σˆ2 = 9 × 10−4, x = 2.05. Write the 95% prediction interval for the observation three 1Zn
+periods ahead.
+Hint: review Example 13.1 of Week 7; slide 10. Do not forget that the mean is not 0!
+The following problem is for students enrolled in PSTAT 274 ONLY
+G1. A Gaussian AR(1) model was fitted to a time series based on a sample of size n = 51. You are given: μˆ = 16.75, φˆ = 0.75. The last observation was x = 20.25, and the sum of the squares of the
+ 1 51
+51 residuals is 75.7. Determine the upper bound of the shortest 95% probability limit for the forecast of the observation two time periods ahead.
