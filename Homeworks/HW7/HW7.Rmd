@@ -98,7 +98,43 @@ $\hat{\phi}_1$ = 0.8, $\hat{\mu}$ = 2, $\hat{\sigma}^2_Z$ = 9 × 10^−4^, x~n~ 
 
 $$
 \begin{aligned}
-
+\text{Given: }& \hat{\phi}_1 = 0.8,\ \ \ \hat{\mu} = 2,\ \ \ \hat{\sigma}^2_Z = 9 × 10^{−4},\ \ \ x_n = 2.05\\
+\text{Calculate the 95% prediction} & \text{ interval for the observation three periods ahead}\\
+P_nX_{n+h}\ &\pm\ \Phi_{1-\alpha/2}\ \sigma_n(h)\\\\
+&µ=c+\phi_1µ\\
+&2=c+0.8(2)\\
+&c=2-1.6\\
+&c=0.4\\\\
+P_nX_{n+h} &= P_nX_{n+3}\\
+&=c+\phi_1^3X_n \\
+&= 0.4+0.8^3  * 2.05\\
+&=1.4496\\\\
+\Phi_{1-\alpha/2}& = \Phi_{0.975}\\
+&=1.96
+\end{aligned}
+$$
+\
+$$
+\begin{aligned}
+\sigma_n^2(h)&=\sigma_Z^2 \sum_{j=0}^{h-1} \psi_j^2,\ \ with\ \psi(z)=\theta(z)/\phi(z)\\
+\sigma_n^2(3)&=\sigma_Z^2 \sum_{j=0}^{3-1} \psi_j^2\\
+&=9*10^{-4}\ (\psi_0^2+\psi_1^2+\psi_2^2)\\
+&=9*10^{-4}\ (\phi_1^{0^2}+\phi_1^{1^2}+\phi_1^{2^2})\\
+&=9*10^{-4}\ (1+0.8^2+0.8^4)\\
+&=9*10^{-4}\ (2.0496)\\
+&=0.00184464\\
+\sigma_n(3)& = \sqrt{\sigma_n^2(3)}\\
+&=\sqrt{0.00184464}\\
+&=0.04295
+\end{aligned}
+$$
+\
+$$
+\begin{aligned}
+& \ \ \ \ \ (P_nX_{n+h}\ \pm\ \Phi_{1-\alpha/2}\ \sigma_n(h))\\
+&=(1.4496\ \pm\ 1.96(0.04295))\\
+&= (1.4496\ \pm\ 0.084182)\\
+&=(1.365, \ 1.534 )
 \end{aligned}
 $$
 \
