@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dylan Berneman" />
 
-<meta name="date" content="2023-05-21" />
+<meta name="date" content="2023-05-23" />
 
 <title>PSTAT 174/274 Spring 2023: Homework 7</title>
 
@@ -354,7 +354,7 @@ display: none;
 
 <h1 class="title toc-ignore">PSTAT 174/274 Spring 2023: Homework 7</h1>
 <h4 class="author">Dylan Berneman</h4>
-<h4 class="date">2023-05-21</h4>
+<h4 class="date">2023-05-23</h4>
 
 </div>
 
@@ -413,17 +413,16 @@ P<sub>100</sub>X<sub>103</sub>.<br />
 \text{First, solve for }&amp; P_{101}X_{103}:\\
 P_{101}X_{103} &amp; = P_{101}X_{101+2}\\
 &amp;= \phi_1^2\ X_{101}\\
-&amp;=0.6^2(95)\\
-&amp;=0.36(95)\\
-&amp;=34.2\\\\
+&amp;=100+0.6^2(95-100)\\
+&amp;=98.2\\\\
 \text{Next, solve for }&amp; P_{100}X_{103}:\\
 P_{100}X_{103} &amp; = P_{100}X_{100+3}\\
 &amp;= \phi_1^3\ X_{100}\\
-&amp;=0.6^3(110)\\
-&amp;=0.216(110)\\
-&amp;=23.76\\\\
-P_{101}X_{103}-P_{100}X_{103} &amp; = 34.2-23.76\\
-&amp;=10.44
+&amp;=100+0.6^3(110-100)\\
+&amp;=10+0.216(10)\\
+&amp;=102.16\\\\
+P_{101}X_{103}-P_{100}X_{103} &amp; = 102.16-98.2\\
+&amp;=3.96
 \end{aligned}
 \]</span><br />
 <br />
@@ -497,11 +496,38 @@ observation three periods ahead.<br />
 <p><em>Hint: review Example 13.1 of Week 7; slide 10. Do not forget that
 the mean is not 0!</em><br />
 </p>
-$$
-<span class="math display">\[\begin{aligned}
-
-\end{aligned}\]</span>
-<p>$$<br />
+<p><span class="math display">\[
+\begin{aligned}
+\text{Given: }&amp; \hat{\phi}_1 = 0.8,\ \ \ \hat{\mu} = 2,\ \ \
+\hat{\sigma}^2_Z = 9 × 10^{−4},\ \ \ x_n = 2.05\\
+\text{Calculate the 95% prediction} &amp; \text{ interval for the
+observation three periods ahead}\\
+P_nX_{n+h}\ &amp;\pm\ 1.96 \sqrt{Var(e_n(h))}\\\\
+P_nX_{n+h} &amp;= P_nX_{n+3}\\
+&amp;=\hat{\mu}+\phi_1^3X_n \\
+&amp;= 2+0.8^3  * 2.05\\
+&amp;=3.0496
+\end{aligned}
+\]</span><br />
+<span class="math display">\[
+\begin{aligned}
+Var(e_n(h)) &amp;= \sigma^2_Z(1-\phi_1^{2h})/(1-\phi_1^2)\\
+Var(e_n(3)) &amp;= \sigma^2_Z(1-\phi_1^{2(3)})/(1-\phi_1^2)\\
+&amp;=9*10^{-4}\ (1-\phi_1^6)/(1-\phi_1^2)\\
+&amp;=9*10^{-4}\ (1-0.8^6)/(1-0.8^2)\\
+&amp;= 0.0065536\\
+\sqrt{Var(e_n(3))} &amp;= \sqrt{0.0065536}\\
+&amp;=0.0256
+\end{aligned}
+\]</span><br />
+<span class="math display">\[
+\begin{aligned}
+&amp; \ \ \ \ \ P_nX_{n+h}\ \pm\ 1.96 \sqrt{Var(e_n(h))}\\
+&amp;=(3.0496\ \pm\ 1.96(0.0256))\\
+&amp;= (3.0496\ \pm\ 0.050176)\\
+&amp;=(2.999, \ 3.10 )
+\end{aligned}
+\]</span><br />
 </p>
 <p><strong>The following problem is for students enrolled in PSTAT 274
 ONLY</strong><br />
@@ -516,11 +542,37 @@ residuals is 75.7. Determine the upper bound of the shortest 95%
 probability limit for the forecast of the observation two time periods
 ahead.<br />
 </p>
-$$
-<span class="math display">\[\begin{aligned}
-
-\end{aligned}\]</span>
-<p>$$</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Given:  } &amp;n=51,\ \ \ \ forecast=2\ ahead,\ \ \ \
+\hat{\mu}=16.75,\ \ \ \ \hat{\phi}_1=0.75,\ \ \ \ x_{51}=20.25,\ \ \ \
+SSR=75.7\\
+Find\ &amp; \ \ \ \ P_nX_{n+h}\ \pm\ 1.96 \sqrt{Var(e_n(h))}\\\\
+\hat{\sigma}^2_X &amp;= RSS/(n-2)\\
+&amp;= 75.7/49\\
+&amp;=1.545\\\\
+P_nX_{n+h} &amp;= P_nX_{n+2}\\
+&amp;=\hat{\mu}+P_{51}X_{51+2}\\
+&amp;=\hat{\mu}+\phi_1^2X_{51} \\
+&amp;= 16.75+0.75^2  * 20.25\\
+&amp;=28.141\\\\
+Var(e_n(h)) &amp;= \sigma^2_Z(1-\phi_1^{2h})/(1-\phi_1^2)\\
+Var(e_n(3)) &amp;= \sigma^2_Z(1-\phi_1^{2(2)})/(1-\phi_1^2)\\
+&amp;=1.545\ (1-\phi_1^4)/(1-\phi_1^2)\\
+&amp;=1.545\ (1-0.75^4)/(1-0.75^2)\\
+&amp;= 2.414\\
+\sqrt{Var(e_n(3))} &amp;= \sqrt{2.414}\\
+&amp;=1.554
+\end{aligned}
+\]</span><br />
+<span class="math display">\[
+\begin{aligned}
+&amp; \ \ \ \ \ P_nX_{n+h}\ \pm\ 1.96 \sqrt{Var(e_n(h))}\\
+&amp;=(3.0496\ \pm\ 1.96(1.554))\\
+&amp;= (3.0496\ \pm\ 2.0452)\\
+&amp;=(25.095, \ 31.186 )
+\end{aligned}
+\]</span></p>
 </div>
 
 
