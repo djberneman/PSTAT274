@@ -95,8 +95,6 @@ library(devtools)
 # install.packages('latex2exp')
 # install.packages('polynom')
 # install.packages('sarima')
-library(profvis)
-library(htmlwidgets)
 install.packages("MuMIn")
 library(MuMIn)
 library(astsa)
@@ -573,9 +571,9 @@ fit.arma16 <- arima(Mortality.diff, order=c(10,0,12)) # all 0.12 < s.e. < 0.61
 fit.arma17 <- arima(Mortality.diff, order=c(12,0,9)) # all 0.05 < s.e. < 0.60
 fit.arma18 <- arima(Mortality.diff, order=c(12,0,10)) # NAN produced
 fit.arma19 <- arima(Mortality.diff, order=c(12,0,11)) # NAN produced
-fit.arma20 <- arima(Mortality.diff, order=c(12,0,12)) # all 0.09 < s.e. < 0.37
-fit.arma21 <- arima(Mortality.diff, order=c(29,0,9)) # NAN produced
-fit.arma22 <- arima(Mortality.diff, order=c(29,0,10)) # NAN produced
+#fit.arma20 <- arima(Mortality.diff, order=c(12,0,12)) # all 0.09 < s.e. < 0.37
+#fit.arma21 <- arima(Mortality.diff, order=c(29,0,9)) # NAN produced
+#fit.arma22 <- arima(Mortality.diff, order=c(29,0,10)) # NAN produced
 # fit.arma23 <- arima(Mortality.diff, order=c(29,0,11)) # NAN produced
 # fit.arma24 <- arima(Mortality.diff, order=c(29,0,12)) # NAN produced
 
@@ -603,16 +601,17 @@ AICc(fit.arma16),
 AICc(fit.arma17),
 AICc(fit.arma18),
 AICc(fit.arma19),
-AICc(fit.arma20),
-AICc(fit.arma21),
-AICc(fit.arma22),
+#AICc(fit.arma20),
+#AICc(fit.arma21),
+#AICc(fit.arma22),
 AICc(fit.arma25_10),
 AICc(fit.arma25_9)))
 
-rownames(Data) <- c("AR(5)", "AR(10)", "AR(12)", "AR(29)", "MA(9)", "MA(10)", "MA(11)", "MA(12)", "ARMA(5,9)", "ARMA(5,10)", "ARMA(5,11)", "ARMA(5,12)", "ARMA(10,9)", "ARMA(10,10)", "ARMA(10,11)", "ARMA(10,12)", "ARMA(12,9)", "ARMA(12,10)", "ARMA(12,11)", "ARMA(12,12)", "ARMA(29,9)", "ARMA(29,10)", "ARMA(25,10)", "ARMA(25,9)")
+rownames(Data) <- c("AR(5)", "AR(10)", "AR(12)", "AR(29)", "MA(9)", "MA(10)", "MA(11)", "MA(12)", "ARMA(5,9)", "ARMA(5,10)", "ARMA(5,11)", "ARMA(5,12)", "ARMA(10,9)", "ARMA(10,10)", "ARMA(10,11)", "ARMA(10,12)", "ARMA(12,9)", "ARMA(12,10)", "ARMA(12,11)", "ARMA(25,10)", "ARMA(25,9)")
 colnames(Data) <- c("AICc")
 
 Data["Lowest AICc"] <- as.integer(rank(Data$AICc))
+Data
 
 acf1 = acf2(fit.ar1$residuals)
 acf2 = acf2(fit.ar2$residuals)
@@ -633,9 +632,9 @@ acf16 = acf2(fit.arma16$residuals)
 acf17 = acf2(fit.arma17$residuals)
 acf18 = acf2(fit.arma18$residuals)
 acf19 = acf2(fit.arma19$residuals)
-acf20 = acf2(fit.arma20$residuals)
-acf21 = acf2(fit.arma21$residuals)
-acf22 = acf2(fit.arma22$residuals)
+#acf20 = acf2(fit.arma20$residuals)
+#acf21 = acf2(fit.arma21$residuals)
+#acf22 = acf2(fit.arma22$residuals)
 acf23 = acf2(fit.arma25_10$residuals)
 acf24 = acf2(fit.arma25_9$residuals)
 
