@@ -40,6 +40,7 @@ library(tinytex)
 ```
 
 ```{r}
+options(scipen = 9)
 covid <- read.csv("owid-covid-data 2.csv")
 
 covid[(is.na(covid))]<-0
@@ -58,12 +59,16 @@ covid <- covid[346:1225,]
 Mortality = ts(covid$Smoothed_New_Case_Fatality_Rate)
 frequency(Mortality)
 plot.ts(Mortality)
-Mortality_acf1 = acf2(Mortality)
+Mortality_acf1 = acf2(Mortality.diff7)
 var(Mortality)
 
-Mortality.diff = diff(Mortality, 1)
+Mortality.diff7 = diff(Mortality, lag=7, differences=2)
+Mortality.diff8 = diff(Mortality.diff7, 1)
 plot.ts(Mortality.diff)
-Mortality.diff_acf1 = acf2(Mortality.diff)
+Mortality.diff_acf1
+acf2(Mortality.diff7)
+
+acf2(Mortality.diff8)
 var(Mortality.diff)
 
 Mortality.diff2 = diff(Mortality, 2)
@@ -80,24 +85,14 @@ Mortality.diff4 = diff(Mortality, 4)
 plot.ts(Mortality.diff4)
 Mortality_acf4 = acf2(Mortality.diff4)
 var(Mortality.diff4)
-
+adf.test
 # Diff = 1
 var(Mortality.diff) < var(Mortality.diff2)
 
-ar1 = ar(Mortality.diff4, aic = FALSE, method="mle") # 12
+ar1 = ar(Mortality.diff, aic = FALSE, method="mle") # 12
 ar2 = ar(Mortality.diff, aic = FALSE, method="yw") # 29
 ar3 = ar(Mortality.diff, aic = TRUE, method="mle") # 10
 ar4 = ar(Mortality.diff, aic = TRUE, order.max = 12, method="yw") # 10
-
-ar1$var.pred
-ar2$var.pred
-ar3$var.pred
-ar4$var.pred
-
-ar1$aic
-ar2$aic
-ar3$aic
-ar4$aic
 
 source("innovations.R")
 
@@ -111,7 +106,17 @@ lh.ia$thetas[12,1:12] # Preliminary estimates of coefficients for MA(12)
 
 arima1 <- auto.arima(Mortality, start.p = 0, start.q = 0, d=1, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, allowmean=TRUE, trace = TRUE) # 5,0,0
 
-fit.ar1 <- arima(Mortality, order=c(0,1,0))
+fit.ar1 <- arima(Mortality.diff8, order=c(1,1,7), seasonal=list(order=c(6,2,2), period=7))
+
+fit.ar1.1 <- arima(Mortality.diff8, order=c(1,1,7), seasonal=list(order=c(4,2,2), period=7), fixed=c(NA,NA,NA,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA))
+
+a=acf2(fit.ar1.1$residuals)
+acf2(fit.ar1$residuals)
+a
+fit.ar1
+fit.ar2 <- arima(Mortality.diff8, order=c(7,1,7), seasonal=list(order=c(6,2,1), period=7))
+acf2(fit.ar2$residuals)
+
 fit.ar2 <- arima(Mortality.diff, order=c(0,0,0))
 
 acf1 = acf2(fit.ar1$residuals)
@@ -125,18 +130,37 @@ acf1 = acf2(fit.ar1$residuals)
 fit.sarima = astsa::sarima(Mortality,8,1,1,0,1,0,7, model=TRUE)
 acf2(fit.sarima$fit$residuals)
 
+fit.ar3.1
+fit.ar3.2
 
-fit.ar3 <- arima(Mortality, order=c(0,1,15), seasonal=list(order=c(0,1,1), period=14))
+fit.ar3.1 <- arima(Mortality, transform.pars = TRUE, method="ML", order=c(0,1,10), seasonal=list(order=c(0,1,1), period=14), include.mean=TRUE, fixed=c(NA,NA,NA,NA,NA,NA,NA,NA,0,NA,NA))
+
+fit.ar3.2 <- arima(Mortality, transform.pars = TRUE, method="ML", order=c(0,1,10), seasonal=list(order=c(0,1,1), period=14), include.mean=TRUE)
+acf2(fit.ar3.1$residuals)
+
+acf2(fit.ar3.2$residuals)
+                 
+fit.ar3 <- arima(Mortality, order=c(0,1,15), seasonal=list(order=c(0,1,1), period=14), fixed=c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,0,NA), a)
 
 fit.ar4 <- arima(Mortality, order=c(0,1,7), seasonal=list(order=c(0,1,1), period=14))
 
-fit.ar5 <- arima(Mortality, order=c(5,1,7), seasonal=list(order=c(0,1,1), period=14))
+fit.ar5 <- arima(Mortality, order=c(5,1,10), seasonal=list(order=c(0,1,1), period=14))
+fit.ar5
+acf5
 
 
-fit.ar3
+fit.ar5.1 <- arima(Mortality, order=c(5,1,), seasonal=list(order=c(0,1,1), period=14), fixed = c(0,NA,0,0,NA,0,0,0,0,0,0,NA,NA))
+
+fit.ar5.1
+fit.ar5
+plot(fit.ar5)
 acf3 = acf2(fit.ar3$residuals)
+acf3.1 = acf2(fit.ar3.1$residuals)
 acf4 = acf2(fit.ar4$residuals)
-acf5 = acf2(fit.ar5$residuals)
+acf5.1 = acf2(fit.ar5.1$residuals)
+acf5 = acf2(fit.ar5$residuals, plot=FALSE)
+acf5
+fit.ar5
 Mortality.diff_acf1 = acf2(Mortality.diff)
 
 
