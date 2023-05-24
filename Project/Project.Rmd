@@ -1,0 +1,232 @@
+---
+title: "Project"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(devtools)
+install.packages('astsa')
+install.packages('basicTrendline')
+install.packages('distributional')
+install.packages('FinTS')
+install.packages('FitARMA')
+install.packages("forecast")
+install.packages('ggplot2')
+install.packages('latex2exp')
+install.packages('polynom')
+install.packages('sarima')
+install.packages("MuMIn")
+library(MuMIn)
+library(astsa)
+library(basicTrendline)
+devtools::install_github("FinYang/tsdl")
+library(tsdl)
+library(dplyr)
+library(FinTS)
+library(FitARMA)
+library(forecast)
+library(ggplot2)
+library(latex2exp)
+library(MASS)
+library(polynom)
+library(readr)
+library(readxl)
+library(sarima)
+library(tinytex)
+
+```
+
+```{r}
+covid <- read.csv("owid-covid-data 2.csv")
+
+covid[(is.na(covid))]<-0
+
+covid <- covid %>%
+  group_by(date) %>%
+  summarise(across(c(total_cases, new_cases, new_cases_smoothed, total_deaths, new_deaths, new_deaths_smoothed), sum))
+
+covid["Smoothed_New_Case_Fatality_Rate"] = NA
+
+for(i in 1:1225){
+  covid$Smoothed_New_Case_Fatality_Rate[i] = covid$new_deaths_smoothed[i] / covid$new_cases_smoothed[i]}
+
+covid <- covid[346:1225,]
+
+Mortality = ts(covid$Smoothed_New_Case_Fatality_Rate)
+frequency(Mortality)
+plot.ts(Mortality)
+Mortality_acf1 = acf2(Mortality)
+var(Mortality)
+
+Mortality.diff = diff(Mortality, 1)
+plot.ts(Mortality.diff)
+Mortality.diff_acf1 = acf2(Mortality.diff)
+var(Mortality.diff)
+
+Mortality.diff2 = diff(Mortality, 2)
+plot.ts(Mortality.diff2)
+Mortality_acf2 = acf2(Mortality.diff2)
+var(Mortality.diff2)
+
+Mortality.diff3 = diff(Mortality, 3)
+plot.ts(Mortality.diff3)
+Mortality_acf3 = acf2(Mortality.diff3)
+var(Mortality.diff3)
+
+Mortality.diff4 = diff(Mortality, 4)
+plot.ts(Mortality.diff4)
+Mortality_acf4 = acf2(Mortality.diff4)
+var(Mortality.diff4)
+
+# Diff = 1
+var(Mortality.diff) < var(Mortality.diff2)
+
+ar1 = ar(Mortality.diff4, aic = FALSE, method="mle") # 12
+ar2 = ar(Mortality.diff, aic = FALSE, method="yw") # 29
+ar3 = ar(Mortality.diff, aic = TRUE, method="mle") # 10
+ar4 = ar(Mortality.diff, aic = TRUE, order.max = 12, method="yw") # 10
+
+ar1$var.pred
+ar2$var.pred
+ar3$var.pred
+ar4$var.pred
+
+ar1$aic
+ar2$aic
+ar3$aic
+ar4$aic
+
+source("innovations.R")
+
+acvf = acf(Mortality.diff, plot=FALSE, lag.max = length(Mortality.diff))$acf[,1,1] * var(Mortality.diff) 
+m = length(acvf)
+lh.ia = innovations.algorithm(m+1, acvf)
+lh.ia$thetas[9,1:9] # Preliminary estimates of coefficients for MA(9)
+lh.ia$thetas[10,1:10] # Preliminary estimates of coefficients for MA(10)
+lh.ia$thetas[11,1:11] # Preliminary estimates of coefficients for MA(11)
+lh.ia$thetas[12,1:12] # Preliminary estimates of coefficients for MA(12)
+
+arima1 <- auto.arima(Mortality, start.p = 0, start.q = 0, d=1, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, allowmean=TRUE, trace = TRUE) # 5,0,0
+
+fit.ar1 <- arima(Mortality, order=c(0,1,0))
+fit.ar2 <- arima(Mortality.diff, order=c(0,0,0))
+
+acf1 = acf2(fit.ar1$residuals)
+acf1
+
+fit.ar2 <- arima(Mortality, order=c(8,1,1))
+fit.ar2 
+acf2 = acf2(fit.ar2$residuals)
+acf1 = acf2(fit.ar1$residuals)
+
+fit.sarima = astsa::sarima(Mortality,8,1,1,0,1,0,7, model=TRUE)
+acf2(fit.sarima$fit$residuals)
+
+
+fit.ar3 <- arima(Mortality, order=c(0,1,15), seasonal=list(order=c(0,1,1), period=14))
+
+fit.ar4 <- arima(Mortality, order=c(0,1,7), seasonal=list(order=c(0,1,1), period=14))
+
+fit.ar5 <- arima(Mortality, order=c(5,1,7), seasonal=list(order=c(0,1,1), period=14))
+
+
+fit.ar3
+acf3 = acf2(fit.ar3$residuals)
+acf4 = acf2(fit.ar4$residuals)
+acf5 = acf2(fit.ar5$residuals)
+Mortality.diff_acf1 = acf2(Mortality.diff)
+
+
+fit.ar2 <- arima(Mortality.diff, order=c(10,0,0))
+fit.ar3 <- arima(Mortality.diff, order=c(12,0,0))
+fit.ar4 <- arima(Mortality.diff, order=c(29,0,0))
+
+fit.ma5 <- arima(Mortality.diff, order=c(0,0,9))
+fit.ma6 <- arima(Mortality.diff, order=c(0,0,10))
+fit.ma7 <- arima(Mortality.diff, order=c(0,0,11))
+fit.ma8 <- arima(Mortality.diff, order=c(0,0,12))
+
+fit.arma9 <- arima(Mortality.diff, order=c(5,0,9)) # 12/14 0.05 < s.e. < 0.21
+fit.arma10 <- arima(Mortality.diff, order=c(5,0,10)) # NAN produced
+fit.arma11 <- arima(Mortality.diff, order=c(5,0,11)) # all 0.07 < s.e. < 0.77
+fit.arma12 <- arima(Mortality.diff, order=c(5,0,12)) # 13/17 0.05 < s.e. < 0.837
+
+fit.arma13 <- arima(Mortality.diff, order=c(10,0,9)) # NAN produced
+fit.arma14 <- arima(Mortality.diff, order=c(10,0,10)) # 18/20  0.05 < s.e. < 0.099
+fit.arma15 <- arima(Mortality.diff, order=c(10,0,11)) # all 0.97 < s.e. < 0.32
+fit.arma16 <- arima(Mortality.diff, order=c(10,0,12)) # all 0.12 < s.e. < 0.61
+
+fit.arma17 <- arima(Mortality.diff, order=c(12,0,9)) # all 0.05 < s.e. < 0.60
+fit.arma18 <- arima(Mortality.diff, order=c(12,0,10)) # NAN produced
+fit.arma19 <- arima(Mortality.diff, order=c(12,0,11)) # NAN produced
+#fit.arma20 <- arima(Mortality.diff, order=c(12,0,12)) # all 0.09 < s.e. < 0.37
+#fit.arma21 <- arima(Mortality.diff, order=c(29,0,9)) # NAN produced
+#fit.arma22 <- arima(Mortality.diff, order=c(29,0,10)) # NAN produced
+# fit.arma23 <- arima(Mortality.diff, order=c(29,0,11)) # NAN produced
+# fit.arma24 <- arima(Mortality.diff, order=c(29,0,12)) # NAN produced
+
+# STATIONARY
+fit.arma25_10 <- arima(Mortality.diff, order=c(25,0,10)) # NAN produced
+# STATIONARY w/out NANs for s.e. 
+fit.arma25_9 <- arima(Mortality.diff, order=c(25,0,9)) # NAN produced
+
+Data <- data.frame(c(AICc(fit.ar1),
+AICc(fit.ar2),
+AICc(fit.ar3),
+AICc(fit.ar4),
+AICc(fit.ma5),
+AICc(fit.ma6),
+AICc(fit.ma7),
+AICc(fit.ma8),
+AICc(fit.arma9),
+AICc(fit.arma10),
+AICc(fit.arma11),
+AICc(fit.arma12),
+AICc(fit.arma13),
+AICc(fit.arma14),
+AICc(fit.arma15),
+AICc(fit.arma16),
+AICc(fit.arma17),
+AICc(fit.arma18),
+AICc(fit.arma19),
+#AICc(fit.arma20),
+#AICc(fit.arma21),
+#AICc(fit.arma22),
+AICc(fit.arma25_10),
+AICc(fit.arma25_9)))
+
+rownames(Data) <- c("AR(5)", "AR(10)", "AR(12)", "AR(29)", "MA(9)", "MA(10)", "MA(11)", "MA(12)", "ARMA(5,9)", "ARMA(5,10)", "ARMA(5,11)", "ARMA(5,12)", "ARMA(10,9)", "ARMA(10,10)", "ARMA(10,11)", "ARMA(10,12)", "ARMA(12,9)", "ARMA(12,10)", "ARMA(12,11)", "ARMA(25,10)", "ARMA(25,9)")
+colnames(Data) <- c("AICc")
+
+Data["Lowest AICc"] <- as.integer(rank(Data$AICc))
+Data
+
+acf1 = acf2(fit.ar1$residuals)
+acf2 = acf2(fit.ar2$residuals)
+acf3 = acf2(fit.ar3$residuals)
+acf4 = acf2(fit.ar4$residuals)
+acf5 = acf2(fit.ma5$residuals)
+acf6 = acf2(fit.ma6$residuals)
+acf7 = acf2(fit.ma7$residuals)
+acf8 = acf2(fit.ma8$residuals)
+acf9 = acf2(fit.arma9$residuals)
+acf10 = acf2(fit.arma10$residuals)
+acf11 = acf2(fit.arma11$residuals)
+acf12 = acf2(fit.arma12$residuals)
+acf13 = acf2(fit.arma13$residuals)
+acf14 = acf2(fit.arma14$residuals)
+acf15 = acf2(fit.arma15$residuals)
+acf16 = acf2(fit.arma16$residuals)
+acf17 = acf2(fit.arma17$residuals)
+acf18 = acf2(fit.arma18$residuals)
+acf19 = acf2(fit.arma19$residuals)
+#acf20 = acf2(fit.arma20$residuals)
+#acf21 = acf2(fit.arma21$residuals)
+#acf22 = acf2(fit.arma22$residuals)
+acf23 = acf2(fit.arma25_10$residuals)
+acf24 = acf2(fit.arma25_9$residuals)
+
+```
