@@ -47,21 +47,26 @@ library(tinytex)
 ```{r}
 options(scipen = 9)
 covid <- read.csv("owid-covid-data 2.csv")
-
+covid = read.csv("Covid.csv")
+mean(covid1$people_vaccinated)
 covid[(is.na(covid))]<-0
+
+vect=vector()
+for(i in 1:175){
+  vect=append(vect, rep(i, 7))
+}
+covid=covid[1:1225,]
+covid$Week = vect
 
 covid <- covid %>%
   group_by(date) %>%
-  summarise(across(c(total_cases, new_cases, new_cases_smoothed, total_deaths, new_deaths, new_deaths_smoothed), sum))
+  summarise(across(c(new_cases, new_deaths, population, people_vaccinated), sum))
 
-covid["Smoothed_New_Case_Fatality_Rate"] = NA
+covid <- covid %>%
+  mutate("Mortality" = covid$new_deaths/covid$new_cases)
 
-for(i in 1:1225){
-  covid$Smoothed_New_Case_Fatality_Rate[i] = covid$new_deaths_smoothed[i] / covid$new_cases_smoothed[i]}
 
-covid <- covid[346:1225,]
-
-Mortality = ts(covid$Smoothed_New_Case_Fatality_Rate)
+Mortality = ts(covid$Mortality[50:175])
 plot.ts(Mortality)
 nt=length(Mortality)
 abline(h=mean(Mortality), col= "blue")
