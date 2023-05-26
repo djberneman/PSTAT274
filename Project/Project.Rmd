@@ -7,19 +7,19 @@ output: html_document
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# install.packages('astsa')
-# install.packages('tseries')
-# install.packages('basicTrendline')
-# install.packages('distributional')
-# install.packages('FinTS')
-# install.packages('FitARMA')
-# install.packages("forecast")
-# install.packages('ggplot2')
-# install.packages("ggfortify")
-# install.packages('latex2exp')
-# install.packages('polynom')
-# install.packages('sarima')
-# install.packages("MuMIn")
+install.packages('astsa')
+install.packages('tseries')
+install.packages('basicTrendline')
+install.packages('distributional')
+install.packages('FinTS')
+install.packages('FitARMA')
+install.packages("forecast")
+install.packages('ggplot2')
+install.packages("ggfortify")
+install.packages('latex2exp')
+install.packages('polynom')
+install.packages('sarima')
+install.packages("MuMIn")
 library(devtools)
 library(tseries)
 library(MuMIn)
@@ -111,7 +111,7 @@ hist(Mortality.sqrt, col="light blue", xlab="", main="histogram; sqrt(Mortality)
 # To produce decomposition of Mortality:
 x <- ts(as.ts(Mortality), frequency = 7)
 decomp1 <- decompose(x)
-plot(decomp2)
+plot(decomp1)
 
 y <- ts(as.ts(Mortality), frequency = 12)
 decomp2 <- decompose(y)
@@ -121,22 +121,35 @@ z <- ts(as.ts(Mortality), frequency = 14)
 decomp3 <- decompose(z)
 plot(decomp3)
 
-# Differencing Mortality:
+# Original
+plot.ts(Mortality)
+nt=length(Mortality)
+abline(h=mean(Mortality), col= "blue")
+fit <- lm(Mortality ~ as.numeric(1:nt))
+abline(fit, col="red")
 var(Mortality)
+x = arima(Mortality, order=c(0,0,0), method="ML")
+AICc(x)
 
-Mortality.stat <- diff(Mortality, lag=1)
-fit <- lm(Mortality.stat ~ as.numeric(1:length(Mortality.stat)))
-plot.ts(Mortality.stat, main="(Mortality) differenced at lag 1");
+# Differencing Mortality:
+
+Mortality_1 <- diff(Mortality, lag=1)
+fit <- lm(Mortality_1 ~ as.numeric(1:length(Mortality_1)))
+plot.ts(Mortality_1, main="(Mortality) differenced at lag 1");
 abline(fit, col="red") 
-abline(h=mean(Mortality.stat), col="blue")
-mean(Mortality.stat)
-var(Mortality.stat)
+abline(h=mean(Mortality_1), col="blue")
+x = arima(Mortality_1, order=c(0,0,0), method="ML")
+AICc(x)
+mean(Mortality_1)
+var(Mortality_1)
 
 Mortality_7 <- diff(Mortality, lag=7)
 fit <- lm(Mortality_7 ~ as.numeric(1:length(Mortality_7)))
 plot.ts(Mortality_7, main="(Mortality) differenced at lag 7")
 abline(fit, col="red")
 abline(h=mean(Mortality_7), col="blue")
+x = arima(Mortality_7, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_7)
 var(Mortality_7)
 
@@ -145,6 +158,8 @@ fit <- lm(Mortality_12 ~ as.numeric(1:length(Mortality_12)))
 plot.ts(Mortality_12, main="(Mortality) differenced at lag 12")
 abline(fit, col="red")
 abline(h=mean(Mortality_12), col="blue")
+x = arima(Mortality_12, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_12)
 var(Mortality_12)
 
@@ -153,39 +168,50 @@ fit <- lm(Mortality_14 ~ as.numeric(1:length(Mortality_14)))
 plot.ts(Mortality_14, main="(Mortality) differenced at lag 14")
 abline(fit, col="red")
 abline(h=mean(Mortality_14), col="blue")
+x = arima(Mortality_14, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_14)
 var(Mortality_14)
+# Simce differencing at lag 1 lowers the variance the most
 
-Mortality_1.7 <- diff(Mortality.stat, lag=7)
+Mortality_1.7 <- diff(Mortality_1, lag=7)
 fit <- lm(Mortality_1.7 ~ as.numeric(1:length(Mortality_1.7)))
 plot.ts(Mortality_1.7, main="(Mortality) differenced at lag 1 and lag 7")
 abline(fit, col="red")
 abline(h=mean(Mortality_1.7), col="blue")
+x = arima(Mortality_1.7, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_1.7)
 var(Mortality_1.7)
 
-Mortality_1.12 <- diff(Mortality.stat, lag=12)
+Mortality_1.12 <- diff(Mortality_1, lag=12)
 fit <- lm(Mortality_1.12 ~ as.numeric(1:length(Mortality_1.12)))
 plot.ts(Mortality_1.12, main="(Mortality) differenced at lag 1 and lag 12")
 abline(fit, col="red")
 abline(h=mean(Mortality_1.12), col="blue")
+x = arima(Mortality_1.12, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_1.12)
 var(Mortality_1.12)
 
-Mortality_1.14 <- diff(Mortality.stat, lag=14)
+Mortality_1.14 <- diff(Mortality_1, lag=14)
 fit <- lm(Mortality_1.14 ~ as.numeric(1:length(Mortality_1.14)))
 plot.ts(Mortality_1.14, main="(Mortality) differenced at lag 1 and lag 14")
 abline(fit, col="red")
 abline(h=mean(Mortality_1.14), col="blue")
+x = arima(Mortality_1.14, order=c(0,0,0), method="ML")
+AICc(x)
 mean(Mortality_1.14)
 var(Mortality_1.14)
 
 ```
+\
+Since the trend line is the same as the mean when differencing at lag 1 and at either lag 7, lag 12, or lag 14, we will only be testing models that have a nonseasonal diference at lag 1. In addition, the largest AICcs were those with a nonseasonal and a seasonal difference.
 
 # Differencing ACF/PACF
 ```{r}
 x=acf2(Mortality)
-x=acf2(Mortality.stat)
+x=acf2(Mortality_1)
 x=acf2(Mortality_7)
 x=acf2(Mortality_12)
 x=acf2(Mortality_14)
@@ -198,26 +224,50 @@ x=acf2(Mortality_1.14)
 ```{r}
 # Trying models. Some R Commands:
 
-# Models for Model.stat
+Data = data.frame(matrix(nrow=144, ncol=2))
+colnames(Data) = c("Model", "AICc")
 
-# Create the loop.vector (all the columns)
-loop.vector <- 1:14
+i = 1
+for(s in loop.s){
+  for(p in loop.p){
+    for(q in loop.q){
+      if(s == 0){
+        Data[i, 1] = paste0("ARIMA(", p, "_1_", q, ")")
+        assign(paste0("ARIMA(", p, "_1_", q, ")"), arima(Mortality_1, order=c(p,0,q), method="ML"))
+        Data[i, 2] = AICc(get(paste0("ARIMA(", p, "_1_", q, ")")))
+        x=acf2(get(paste0("ARIMA(", p, "_1_", q, ")"))$residuals, main = paste0("ARIMA(", p, ", 1,", q, ") AICc = ", Data[i,2]))}
+      else{
+        Data[i, 1] = paste0("SARIMA(", p, "_1_", q, ")x((0,1,0)_", s)
+        assign(paste0("SARIMA(", p, "_1_", q, ")x((0,1,0)_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))
+        Data[i, 2] = AICc(get(paste0("SARIMA(", p, "_1_", q, ")x((0,1,0)_", s)))
+        x=acf2(get(paste0("SARIMA(", p, "_1_", q, ")x((0,1,0)_", s))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x((0,1,0)_", s, "AICc = ", Data[i,2]))}
+      i = i + 1}}}
 
-for (i in loop.vector) { # Loop over loop.vector
-  assign(paste0("ARIMA_0_1_", i), arima(Mortality, order=c(0,1,i), method="ML"))
-  assign(paste0("Residuals_ARIMA_0_1_", i), arima(Mortality, order=c(0,1,i), method="ML")$residuals)
-  variable1 = paste0("ARIMA_0_1_", i)
-  variable2 = paste0("Residuals_ARIMA0_1_", i)
-  AICc(variable1)
-}
+Data["Lowest AICc"] <- as.integer(rank(Data$AICc))
+Data
+```
+        
+        
+```{r}     
+          acf2(assign(paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s))}
+        else{
+          acf2(assign(paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s), arima(Mortality, order=c(p,1,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s))}}}}}
 
 
+      
+    assign(paste0("ARIMA1_", p, "_1_", q), arima(Mortality_1, order=c(p,1,q), seasonal=list(order=c(0,1,0), period=12), method="ML"))
+    acf2(assign(paste0("Residuals_ARIMA_0_1_", i,  "_of_", x), arima(Mortality, order=c(0,1,i), method="ML")$residuals), main = paste0("ARIMA_0_1_", i, " of ", x))
+    variable1 = paste0("ARIMA_0_1_", i)
+    variable2 = paste0("Residuals_ARIMA0_1_", i,  "_of_", x)
+}}
 
+```
 
+```{r}
 for(i in 1:3){
-  arima(Mortality.stat, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML")
-  acf2(arima(Mortality.stat, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML"))
-  AICc(arima(Mortality.stat, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML"))
+  arima(Mortality, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML")
+  acf2(arima(Mortality, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML"))
+  AICc(arima(Mortality, order=c(i,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML"))
 }
 
 # Model
