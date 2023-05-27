@@ -10,7 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 install.packages('astsa')
 install.packages('tseries')
 install.packages('basicTrendline')
+install.packages("nortsTest")
+install.packages("nortest")
 install.packages('distributional')
+install.packages("TSA")
 install.packages('FinTS')
 install.packages('FitAR')
 install.packages("forecast")
@@ -22,6 +25,9 @@ install.packages('sarima')
 install.packages("MuMIn")
 library(devtools)
 library(tseries)
+library(nortsTest)
+library(nortest)
+library(TSA)
 library(MuMIn)
 library(astsa)
 library(basicTrendline)
@@ -47,27 +53,27 @@ library(tinytex)
 ```{r}
 options(scipen = 9)
 covid <- read_excel("World_Covid.xlsx")
-covid <- read.csv("owid-covid-data 2.csv")
-covid = read.csv("Covid.csv")
-
-vect=vector()
-for(i in 1:175){
-  vect=append(vect, rep(i, 7))
-}
-covid=covid[1:1225,]
-covid$Week = vect
+# covid <- read.csv("owid-covid-data 2.csv")
+# covid = read.csv("Covid.csv")
+# 
+# vect=vector()
+# for(i in 1:175){
+#   vect=append(vect, rep(i, 7))
+# }
+# covid=covid[1:1225,]
+# covid$Week = vect
 
 # covid <- covid %>%
 #   group_by(date) %>%
 #   summarise(across(c(new_cases, new_deaths, population, people_vaccinated), sum))
 
-covid <- covid %>%
-  mutate("Mortality" = covid$new_deaths/covid$new_cases)
+# covid <- covid %>%
+#   mutate("Mortality" = covid$new_deaths/covid$new_cases)
 
 
 Mortality = ts(covid$Mortality[10:1238])
-Mortality = ts(covid$Mortality[1:336])
-Mortality = ts(covid$Mortality[337:1238])
+Mortality1 = ts(covid$Mortality[10:336])
+Mortality2 = ts(covid$Mortality[337:1238])
 
 plot.ts(Mortality)
 nt=length(Mortality)
@@ -101,22 +107,37 @@ plot.ts(Mortality)
 abline(h=mean(Mortality), col= "blue")
 abline(lm(Mortality ~ as.numeric(1:length(Mortality))), col="red")
 x=acf2(Mortality)
+model=ets(Mortality)
+summary(model)
+ad.test(Mortality)
+require(TSA)
+periodogram(Mortality, log = 'yes', xlim=c(0,0.025))
+abline(h=0)
 
 plot.ts(Mortality.bc)
 abline(h=mean(Mortality.bc), col= "blue")
 abline(lm(Mortality.bc ~ as.numeric(1:length(Mortality.bc))), col="red")
 x=acf2(Mortality.bc)
+model1=ets(Mortality.bc)
+summary(model1)
+ad.test(Mortality.bc)
 
 plot.ts(Mortality.log)
 abline(h=mean(Mortality.log), col= "blue")
 abline(lm(Mortality.log ~ as.numeric(1:length(Mortality.log))), col="red")
 x=acf2(Mortality.log)
+model=ets(Mortality.log)
+summary(model)
+ad.test(Mortality.log)
 
 plot.ts(Mortality.sqrt)
 abline(h=mean(Mortality.sqrt), col= "blue")
 abline(lm(Mortality.sqrt ~ as.numeric(1:length(Mortality.sqrt))), col="red")
 x=acf2(Mortality.sqrt)
 var(Mortality)
+model=ets(Mortality.log)
+summary(model)
+ad.test(Mortality.log)
 
 plot.ts(Mortality.sq)
 abline(h=mean(Mortality.sq), col= "blue")
@@ -261,46 +282,241 @@ x=acf2(Mortality_1.14)
 ```{r}
 # Trying models. Some R Commands:
 
-Data = data.frame(matrix(nrow=288, ncol=2))
+Data = data.frame(matrix(nrow=972, ncol=2))
 colnames(Data) = c("Model", "AICc")
 
-loop.s = c(0,7)
-loop.p = c(0,3,4,5)
-loop.q = c(0,3,4,5)
+auto.arima(Mortality_1.7)
+
+loop.s = c(7)
+loop.p = c(0,1,2,3,4,5)
+loop.d = c(1)
+loop.q = c(0,1,2,3,4,5)
 loop.P = c(0,1,2)
 loop.Q = c(0,1,2)
+loop.D = c(0,1,2)
 
 i = 1
 for(s in loop.s){
-  for(p in loop.p){
-    for(q in loop.q){
+  for(D in loop.D){
+    for(Q in loop.Q){
       for(P in loop.P){
-        for(Q in loop.Q){
-          if(s == 0){
-            Data[i, 1] = paste0("ARIMA(", p, "_1_", q, ")")
-            assign(paste0("ARIMA(", p, "_1_", q, ")"), arima(Mortality_1, order=c(p,0,q), method="ML"))
-            Data[i, 2] = AIC(get(paste0("ARIMA(", p, "_1_", q, ")")))
-            x=acf2(get(paste0("ARIMA(", p, "_1_", q, ")"))$residuals, main = paste0("ARIMA(", p, ",1,", q, ")   AICc = ", Data[i,2]))}
-          else{
-            Data[i, 1] = paste0("SARIMA(", p, "_1_", q, ")x((", P, ",", "1,", Q, ")_", s)
-            assign(paste0("SARIMA(", p, "_1_", q, ")x((", P, ",", "1,", Q, ")_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))
-            Data[i, 2] = AIC(get(paste0("SARIMA(", p, "_1_", q, ")x((", P, ",", "1,", Q, ")_", s)))
-            x=acf2(get(paste0("SARIMA(", p, "_1_", q, ")x((", P, ",", "1,", Q, ")_", s))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x((", P, ",", "1,", Q, ")_", s, "  AICc = ", Data[i,2]))}
-          i = i + 1}}}}}
+        if(P==D & D==Q & D==0){
+          for(d in loop.d){
+            for(q in loop.q){
+              for(p in loop.p){
+                Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")
+                if(p==1 & q==1){
+                  assign(paste0("ARIMA(", p, ",", d, ",", q, ")"), arima(Mortality_1, order=c(p,0,q), method="ML"))
+                  Data[i, 2] = AIC(get(paste0("ARIMA(", p, ",", d, ",", q, ")")))
+                  x=acf2(get(paste0("ARIMA(", p, ",", d, ",", q, ")"))$residuals, main = paste0("ARIMA(", p, ",", d, ",", q, ")  AICc = ", Data[i,2]))}
+                else{
+                  assign(paste0("ARIMA(", p, ",", d, ",", q, ")"), arima(Mortality, order=c(p,d,q), method="ML"))
+                  Data[i, 2] = AIC(get(paste0("ARIMA(", p, ",", d, ",", q, ")")))
+                  x=acf2(get(paste0("ARIMA(", p, ",", d, ",", q, ")"))$residuals, main = paste0("ARIMA(", p, ",", d, ",", q, ")  AICc = ", Data[i,2]))}}
+              i=i+1}}}
+        else{
+          for(d in loop.d){
+            for(q in loop.q){
+              for(p in loop.p){
+                if(p==d & q==d){
+                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                  assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
+                  Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                  x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
+                else{
+                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                  assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
+                  Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                  x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
+              i = i + 1}}}}}}}}
 
 Data["Lowest AICc"] <- as.integer(rank(Data$AICc))
 Data
-
+arima(Mortality, order = c(1,1,1), seasonal=list(order=c(1,1,1), period = 7))
 auto.arima
 ```
-        
-        
+
+
+
+```{r}
+Data = data.frame(matrix(nrow=972, ncol=2))
+colnames(Data) = c("Model", "AICc")
+
+loop.s = c(7)
+loop.p = c(0,1,2,3,4,5)
+loop.d = c(1)
+loop.q = c(0,1,2,3,4,5)
+loop.P = c(0,1,2)
+loop.Q = c(0,1,2)
+loop.D = c(0,1,2)
+
+i = 1
+for(s in loop.s){
+  for(D in loop.D){
+    for(Q in loop.Q){
+      for(P in loop.P){
+        for(d in loop.d){
+          for(q in loop.q){
+            for(p in loop.p){
+              if((p==3 & d==1 & q==2 & P==1 & Q==1 & D==0) | (p==5 & d==1 & q==5 & P==1 & Q==1 & D==0) | (p==3 & d==1 & q==2 & P==2 & Q==1 & D==0) | (p==1 & d==1 & q==3 & P==2 & Q==1 & D==0) | (p==4 & d==1 & q==4 & P==2 & Q==1 & D==0)){
+                Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s)))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
+              else{
+                if(P==0 & Q==0 & D==0){
+                  Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")}
+                else{
+                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)}
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
+              i=i+1}}}}}}}}
+                  
+auto.arima(Mortality)
+```
+
+
+```{r}
+Data = data.frame(matrix(nrow=972, ncol=2))
+colnames(Data) = c("Model", "AICc")
+
+loop.s = c(7)
+loop.p = c(0,1,2,3,4,5)
+loop.d = c(1)
+loop.q = c(0,1,2,3,4,5)
+loop.P = c(0,1,2)
+loop.Q = c(0,1,2)
+loop.D = c(0,1,2)
+
+i = 1
+for(s in loop.s){
+  for(D in loop.D){
+    for(Q in loop.Q){
+      for(P in loop.P){
+        for(d in loop.d){
+          for(q in loop.q){
+            for(p in loop.p){
+              if((p==3 & d==1 & q==2 & P==1 & Q==1 & D==0) | (p==5 & d==1 & q==5 & P==1 & Q==1 & D==0) | (p==3 & d==1 & q==2 & P==2 & Q==1 & D==0) | (p==1 & d==1 & q==3 & P==2 & Q==1 & D==0) | (p==4 & d==1 & q==4 & P==2 & Q==1 & D==0)){
+                Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality1, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s)))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
+              else{
+                if(P==0 & Q==0 & D==0){
+                  Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")}
+                else{
+                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)}
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
+              i=i+1}}}}}}}}
+                  
+`SARIMA(5,1,5)x(1,0,1)_7`
+`SARIMA(5,1,5)x(1,0,1)_7(fixed)` = arima(Mortality, order = c(5,1,5), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed = c(0,0,0,0,0,0,0,0,0,0,0,NA))
+acf2(`SARIMA(5,1,5)x(1,0,1)_7(fixed)`$residuals)    
+
+`SARIMA(5,1,4)x(0,0,1)_7(fixed)` = arima(Mortality, order=c(5,1,4), seasonal=list(order=c(0,0,1), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+
+acf2(`SARIMA(5,1,4)x(0,0,1)_7(fixed)`$residuals)
+
+```
+```{r}
+source('plot.roots.R')
+
+read_file('plot.roots.R')
+plot.roots(`SARIMA(5,1,5)x(1,0,1)_7`)
+`SARIMA(5,1,5)x(1,0,1)_7`
+`SARIMA(5,1,5)x(1,0,1)_7(fixed)` = arima(Mortality, order = c(5,1,5), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed = c(0,0,0,0,0,0,0,0,0,0,0,NA))
+acf2(`SARIMA(5,1,5)x(1,0,1)_7(fixed)`$residuals)    
+
+`SARIMA(5,1,4)x(0,0,1)_7(fixed)` = arima(Mortality, order=c(5,1,4), seasonal=list(order=c(0,0,1), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+
+acf2(`SARIMA(5,1,4)x(0,0,1)_7(fixed)`$residuals)
+
+`SARIMA(5,1,5)x(0,0,2)_7`
+
+`SARIMA(5,1,5)x(0,0,2)_7(fixed)` = arima(Mortality, order=c(5,1,5), seasonal=list(order=c(0,0,2), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, 0, NA, NA, NA, NA))
+acf2(`SARIMA(5,1,5)x(0,0,2)_7(fixed)`$residuals)
+x=Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=7, type=c("Box-Pierce"), fitdf = 11)
+x$p.value
+`SARIMA(3,1,2)x(1,0,1)_7`
+
+
+acf2(`SARIMA(3,1,2)x(2,0,1)_7`$residuals)
+
+`SARIMA(3,1,2)x(1,0,1)_7(fixed)` = arima(Mortality, order=c(3,1,2), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed= c(NA, 0, NA, NA, NA, 0, NA))
+acf2(`SARIMA(3,1,2)x(1,0,1)_7(fixed)`$residuals)
+
+
+autoplot(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)
+plot(`SARIMA(4,1,4)x(2,0,1)_7`$root)
+
+`SARIMA(3,1,2)x(1,0,1)_7(fixed)` = arima(Mortality, order=c(3,1,2), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed= c(NA, 0, NA, NA, NA, 0, NA))
+acf2(`SARIMA(3,1,2)x(1,0,1)_7(fixed)`$residuals)
+
+acf2(arima(Mortality, order = c(5,1,5), seasonal=list(order=c(1,0,1), period=7), method="ML")$residuals)
+```
+
+
+```{r}
+Data = data.frame(matrix(nrow=972, ncol=2))
+colnames(Data) = c("Model", "AICc")
+
+loop.s = c(7)
+loop.p = c(0,1,2,3,4,5)
+loop.d = c(1)
+loop.q = c(0,1,2,3,4,5)
+loop.P = c(0,1,2)
+loop.Q = c(0,1,2)
+loop.D = c(0,1,2)
+
+i = 1
+for(s in loop.s){
+  for(D in loop.D){
+    for(Q in loop.Q){
+      for(P in loop.P){
+        for(d in loop.d){
+          for(q in loop.q){
+            for(p in loop.p){
+              if((p==3 & d==1 & q==2 & P==1 & Q==1 & D==0) | (p==5 & d==1 & q==5 & P==1 & Q==1 & D==0) | (p==3 & d==1 & q==2 & P==2 & Q==1 & D==0) | (p==1 & d==1 & q==3 & P==2 & Q==1 & D==0) | (p==4 & d==1 & q==4 & P==2 & Q==1 & D==0)){
+                Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality2, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s)))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
+              else{
+                if(P==0 & Q==0 & D==0){
+                  Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")}
+                else{
+                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)}
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
+                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
+                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
+              i=i+1}}}}}}}}
+                  
+
+```
+
+
+
 ```{r}     
           acf2(assign(paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s))}
         else{
           acf2(assign(paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s), arima(Mortality, order=c(p,1,q), seasonal=list(order=c(0,1,0), period=s), method="ML"))$residuals, main = paste0("SARIMA(", p, "_1_", q, ")x(0,1,0)_", s))}}}}}
-
-
+x=arima(Mortality)
+plot(x)
       
     assign(paste0("ARIMA1_", p, "_1_", q), arima(Mortality_1, order=c(p,1,q), seasonal=list(order=c(0,1,0), period=12), method="ML"))
     acf2(assign(paste0("Residuals_ARIMA_0_1_", i,  "_of_", x), arima(Mortality, order=c(0,1,i), method="ML")$residuals), main = paste0("ARIMA_0_1_", i, " of ", x))
@@ -312,7 +528,7 @@ auto.arima
 
 ```{r}
 
-  x=arima(Mortality, order=c(0,1,0), seasonal = list(order = c(0,0,0), period = 0), method="ML")
+  arima(Mortality, order=c(1,1,1), seasonal = list(order = c(0,1,1), period = 0), method="ML")
   acf2(x
 # Model
 Model1 = arima(Mortality.stat, order=c(0,1,1), seasonal = list(order = c(0,1,1), period = 12), method="ML")
@@ -330,7 +546,7 @@ AICc(Model1)
 
 
 
-arima(Mortality, order=c(0,1,3), seasonal = list(order = c(0,1,1), period = 12), method="ML")
+arima(Mortality, order=c(4,1,5), seasonal = list(order = c(1,0,1), period = 7), method = "ML")
 
 AICc(arima(Mortality, order=c(0,1,3), seasonal = list(order = c(0,1,1), period = 12), method="ML"));
 [1] -441.0091
@@ -341,7 +557,7 @@ s.e. 0.0810 0 0.0852 0.0796
 sigma^2 estimated as 0.00127: log likelihood = 225.38, aic = -442.76
 AICc(arima(Mortality, order=c(0,1,3), seasonal = list(order = c(0,1,1), period = 12), fixed = c(NA, 0, NA, NA), method="ML")) [1] -442.4489
 32
-
+polyroot(c(1, 0.87, 0.76))
   • To check invertibility of MA part of model A:
 source("plot.roots.R")
 plot.roots(NULL,polyroot(c(1, -0.3353, 0, -0.1612)), main="(A) roots of ma part, nonseasonal ")
