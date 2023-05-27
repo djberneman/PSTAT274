@@ -152,28 +152,24 @@ for(i in 1:length(vect)){
     assign(paste0("name", vect1[i]), transform_name)
   
   for(j in 1:length(transform)){
-    par(mfrow = c(2,3))
     plot.ts(transform[[j]], main=transform_name[j])
     abline(h=mean(transform[[j]]), col= "blue")
     abline(lm(transform[[j]] ~ as.numeric(1:length(transform[[j]]))), col="red")
     transform[[j]]
-    x=acf2(transform[[j]], main=transform_name[j])
-    mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(transform[[j]])$p.value, 
-                                               digits=3)), side=1, line=-7, adj=0, cex=.8)
-    mtext(paste0("ad.test: p-value = ", signif(ad.test(
-      (transform[[j]]$residuals)^2, lag=sqrt(length(transform[[j]])), type=c("Ljung-Box"), fitdf = 11)$p.value, 
-      digits=3), "_________________________________kpss.test: p-value = ", 
-      signif(kpss.test(transform[[j]]$residuals)$p.value, digits=3)), side=1, line=-6, adj=0, cex=.8)
+    x=acf2(transform[[j]], title(main=transform_name[j]))
+    mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(transform[[j]])$p.value, digits=3)), side=1, line=-7, adj=0, cex=.8)
+    mtext(paste0("ad.test: p-value = ", signif(ad.test(transform[[j]])$p.value, digits=3),"_________________________________kpss.test: p-value = ", signif(kpss.test(transform[[j]])$p.value, digits=3)), side=1, line=-6, adj=0, cex=.8)
     model=ets(transform[[j]])
     print(summary(model))
     require(TSA)
-    periodogram(transform[[j]], log = 'yes', xlim=c(0,0.025), title(main=transform_name[j]))
+    nf <- layout( matrix(c(1,2, 3,4), ncol=2))
+    periodogram(transform[[j]], log = 'yes', xlim=c(0,0.025), main=paste0(transform_name[j], " Periodogram"))
     abline(h=0)
     hist(transform[[j]], col="light blue", xlab="", main=transform_name[j], prob=TRUE)
     m <- mean(transform[[j]])
     std <- sqrt(var(transform[[j]]))
     curve( dnorm(x,m,std), add=TRUE)
-    qqnorm(transform[[j]],main= paste0("Normal Q-Q Plot for Model ", transform_name[j]))
+    qqnorm(transform[[j]],main= paste0(transform_name[j], "Q-Q Plot"))
     qqline(transform[[j]],col="blue")}}
   
   
