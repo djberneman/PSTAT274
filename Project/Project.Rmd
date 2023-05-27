@@ -71,83 +71,126 @@ covid <- read_excel("World_Covid.xlsx")
 #   mutate("Mortality" = covid$new_deaths/covid$new_cases)
 
 
-Mortality = ts(covid$Mortality[10:1238])
-Mortality1 = ts(covid$Mortality[10:336])
-Mortality2 = ts(covid$Mortality[337:1238])
+Mortality1 = ts(covid$Mortality[10:1238])
+Mortality2 = ts(covid$Mortality[10:336])
+Mortality3 = ts(covid$Mortality[337:1238])
+Vaccinated1 = ts(covid$people_vaccinated[337:1238])
+Death1 = ts(covid$new_deaths_smoothed[10:1238])
+Death2 = ts(covid$new_deaths_smoothed[10:336])
+Death3 = ts(covid$new_deaths_smoothed[337:1238])
+Cases1 = ts(covid$new_cases_smoothed[6:1238])
+Cases2 = ts(covid$new_cases_smoothed[6:336])
+Cases3 = ts(covid$new_cases_smoothed[337:1238])
 
-plot.ts(Mortality)
-nt=length(Mortality)
-abline(h=mean(Mortality), col= "blue")
-fit <- lm(Mortality ~ as.numeric(1:nt))
-abline(fit, col="red")
-hist(Mortality, col="light blue", xlab="", main="histogram; Mortality Data")
-acf(Mortality)
-var(Mortality)
+Mortality1= data.frame(Mortality1)
+Mortality2= data.frame(Mortality2)
+Mortality3= data.frame(Mortality3)
+Vaccinated1= data.frame(Vaccinated1)
+Death1= data.frame(Death1)
+Death2= data.frame(Death2)
+Death3= data.frame(Death3)
+Cases1= data.frame(Cases1)
+Cases2= data.frame(Cases2)
+Cases3= data.frame(Cases3)
+
+vect = vector()
+vect = append(vect, Mortality1)
+vect = append(vect, Mortality2)
+vect = append(vect, Mortality3)
+vect = append(vect, Vaccinated1)
+vect = append(vect, Death1)
+vect = append(vect, Death2)
+vect = append(vect, Death3)
+vect = append(vect, Cases1)
+vect = append(vect, Cases2)
+vect = append(vect, Cases3)
+
+
+vect1 = vector()
+vect1 = append(vect1, "Mortality1")
+vect1 = append(vect1, "Mortality2")
+vect1 = append(vect1, "Mortality3")
+vect1 = append(vect1, "Vaccinated1")
+vect1 = append(vect1, "Death1")
+vect1 = append(vect1, "Death2")
+vect1 = append(vect1, "Death3")
+vect1 = append(vect1, "Cases1")
+vect1 = append(vect1, "Cases2")
+vect1 = append(vect1, "Cases3")
+
+for(i in 1:length(vect)){
+  nt=length(vect[[i]])
+  fit <- lm(vect[[i]] ~ as.numeric(1:nt))
+  plot.ts(vect[[i]])
+  abline(h=mean(vect[[i]]), col= "blue")
+  abline(fit, col="red")
+  title(main=vect1[i])
+  hist(vect[[i]], col="light blue", xlab="", main=vect1[i])
+  x=acf2(vect[[i]], main=vect1[i])
+  print(shapiro.test(vect[[i]])$p.value > 0.05)
+  var(vect[[i]])}
 ```
 \
 # Transformed Dataset
 ```{r}
 # To choose parameter λ of the Box-Cox transformation for datset Mortality: 
+for(i in 1:length(vect)){
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))        # plot the graph
 
-bcTransform <- boxcox(Mortality~ as.numeric(1:length(Mortality)))        # plot the graph
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
 
-bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
 
-lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-
-# Perform transformations, plot transformed data, histograms:
+  # Perform transformations, plot transformed data, histograms:
   
-lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-Mortality.bc = (1/lambda)*(Mortality^lambda-1)
-Mortality.log <- log(Mortality)
-Mortality.sqrt <- sqrt(Mortality)
-Mortality.sq <- Mortality^2
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  assign(paste0(vect1[i], ".bc"),  (1/lambda)*(vect[[i]]^lambda-1))
+  assign(paste0(vect1[i], ".log"),  log(vect[[i]]))
+  assign(paste0(vect1[i], ".sqrt"), sqrt(vect[[i]]))
 
-plot.ts(Mortality)
-abline(h=mean(Mortality), col= "blue")
-abline(lm(Mortality ~ as.numeric(1:length(Mortality))), col="red")
-x=acf2(Mortality)
-model=ets(Mortality)
-summary(model)
-ad.test(Mortality)
-require(TSA)
-periodogram(Mortality, log = 'yes', xlim=c(0,0.025))
-abline(h=0)
+  plot.ts(vect[[i]], main=vect1[i])
+  abline(h=mean(vect[[i]]), col= "blue")
+  abline(lm(vect[[i]] ~ as.numeric(1:length(vect[[i]]))), col="red")
+  x=acf2(vect[[i]])
+  model=ets(vect[[i]])
+  print(summary(model))
+  print(ad.test(vect[[i]])$p.value > 0.05)
+  require(TSA)
+  periodogram(vect[[i]], log = 'yes', xlim=c(0,0.025), title(main=vect1[i]))
+  abline(h=0)
+  print(shapiro.test(vect[[i]])$p.value > 0.05)
 
-plot.ts(Mortality.bc)
-abline(h=mean(Mortality.bc), col= "blue")
-abline(lm(Mortality.bc ~ as.numeric(1:length(Mortality.bc))), col="red")
-x=acf2(Mortality.bc)
-model1=ets(Mortality.bc)
-summary(model1)
-ad.test(Mortality.bc)
+  plot.ts(get(paste0(vect1[i], ".bc")), main=paste0(vect1[i], ".bc"))
+  abline(h=mean(get(paste0(vect1[i], ".bc"))), col= "blue")
+  abline(lm(get(paste0(vect1[i], ".bc")) ~ as.numeric(1:length(get(paste0(vect1[i], ".bc"))))), col="red")
+  x=acf2(get(paste0(vect1[i], ".bc")), main=paste0(vect1[i], ".bc"))
+  model1=ets(get(paste0(vect1[i], ".bc")))
+  print(summary(model1))
+  print(ad.test(get(paste0(vect1[i], ".bc")))$p.value > 0.05)
+  print(shapiro.test(get(paste0(vect1[i], ".bc")))$p.value > 0.05)
 
-plot.ts(Mortality.log)
-abline(h=mean(Mortality.log), col= "blue")
-abline(lm(Mortality.log ~ as.numeric(1:length(Mortality.log))), col="red")
-x=acf2(Mortality.log)
-model=ets(Mortality.log)
-summary(model)
-ad.test(Mortality.log)
+  plot.ts(get(paste0(vect1[i], ".log")), main=paste0(vect1[i], ".log"))
+  abline(h=mean(get(paste0(vect1[i], ".log"))), col= "blue")
+  abline(lm(get(paste0(vect1[i], ".log")) ~ as.numeric(1:length(get(paste0(vect1[i], ".log"))))), col="red")
+  x=acf2(get(paste0(vect1[i], ".log")), main=paste0(vect1[i], ".log"))
+  model=ets(get(paste0(vect1[i], ".log")))
+  print(summary(model))
+  print(ad.test(get(paste0(vect1[i], ".log")))$p.value > 0.05)
+  print(shapiro.test(get(paste0(vect1[i], ".log")))$p.value > 0.05)
 
-plot.ts(Mortality.sqrt)
-abline(h=mean(Mortality.sqrt), col= "blue")
-abline(lm(Mortality.sqrt ~ as.numeric(1:length(Mortality.sqrt))), col="red")
-x=acf2(Mortality.sqrt)
-var(Mortality)
-model=ets(Mortality.log)
-summary(model)
-ad.test(Mortality.log)
+  plot.ts(get(paste0(vect1[i], ".sqrt")), main=paste0(vect1[i], ".sqrt"))
+  abline(h=mean(get(paste0(vect1[i], ".sqrt"))), col= "blue")
+  abline(lm(get(paste0(vect1[i], ".sqrt")) ~ as.numeric(1:length(get(paste0(vect1[i], ".sqrt"))))), col="red")
+  x=acf2(get(paste0(vect1[i], ".sqrt")), main=paste0(vect1[i], ".sqrt"))
+  model=ets(get(paste0(vect1[i], ".sqrt")))
+  print(summary(model))
+  print(ad.test(get(paste0(vect1[i], ".sqrt")))$p.value > 0.05)
+  print(shapiro.test(get(paste0(vect1[i], ".sqrt")))$p.value > 0.05)
 
-plot.ts(Mortality.sq)
-abline(h=mean(Mortality.sq), col= "blue")
-abline(lm(Mortality.sq ~ as.numeric(1:length(Mortality.sq))), col="red")
-x=acf2(Mortality.sq)
-
-hist(Mortality, col="light blue", xlab="", main="histogram; Mortality Data")
-hist(Mortality.log, col="light blue", xlab="", main="histogram; ln(Mortality)") 
-hist(Mortality.bc, col="light blue", xlab="", main="histogram; bc(Mortality)")
-hist(Mortality.sqrt, col="light blue", xlab="", main="histogram; sqrt(Mortality)")
+  hist(vect[[i]], col="light blue", xlab="", main=vect1[i])
+  hist(get(paste0(vect1[i], ".log")), col="light blue", xlab="", main=paste0(vect1[i], ".log"))
+  hist(get(paste0(vect1[i], ".bc")), col="light blue", xlab="", main=paste0(vect1[i], ".bc"))
+  hist(get(paste0(vect1[i], ".sqrt")), col="light blue", xlab="", main=paste0(vect1[i], ".sqrt"))}
 ```
 
 # Differencing
@@ -419,14 +462,6 @@ for(s in loop.s){
                 x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
                        main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
               i=i+1}}}}}}}}
-                  
-`SARIMA(5,1,5)x(1,0,1)_7`
-`SARIMA(5,1,5)x(1,0,1)_7(fixed)` = arima(Mortality, order = c(5,1,5), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed = c(0,0,0,0,0,0,0,0,0,0,0,NA))
-acf2(`SARIMA(5,1,5)x(1,0,1)_7(fixed)`$residuals)    
-
-`SARIMA(5,1,4)x(0,0,1)_7(fixed)` = arima(Mortality, order=c(5,1,4), seasonal=list(order=c(0,0,1), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, NA, NA, NA))
-
-acf2(`SARIMA(5,1,4)x(0,0,1)_7(fixed)`$residuals)
 
 ```
 ```{r}
@@ -440,23 +475,23 @@ acf2(`SARIMA(5,1,5)x(1,0,1)_7(fixed)`$residuals)
 
 `SARIMA(5,1,4)x(0,0,1)_7(fixed)` = arima(Mortality, order=c(5,1,4), seasonal=list(order=c(0,0,1), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, NA, NA, NA))
 
-acf2(`SARIMA(5,1,4)x(0,0,1)_7(fixed)`$residuals)
-
+acf(`SARIMA(5,1,4)x(0,0,1)_7(fixed)`$residuals)
+mtext("hello",  side=1, srt=-90, line=2, h.just=2)
 `SARIMA(5,1,5)x(0,0,2)_7`
 
 `SARIMA(5,1,5)x(0,0,2)_7(fixed)` = arima(Mortality, order=c(5,1,5), seasonal=list(order=c(0,0,2), period=7), method="ML", fixed= c(0, NA, NA, NA, NA, NA, NA, 0, NA, NA, NA, NA))
 acf2(`SARIMA(5,1,5)x(0,0,2)_7(fixed)`$residuals)
-x=Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=7, type=c("Box-Pierce"), fitdf = 11)
+x=Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=40, type=c("Box-Pierce"), fitdf = 11)
 x$p.value
 `SARIMA(3,1,2)x(1,0,1)_7`
-
-
+kpss.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)
+check.statio
 acf2(`SARIMA(3,1,2)x(2,0,1)_7`$residuals)
 
 `SARIMA(3,1,2)x(1,0,1)_7(fixed)` = arima(Mortality, order=c(3,1,2), seasonal=list(order=c(1,0,1), period=7), method="ML", fixed= c(NA, 0, NA, NA, NA, 0, NA))
 acf2(`SARIMA(3,1,2)x(1,0,1)_7(fixed)`$residuals)
-
-
+adf
+kpss.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)
 autoplot(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)
 plot(`SARIMA(4,1,4)x(2,0,1)_7`$root)
 
@@ -464,6 +499,14 @@ plot(`SARIMA(4,1,4)x(2,0,1)_7`$root)
 acf2(`SARIMA(3,1,2)x(1,0,1)_7(fixed)`$residuals)
 
 acf2(arima(Mortality, order = c(5,1,5), seasonal=list(order=c(1,0,1), period=7), method="ML")$residuals)
+
+
+
+acf2(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)
+mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=sqrt(1228), type=c("Box-Pierce"), fitdf = 11)$p.value, digits=3), "________________________________Ljung-Box: p-value = ", signif(Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=sqrt(1228), type=c("Ljung-Box"), fitdf = 11)$p.value, digits=3)),  side=1, line=-6, adj=0, cex=.8)
+mtext(paste0("McLeod-Li: p-value = ", signif(Box.test((`SARIMA(4,1,4)x(2,0,1)_7`$residuals)^2, lag=sqrt(1228), type=c("Ljung-Box"), fitdf = 11)$p.value, digits=3), "_________________________________Shapiro: p-value = ", signif(shapiro.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals)$p.value, digits=3)),  side=1, line=-7, adj=0, cex=.8)
+
+
 ```
 
 
