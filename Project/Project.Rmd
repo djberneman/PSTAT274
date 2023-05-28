@@ -7,23 +7,23 @@ output: html_document
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# install.packages('astsa')
-# install.packages('tseries')
-# install.packages('basicTrendline')
-# install.packages("nortsTest")
-# install.packages("nortest")
-# install.packages('distributional')
-# install.packages("TSA")
-# install.packages('FinTS')
-# install.packages('FitAR')
-# install.packages("forecast")
-# install.packages('ggplot2')
-# install.packages("ggfortify")
-# install.packages('latex2exp')
-# install.packages('polynom')
-# install.packages('sarima')
-# install.packages("MuMIn")
-# devtools::install_github("FinYang/tsdl")
+install.packages('astsa')
+install.packages('tseries')
+install.packages('basicTrendline')
+install.packages("nortsTest")
+install.packages("nortest")
+install.packages('distributional')
+install.packages("TSA")
+install.packages('FinTS')
+install.packages('FitAR')
+install.packages("forecast")
+install.packages('ggplot2')
+install.packages("ggfortify")
+install.packages('latex2exp')
+install.packages('polynom')
+install.packages('sarima')
+install.packages("MuMIn")
+devtools::install_github("FinYang/tsdl")
 library(devtools)
 library(tseries)
 library(nortsTest)
@@ -152,68 +152,112 @@ for(i in 1:length(vect)){
     assign(paste0("name", vect1[i]), transform_name)
   
   for(j in 1:length(transform)){
+    op <- par("mfrow", "mar")
+    par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+    model=ets(transform[[j]])
+    print(summary(model))
+    x=acf2(transform[[j]], main=transform_name[j])
+    mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(transform[[j]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((transform[[j]])^2, lag=sqrt(length(transform[[j]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(transform[[j]])$p.value, digits=3)), side=3, line=2.5, adj=1.375, cex=0.8)
+    mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(transform[[j]], lag = sqrt(length(transform[[j]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(transform[[j]], lag=sqrt(length(transform[[j]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(transform[[j]])$p.value, digits=3)), side=3, line=1.5, adj=1.5, cex=0.8)
+    require(TSA)
+    # nf <- par(mfrow=c(2,2))
     plot.ts(transform[[j]], main=transform_name[j])
     abline(h=mean(transform[[j]]), col= "blue")
     abline(lm(transform[[j]] ~ as.numeric(1:length(transform[[j]]))), col="red")
-    transform[[j]]
-    x=acf2(transform[[j]], title(main=transform_name[j]))
-    mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(transform[[j]])$p.value, digits=3)), side=1, line=-7, adj=0, cex=.8)
-    mtext(paste0("ad.test: p-value = ", signif(ad.test(transform[[j]])$p.value, digits=3),"_________________________________kpss.test: p-value = ", signif(kpss.test(transform[[j]])$p.value, digits=3)), side=1, line=-6, adj=0, cex=.8)
-    model=ets(transform[[j]])
-    print(summary(model))
-    require(TSA)
-    nf <- layout( matrix(c(1,2, 3,4), ncol=2))
-    periodogram(transform[[j]], log = 'yes', xlim=c(0,0.025), main=paste0(transform_name[j], " Periodogram"))
+    periodogram(transform[[j]], log = 'yes', main=paste0(transform_name[j], " Periodogram"))
     abline(h=0)
     hist(transform[[j]], col="light blue", xlab="", main=transform_name[j], prob=TRUE)
     m <- mean(transform[[j]])
     std <- sqrt(var(transform[[j]]))
     curve( dnorm(x,m,std), add=TRUE)
-    qqnorm(transform[[j]],main= paste0(transform_name[j], "Q-Q Plot"))
-    qqline(transform[[j]],col="blue")}}
-  
-  
-  mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=sqrt(1228), type=c("Box-Pierce"), fitdf = 11)$p.value, digits=3), "________________________________Ljung-Box: p-value = ", signif(Box.test(`SARIMA(4,1,4)x(2,0,1)_7`$residuals, lag=sqrt(1228), type=c("Ljung-Box"), fitdf = 11)$p.value, digits=3)),  side=1, line=-6, adj=0, cex=.8)
-mtext(paste0("McLeod-Li: p-value = ", signif(Box.test((`SARIMA(4,1,4)x(2,0,1)_7`$residuals)^2, lag=sqrt(1228), type=c("Ljung-Box"), fitdf = 11)$p.value, digits=3), "_________________________________Shapiro: p-value = ", signif(shapiro.test(vect2[[j]]$residuals)$p.value, digits=3)),  side=1, line=-7, adj=0, cex=.8)
+    qqnorm(transform[[j]],main= paste0(transform_name[j], " Q-Q Plot"))
+    qqline(transform[[j]],col="blue")
+    par(mfrow = op$mfrow, mar = op$mar)}}
 
-
-mxtext(pate0("Shapiro: p-value = ", signif(shapiro.test(vect2[[j]]$residuals)$p.value, digits=3)),  side=1, line=-7, adj=0, cex=.8)
-mtext(paste0("ad.test: p-value = ", signif(ad.test((vect2[[j]]$residuals)^2, lag=sqrt(length(vect2[[j]])), type=c("Ljung-Box"), fitdf = 11)$p.value, digits=3), "_________________________________kpss.test: p-value = ", signif(kpss.test(vect2[[j]]$residuals)$p.value, digits=3)), side=1, line=-6, adj=0, cex=.8)
-
-  
-  plot.ts(get(paste0(vect1[i], ".bc")), main=paste0(vect1[i], ".bc"))
-  abline(h=mean(get(paste0(vect1[i], ".bc"))), col= "blue")
-  abline(lm(get(paste0(vect1[i], ".bc")) ~ as.numeric(1:length(get(paste0(vect1[i], ".bc"))))), col="red")
-  x=acf2(get(paste0(vect1[i], ".bc")), main=paste0(vect1[i], ".bc"))
-  model1=ets(get(paste0(vect1[i], ".bc")))
-  print(summary(model1))
-  print(ad.test(get(paste0(vect1[i], ".bc")))$p.value > 0.05)
-  print(shapiro.test(get(paste0(vect1[i], ".bc")))$p.value > 0.05)
-
-  plot.ts(get(paste0(vect1[i], ".log")), main=paste0(vect1[i], ".log"))
-  abline(h=mean(get(paste0(vect1[i], ".log"))), col= "blue")
-  abline(lm(get(paste0(vect1[i], ".log")) ~ as.numeric(1:length(get(paste0(vect1[i], ".log"))))), col="red")
-  x=acf2(get(paste0(vect1[i], ".log")), main=paste0(vect1[i], ".log"))
-  model=ets(get(paste0(vect1[i], ".log")))
-  print(summary(model))
-  print(ad.test(get(paste0(vect1[i], ".log")))$p.value > 0.05)
-  print(shapiro.test(get(paste0(vect1[i], ".log")))$p.value > 0.05)
-
-  plot.ts(get(paste0(vect1[i], ".sqrt")), main=paste0(vect1[i], ".sqrt"))
-  abline(h=mean(get(paste0(vect1[i], ".sqrt"))), col= "blue")
-  abline(lm(get(paste0(vect1[i], ".sqrt")) ~ as.numeric(1:length(get(paste0(vect1[i], ".sqrt"))))), col="red")
-  x=acf2(get(paste0(vect1[i], ".sqrt")), main=paste0(vect1[i], ".sqrt"))
-  model=ets(get(paste0(vect1[i], ".sqrt")))
-  print(summary(model))
-  print(ad.test(get(paste0(vect1[i], ".sqrt")))$p.value > 0.05)
-  print(shapiro.test(get(paste0(vect1[i], ".sqrt")))$p.value > 0.05)
-
-  hist(vect[[i]], col="light blue", xlab="", main=vect1[i])
-  hist(get(paste0(vect1[i], ".log")), col="light blue", xlab="", main=paste0(vect1[i], ".log"))
-  hist(get(paste0(vect1[i], ".bc")), col="light blue", xlab="", main=paste0(vect1[i], ".bc"))
-  hist(get(paste0(vect1[i], ".sqrt")), col="light blue", xlab="", main=paste0(vect1[i], ".sqrt"))}
+# From looking at every histogram, none of the seem to fit a normal distribution. The following are the ones which are way off from being normal, and thus, will not test any further.
 ```
 
+```{r}
+for(i in 1:length(vect)){
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
+  
+  # Perform transformations, plot transformed data, histograms:
+  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
+  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
+  
+  transform = vector()
+  transform = append(transform, data.frame(vect[[i]]))
+  transform = append(transform, get(paste0(vect1[i], ".bc")))
+  transform = append(transform, get(paste0(vect1[i], ".log")))
+  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
+
+  assign(paste0("form_", vect1[i]), transform)
+  
+
+  transform_name = vector()
+  transform_name = append(transform_name, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+
+    assign(paste0("name", vect1[i]), transform_name)
+    
+    op <- par("mfrow", "mar")
+    par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+    for(j in 1:length(transform)){
+      hist(transform[[j]], col="light blue", xlab="", main=transform_name[j], prob=TRUE)
+      m <- mean(transform[[j]])
+      std <- sqrt(var(transform[[j]]))
+      curve( dnorm(x,m,std), add=TRUE)}
+    par(mfrow = op$mfrow, mar = op$mar)}
+```
+fisher.g.test
+
+```{r}
+
+```
+
+```{r}
+for(i in 1:length(vect)){
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
+  
+  # Perform transformations, plot transformed data, histograms:
+  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
+  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
+  
+  transform = vector()
+  transform = append(transform, data.frame(vect[[i]]))
+  transform = append(transform, get(paste0(vect1[i], ".bc")))
+  transform = append(transform, get(paste0(vect1[i], ".log")))
+  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
+
+  assign(paste0("form_", vect1[i]), transform)
+  
+
+  transform_name = vector()
+  transform_name = append(transform_name, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+
+    assign(paste0("name", vect1[i]), transform_name)
+    
+    for(j in 1:length(transform)){
+      print(periodogram(transform[[j]], log = 'yes'))}}
+
+source("Project/plot.roots.R")
+
+```
 # Differencing
 ```{r}
 Mortality = Mortality.log
