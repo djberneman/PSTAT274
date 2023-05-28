@@ -121,7 +121,10 @@ vect1 = append(vect1, "Cases3")
 \
 # Transformed Dataset
 ```{r}
-# To choose parameter λ of the Box-Cox transformation for datset Mortality: 
+# To choose parameter λ of the Box-Cox transformation for datset Mortality:
+data1 = data.frame(matrix(nrow=240, ncol=6))
+colnames(data1) <- c("adf.test", "shapiro.test", "kpss.test", "Box-Pierce", "Ljung-Box", "McLeod-Li")
+i=1
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
 
@@ -175,6 +178,37 @@ for(i in 1:length(vect)){
     assign(paste0("diff_", transform_name[j]), difference)
     assign(paste0("diff_name_", transform_name[j]), diff_name)
     
+    # op <- par("mfrow", "mar")
+    # par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+    # model=ets(difference[[k]])
+    # print(summary(model))
+    # x=acf2(difference[[k]], main=diff_name[k+1])
+    # mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=2.5, adj=1.15, cex=0.8)
+    # mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=1.5, adj=1.2, cex=0.8)
+    # data1[i,1] = signif(ad.test(difference[[k]])$p.value, digits=3)
+    # data1[i,2] = signif(shapiro.test(difference[[k]])$p.value, digits=3)
+    # data1[i,3] = signif(kpss.test(difference[[k]])$p.value, digits=3)
+    # data1[i,4] = signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3)
+    # data1[i,5] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+    # data1[i,6] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+    # i=i+1
+    # require(TSA)
+    # # nf <- par(mfrow=c(2,2))
+    # plot.ts(difference[[k]], main=diff_name[k+1])
+    # abline(h=mean(difference[[k]]), col= "blue")
+    # abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
+    # periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k+1], " Periodogram"))
+    # abline(h=0)
+    # hist(difference[[k]], col="light blue", xlab="", main=diff_name[k+1], prob=TRUE)
+    # mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
+    # m <- mean(difference[[k]])
+    # std <- sqrt(var(difference[[k]]))
+    # curve( dnorm(x,m,std), add=TRUE)
+    # qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
+    # qqline(difference[[k]],col="blue")
+    # par(mfrow = op$mfrow, mar = op$mar)}}}
+
+
     if(list[k]==0){
       op <- par("mfrow", "mar")
       par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
@@ -197,6 +231,13 @@ for(i in 1:length(vect)){
       curve( dnorm(x,m,std), add=TRUE)
       qqnorm(difference[[k]],main= paste0(diff_name[k], " Q-Q Plot"))
       qqline(difference[[k]],col="blue")
+      data1[i,1] = signif(ad.test(difference[[k]])$p.value, digits=3)
+      data1[i,2] = signif(shapiro.test(difference[[k]])$p.value, digits=3)
+      data1[i,3] = signif(kpss.test(difference[[k]])$p.value, digits=3)
+      data1[i,4] = signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3)
+      data1[i,5] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+      data1[i,6] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+      i=i+1
       par(mfrow = op$mfrow, mar = op$mar)}
     else{
       op <- par("mfrow", "mar")
@@ -220,12 +261,21 @@ for(i in 1:length(vect)){
       curve( dnorm(x,m,std), add=TRUE)
       qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
       qqline(difference[[k]],col="blue")
+      data1[i,1] = signif(ad.test(difference[[k]])$p.value, digits=3)
+      data1[i,2] = signif(shapiro.test(difference[[k]])$p.value, digits=3)
+      data1[i,3] = signif(kpss.test(difference[[k]])$p.value, digits=3)
+      data1[i,4] = signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3)
+      data1[i,5] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+      data1[i,6] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3)
+      i=i+1
       par(mfrow = op$mfrow, mar = op$mar)}}}}
+data1
 
 # From looking at every histogram, none of the seem to fit a normal distribution. The following are the ones which are way off from being normal, and thus, will not test any further.
 ```
 
 ```{r}
+dev.new(width=3, height=3, unit="cm")
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
 
