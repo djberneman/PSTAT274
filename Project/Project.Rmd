@@ -26,6 +26,7 @@ install.packages("MuMIn")
 devtools::install_github("FinYang/tsdl")
 library(devtools)
 library(tseries)
+library(backports)
 library(nortsTest)
 library(nortest)
 library(TSA)
@@ -49,7 +50,7 @@ library(tinytex)
 
 ```
 
-# Original Dataset
+# Original Datasets
 ```{r}
 options(scipen = 9)
 covid <- read_excel("World_Covid.xlsx")
@@ -119,10 +120,10 @@ vect1 = append(vect1, "Cases2")
 vect1 = append(vect1, "Cases3")
 ```
 \
-# Transformed Dataset
+# Transformed Datasets
 ```{r}
 options(scipen = 9)
-# To choose parameter λ of the Box-Cox transformation for datset Mortality:
+# To choose parameter λ of the Box-Cox transformation for each dataset:
 data1 = data.frame(matrix(nrow=240, ncol=6))
 colnames(data1) <- c("adf.test", "shapiro.test", "kpss.test", "Box-Pierce", "Ljung-Box", "McLeod-Li")
 i=1
@@ -154,6 +155,8 @@ for(i in 1:length(vect)){
   transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
 
   assign(paste0("name", vect1[i]), transform_name)
+  
+  # Differencing at lags 1, 7, 12, 1 & 7, and 1 & 12
   
   list = c(0,1,7,12,1.7,1.12)
   for(j in 1:length(transform)){
