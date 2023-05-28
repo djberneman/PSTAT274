@@ -253,10 +253,111 @@ for(i in 1:length(vect)){
   transform_name = append(transform_name, paste0(vect1[i], ".log"))
   transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
 
+  assign(paste0("name", vect1[i]), transform_name)
+  
+  list = c(0,1,7,12,1.7,1.12)
+  for(j in 1:length(transform)){
+    difference = vector()
+    diff_name = vector()
+    for(k in 1:length(list)){
+      if(list[k]==0){
+        diff_name = append(diff_name, transform_name[j])
+        difference = append(difference, transform[j])}
+      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+      if(list[k]==1){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==7 | list[k]==12){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==1.7){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==1.12){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+    assign(paste0("diff_", transform_name[j]), difference)
+    assign(paste0("diff_name_", transform_name[j]), diff_name)
+    
+    if(list[k]==0){
+      op <- par("mfrow", "mar")
+      par(mfrow = c(2, 2), mar = c(rep.int(2, 3), 0.5))
+      model=ets(difference[[k]])
+      print(summary(model))
+      require(TSA)
+      # nf <- par(mfrow=c(2,2))
+      plot.ts(difference[[k]], main=diff_name[k])
+      abline(h=mean(difference[[k]]), col= "blue")
+      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
+      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k], " Periodogram"))
+      abline(h=0)
+      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k], prob=TRUE)
+      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
+      m <- mean(difference[[k]])
+      std <- sqrt(var(difference[[k]]))
+      curve( dnorm(x,m,std), add=TRUE)
+      qqnorm(difference[[k]],main= paste0(diff_name[k], " Q-Q Plot"))
+      qqline(difference[[k]],col="blue")
+      par(mfrow = op$mfrow, mar = op$mar)}
+    else{
+      op <- par("mfrow", "mar")
+      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+      model=ets(difference[[k]])
+      print(summary(model))
+      require(TSA)
+      # nf <- par(mfrow=c(2,2))
+      plot.ts(difference[[k]], main=diff_name[k+1])
+      abline(h=mean(difference[[k]]), col= "blue")
+      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
+      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k+1], " Periodogram"))
+      abline(h=0)
+      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k+1], prob=TRUE)
+      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
+      m <- mean(difference[[k]])
+      std <- sqrt(var(difference[[k]]))
+      curve( dnorm(x,m,std), add=TRUE)
+      qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
+      qqline(difference[[k]],col="blue")
+      par(mfrow = op$mfrow, mar = op$mar)}}}}
+
+
+
+```
+
+
+
+```{r}
+for(i in 1:length(vect)){
+  op <- par("mfrow", "mar")
+  par(mfrow = c(3, 2), mar = c(rep.int(3, 3), 0.2))
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
+  
+  # Perform transformations, plot transformed data, histograms:
+  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
+  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
+  
+  transform = vector()
+  transform = append(transform, data.frame(vect[[i]]))
+  transform = append(transform, get(paste0(vect1[i], ".bc")))
+  transform = append(transform, get(paste0(vect1[i], ".log")))
+  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
+
+  assign(paste0("form_", vect1[i]), transform)
+  
+
+  transform_name = vector()
+  transform_name = append(transform_name, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+
     assign(paste0("name", vect1[i]), transform_name)
     
-    op <- par("mfrow", "mar")
-    par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
     for(j in 1:length(transform)){
       hist(transform[[j]], col="light blue", xlab="", main=transform_name[j], prob=TRUE)
       m <- mean(transform[[j]])
