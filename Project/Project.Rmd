@@ -150,7 +150,7 @@ for(i in 1:length(vect)){
   transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
 
   assign(paste0("name", vect1[i]), transform_name)
-  diff_Mortality1[1]$residuals
+  
   list = c(0,1,7,12,1.7,1.12)
   for(j in 1:length(transform)){
     difference = vector()
@@ -161,67 +161,66 @@ for(i in 1:length(vect)){
         difference = append(difference, transform[j])}
       diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
       if(list[k]==1){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML"))
-        difference = append(difference, get(paste0(transform_name[j], "(", list[k], ")")))}
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==7 | list[k]==12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML"))
-        difference = append(difference, get(paste0(transform_name[j], "(", list[k], ")")))}
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==1.7){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML"))
-        difference = append(difference, get(paste0(transform_name[j], "(", list[k], ")")))}
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==1.12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML"))
-        difference = append(difference, get(paste0(transform_name[j], "(", list[k], ")")))}}
-    
-    for(x in 1:length(difference)){
-      if(x==0){
-        op <- par("mfrow", "mar")
-        par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
-        model=ets(difference[[x]])
-        print(summary(model))
-        x=acf2(difference[[x]], main=diff_name[x])
-        mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[x]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[x]])^2, lag=sqrt(length(difference[[x]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[x]])$p.value, digits=3)), side=3, line=2.5, adj=1.375, cex=0.8)
-        mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[x]], lag = sqrt(length(difference[[x]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[x]], lag=sqrt(length(difference[[x]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[x]])$p.value, digits=3)), side=3, line=1.5, adj=1.5, cex=0.8)
-        require(TSA)
-        # nf <- par(mfrow=c(2,2))
-        plot.ts(difference[[x]], main=diff_name[x])
-        abline(h=mean(difference[[x]]), col= "blue")
-        abline(lm(difference[[x]] ~ as.numeric(1:length(difference[[x]]))), col="red")
-        periodogram(difference[[x]], log = 'yes', main=paste0(diff_name[x], " Periodogram"))
-        abline(h=0)
-        hist(difference[[x]], col="light blue", xlab="", main=diff_name[x], prob=TRUE)
-        mtext(paste0("Variance = ", var(difference[[x]])), side=1, line = 2)
-        m <- mean(difference[[x]])
-        std <- sqrt(var(difference[[x]]))
-        curve( dnorm(x,m,std), add=TRUE)
-        qqnorm(difference[[x]],main= paste0(diff_name[x], " Q-Q Plot"))
-        qqline(difference[[x]],col="blue")
-        par(mfrow = op$mfrow, mar = op$mar)}
-      else{
-        op <- par("mfrow", "mar")
-        par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
-        model=ets(difference[x]$residuals)
-        print(summary(model))
-        x=acf2(difference[x]$residuals, main=diff_name[x])
-        mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[x]$residuals)$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[x]$residuals)^2, lag=sqrt(length(difference[x]$residuals)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[x]$residuals)$p.value, digits=3)), side=3, line=2.5, adj=1.375, cex=0.8)
-        mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[x]$residuals, lag = sqrt(length(difference[x]$residuals)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[x]$residuals, lag=sqrt(length(difference[x]$residuals)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[x]$residuals)$p.value, digits=3)), side=3, line=1.5, adj=1.5, cex=0.8)
-        require(TSA)
-        # nf <- par(mfrow=c(2,2))
-        plot.ts(difference[x]$residuals, main=diff_name[x])
-        abline(h=mean(difference[x]$residuals), col= "blue")
-        abline(lm(difference[x]$residuals ~ as.numeric(1:length(difference[x]$residuals))), col="red")
-        periodogram(difference[x]$residuals, log = 'yes', main=paste0(diff_name[x], " Periodogram"))
-        abline(h=0)
-        hist(difference[x]$residuals, col="light blue", xlab="", main=diff_name[x], prob=TRUE)
-        mtext(paste0("Variance = ", var(difference[x]$residuals)), side=1, line = 2)
-        m <- mean(difference[x]$residuals)
-        std <- sqrt(var(difference[x]$residuals))
-        curve( dnorm(x,m,std), add=TRUE)
-        qqnorm(difference[x]$residuals,main= paste0(diff_name[x], " Q-Q Plot"))
-        qqline(difference[x]$residuals,col="blue")
-        par(mfrow = op$mfrow, mar = op$mar)}}
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
     assign(paste0("diff_", transform_name[j]), difference)
-    assign(paste0("diff_name_", transform_name[j]), diff_name)}}
+    assign(paste0("diff_name_", transform_name[j]), diff_name)
+    
+    if(list[k]==0){
+      op <- par("mfrow", "mar")
+      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+      model=ets(difference[[k]])
+      print(summary(model))
+      x=acf2(difference[[k]], main=diff_name[k])
+      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=2.5, adj=1.15, cex=0.8)
+      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=1.5, adj=1.2, cex=0.8)
+      require(TSA)
+      # nf <- par(mfrow=c(2,2))
+      plot.ts(difference[[k]], main=diff_name[k])
+      abline(h=mean(difference[[k]]), col= "blue")
+      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
+      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k], " Periodogram"))
+      abline(h=0)
+      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k], prob=TRUE)
+      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
+      m <- mean(difference[[k]])
+      std <- sqrt(var(difference[[k]]))
+      curve( dnorm(x,m,std), add=TRUE)
+      qqnorm(difference[[k]],main= paste0(diff_name[k], " Q-Q Plot"))
+      qqline(difference[[k]],col="blue")
+      par(mfrow = op$mfrow, mar = op$mar)}
+    else{
+      op <- par("mfrow", "mar")
+      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
+      model=ets(difference[[k]])
+      print(summary(model))
+      x=acf2(difference[[k]], main=diff_name[k+1])
+      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=2.5, adj=1.15, cex=0.8)
+      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=1.5, adj=1.2, cex=0.8)
+      require(TSA)
+      # nf <- par(mfrow=c(2,2))
+      plot.ts(difference[[k]], main=diff_name[k+1])
+      abline(h=mean(difference[[k]]), col= "blue")
+      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
+      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k+1], " Periodogram"))
+      abline(h=0)
+      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k+1], prob=TRUE)
+      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
+      m <- mean(difference[[k]])
+      std <- sqrt(var(difference[[k]]))
+      curve( dnorm(x,m,std), add=TRUE)
+      qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
+      qqline(difference[[k]],col="blue")
+      par(mfrow = op$mfrow, mar = op$mar)}}}}
 
 # From looking at every histogram, none of the seem to fit a normal distribution. The following are the ones which are way off from being normal, and thus, will not test any further.
 ```
