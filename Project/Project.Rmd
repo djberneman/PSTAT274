@@ -17,6 +17,7 @@ install.packages("TSA")
 install.packages('FinTS')
 install.packages('FitAR')
 install.packages("forecast")
+install.packages("Dict")
 install.packages('ggplot2')
 install.packages("ggfortify")
 install.packages('latex2exp')
@@ -26,6 +27,7 @@ install.packages("MuMIn")
 devtools::install_github("FinYang/tsdl")
 library(devtools)
 library(tseries)
+library(Dict)
 library(backports)
 library(nortsTest)
 library(nortest)
@@ -157,7 +159,6 @@ for(i in 1:length(vect)){
   assign(paste0("name", vect1[i]), transform_name)
   
   # Differencing at lags 1, 7, 12, 1 & 7, and 1 & 12
-  
   list = c(0,1,7,12,1.7,1.12)
   for(j in 1:length(transform)){
     difference = vector()
@@ -397,7 +398,7 @@ for(i in 1:length(vect)){
 ```
 fisher.g.test
 
-```{r}
+```{r, warning = FALSE}
 options(scipen = 9)
 # To choose parameter λ of the Box-Cox transformation for datset Mortality:
 for(i in 1:length(vect)){
@@ -433,12 +434,14 @@ for(i in 1:length(vect)){
   for(j in 1:length(transform)){
     difference = vector()
     diff_name = vector()
-    assign(paste0(transform_name[j], "adf.test"), list())
-    assign(paste0(transform_name[j], "shapiro.test"), list())
-    assign(paste0(transform_name[j], "kpss.test"), list())
-    assign(paste0(transform_name[j], "Box-Pierce.test"), list())
-    assign(paste0(transform_name[j], "Ljung-Box.test"), list())
-    assign(paste0(transform_name[j], "McLeod-Li.test"), list())
+    
+    ad_test = list()    # H_0 = normality
+    shapiro_test = list()   # H_0 = normality
+    kpss_test = list()    # H_0 - level or trend stationary
+    adf_test = list()       # H_0 = there is a unit root
+    Box_Pierce_test = list()  # H_0 = Residuals are independent
+    Ljung_Box_test = list()   # H_0 = Residuals are independently distributed
+    McLeod_Li_test = list()
     for(k in 1:length(list)){
       if(list[k]==0){
         diff_name = append(diff_name, transform_name[j])
@@ -455,31 +458,226 @@ for(i in 1:length(vect)){
         difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==1.12){
         assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))
     assign(paste0("diff_", transform_name[j]), difference)
-    assign(paste0("diff_name_", transform_name[j]), diff_name)
-
-    if(list[k]==0){
-      op <- par("mfrow", "mar")
-      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
-      paste0(transform_name[j], "adf.test") = append(paste0(transform_name[j], "adf.test"), ad.test(difference[[k]]))
-      paste0(transform_name[j], "shapiro.test") = append(paste0(transform_name[j], "shapiro.test"), shapiro.test(difference[[k]]))
-      paste0(transform_name[j], "kpss.test") = append(paste0(transform_name[j], "kpss.test"), kpss.test(difference[[k]]))
-      paste0(transform_name[j], "Box-Pierce.test") = append(paste0(transform_name[j], "Box-Pierce.test"), Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
-      paste0(transform_name[j], "Ljung-Box.test") = append(paste0(transform_name[j], "Ljung-Box.test"), Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-      paste0(transform_name[j], "McLeod-Li.test") = append(paste0(transform_name[j], "Mc-Leod-Li.test"), Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-      par(mfrow = op$mfrow, mar = op$mar)}
-    else{
-      op <- par("mfrow", "mar")
-      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
-      paste0(transform_name[j], "adf.test") = append(paste0(transform_name[j], "adf.test"), ad.test(difference[[k]]))
-      paste0(transform_name[j], "shapiro.test") = append(paste0(transform_name[j], "shapiro.test"), shapiro.test(difference[[k]]))
-      paste0(transform_name[j], "kpss.test") = append(paste0(transform_name[j], "kpss.test"), kpss.test(difference[[k]]))
-      paste0(transform_name[j], "Box-Pierce.test") = append(paste0(transform_name[j], "Box-Pierce.test"), Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
-      paste0(transform_name[j], "Ljung-Box.test") = append(paste0(transform_name[j], "Ljung-Box.test"), Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-      paste0(transform_name[j], "McLeod-Li.test") = append(paste0(transform_name[j], "Mc-Leod-Li.test"), Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))}
-    assign(paste0("tests_", transform_name[j]), list(get(paste0(transform_name[j], "adf.test")), get(paste0(transform_name[j], "shapiro.test")), get(paste0(transform_name[j], "kpss.test")), get(paste0(transform_name[j], "Box-Pierce.test")), get(paste0(transform_name[j], "Ljung-Box.test")), get(paste0(transform_name[j], "McLeod-Li.test"))))}}}
+    assign(paste0("diff_name_", transform_name[j]), diff_name)}
+      
+      if(list[k]==0){
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))}
+      if(list[k]==1.12){
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        assign(paste0(transform_name[j], "_ad.test"), ad_test)
+        assign(paste0(transform_name[j], "_shapiro.test"), shapiro_test)
+        assign(paste0(transform_name[j], "_adf.test"), adf_test)
+        assign(paste0(transform_name[j], "_kpss.test"), kpss_test)
+        assign(paste0(transform_name[j], "_Ljung-Box.test"), Ljung_Box_test)
+        assign(paste0(transform_name[j], "_Box-Pierce.test"), Bpx_Pierce_test)
+        assign(paste0(transform_name[j], "_McLeod-Li.test"), McLeod_Li_test)
+        tests = list()
+        tests <- append(tests, ad_test)
+        tests <- append(tests, adf_test)
+        tests <- append(tests, kpss_test)
+        tests <- append(tests, shapiro_test)
+        tests <- append(tests, Ljung_Box_test)
+        tests <- append(tests, Box_Pierce_test)
+        tests <- append(tests, McLeod_Li_test)
+        assign(paste0("tests_", transform_name[j]), tests)}
+      else{
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))}}
+    print(get(paste0("tests_", transform_name[j])))}}
+diff_Death2.log[3]
 ```
+
+```{r, warning = FALSE}
+options(scipen = 9)
+# To choose parameter λ of the Box-Cox transformation for datset Mortality:
+# Models = Dict$new("Mortality1" = Dict$new(), "Mortality2" = Dict$new(), "Mortality3" = Dict$new(), "Vaccinated1" = Dict$new(), "Death1" = Dict$new(), "Death2" = Dict$new(), "Death3" = Dict$new(), "Cases1" = Dict$new(), "Cases2" = Dict$new(), "Cases3" = Dict$new())
+`_` = list()
+bc = list()
+log = list()
+sqrt = list()
+Data <- data.frame(matrix(ncol=11, nrow=280))
+colnames(Data) <- c("Name", "Dataset", "Transformation", "Differencing", "Anderson-Darling Test", "Shapiro test", "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", "Ljung-Box Test", "McLeod-Li Test")
+x=1
+for(i in 1:length(vect)){
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
+  
+  # Perform transformations, plot transformed data, histograms:
+  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
+  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
+  
+  transform = vector()
+  transform = append(transform, data.frame(vect[[i]]))
+  transform = append(transform, get(paste0(vect1[i], ".bc")))
+  transform = append(transform, get(paste0(vect1[i], ".log")))
+  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
+
+  assign(paste0("form_", vect1[i]), transform)
+  
+
+  transform_name = vector()
+  transform_name = append(transform_name, vect1[i])
+  `_` = append(`_`, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  bc = append(bc, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  log = append(log, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
+
+  assign(paste0("name", vect1[i]), transform_name)
+  
+  list = c(0,1,7,12,1.7,1.12)
+  for(j in 1:length(transform)){
+    difference = vector()
+    diff_name = vector()
+    
+    ad_test = list()    # H_0 = normality
+    shapiro_test = list()   # H_0 = normality
+    kpss_test = list()    # H_0 - level or trend stationary
+    adf_test = list()       # H_0 = there is a unit root
+    Box_Pierce_test = list()  # H_0 = Residuals are independent
+    Ljung_Box_test = list()   # H_0 = Residuals are independently distributed
+    McLeod_Li_test = list()
+    for(k in 1:length(list)){
+      Data$Dataset[x] = vect1[i]
+      if(transform_name[j] %in% `_`){
+        Data$Transformation[x] = "none"
+      }
+      if(transform_name[j] %in% bc){
+        Data$Transformation[x] = "Box-Cox"
+      }
+      if(transform_name[j] %in% log){
+        Data$Transformation[x] = "Log"
+      }
+      if(transform_name[j] %in% sqrt){
+        Data$Transformation[x] = "Square Root"
+      }
+      if(list[k]==0){
+        diff_name = append(diff_name, transform_name[j])
+        Data[x,1] = transform_name[j]
+        Data$Differencing[x] = "Lag = none, Period = none"
+        difference = append(difference, transform[j])}
+      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+      if(list[k]==1){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = none"
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==7 | list[k]==12){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = paste0("Lag = none, Period = ", list[k])
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==1.7){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = 7"
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+      if(list[k]==1.12){
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = 12"
+        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))
+    assign(paste0("diff_", transform_name[j]), difference)
+    assign(paste0("diff_name_", transform_name[j]), diff_name)}
+      
+      if(list[k]==0){
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        Data[x, 5] = signif(ad.test(difference[[k]])$p.value, 5)
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        Data[x, 6] = signif(shapiro.test(difference[[k]])$p.value, 5)
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 11] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        x = x + 1}
+      if(list[k]==1.12){
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        Data[x, 5] = signif(ad.test(difference[[k]])$p.value, 5)
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        Data[x, 6] = signif(shapiro.test(difference[[k]])$p.value, 5)
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 11] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        assign(paste0(transform_name[j], "_ad.test"), ad_test)
+        assign(paste0(transform_name[j], "_shapiro.test"), shapiro_test)
+        assign(paste0(transform_name[j], "_adf.test"), adf_test)
+        assign(paste0(transform_name[j], "_kpss.test"), kpss_test)
+        assign(paste0(transform_name[j], "_Ljung-Box.test"), Ljung_Box_test)
+        assign(paste0(transform_name[j], "_Box-Pierce.test"), Bpx_Pierce_test)
+        assign(paste0(transform_name[j], "_McLeod-Li.test"), McLeod_Li_test)
+        tests = list()
+        tests <- append(tests, ad_test)
+        tests <- append(tests, adf_test)
+        tests <- append(tests, kpss_test)
+        tests <- append(tests, shapiro_test)
+        tests <- append(tests, Ljung_Box_test)
+        tests <- append(tests, Box_Pierce_test)
+        tests <- append(tests, McLeod_Li_test)
+        assign(paste0("tests_", transform_name[j]), tests)
+        x = x + 1}
+      else{
+        ad_test <- append(ad_test, ad.test(difference[[k]]))
+        Data[x, 5] = signif(ad.test(difference[[k]])$p.value, 5)
+        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+        Data[x, 6] = signif(shapiro.test(difference[[k]])$p.value, 5)
+        adf_test <- append(adf_test, adf.test(difference[[k]]))
+        Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
+        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+        Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
+        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
+        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
+        Data[x, 11] = signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
+        x = x + 1}}
+    print(get(paste0("tests_", transform_name[j])))}}
+Data = subset(Data, is.na(Data$Name) == FALSE)
+Data_ADF_Pass = subset(Data, Data$`Augmented Dickey-Fuller Test` > 0.05)
+Data_KPSS_Pass = subset(Data, Data$`KPSS Test` > 0.05)
+Data_McLeod_Li_Pass = subset(Data, Data$`McLeod-Li Test` > 0.05)
+Data_ADF_KPSS_Pass = subset(Data, (Data$`Augmented Dickey-Fuller Test` > 0.05) & (Data$`KPSS Test` > 0.05))
+Data_KPSS_McLeod_Li_Pass = subset(Data, (Data$`KPSS Test` > 0.05) & (Data$`McLeod-Li Test` > 0.05))
+```
+
 
 ```{r}
 for(i in 1:length(vect)){
