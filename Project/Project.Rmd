@@ -51,69 +51,50 @@ library(sarima)
 library(tinytex)
 
 ```
+\
+
+We will be testing the datasets corresponding to:\
+  - The smoothed amount of daily new COVID cases (Cases)
+  - The smoothed amount of daily new deaths from COVID (Deathss)
+  - The daily mortality rate of those who contract COVID (Mortality)
+  - The daily percent of the world that has been vaccinated (Vaccinated)\
+\
+
+For each data set, the length of the time series will be evaluated in at most 3 ways:\
+  - [January 8, 2020 - May 24, 2023]
+    - Cases will begin on the 6th observation day, January 8, 2020, since there were some observations of 0 new cases before then
+  - [January 12, 2020 - May 24, 2023]
+    - Deaths and Mortality will begin on the 10th observation day, January 12, 2020, since that was the time of the first death
+  - [January 8, 2020 - December 3, 2020]
+    - This will account for all daily observations of Cases before the first person got vaccinated
+  - [January 12, 2020 - December 3, 2020]
+    - This will account for all daily observations for Deaths and Mortality before the first person got vaccinated
+  - [December 4, 2020 - May 24, 2023]
+    - This will account for all daily observations for Cases, Deaths, Mortality, and Vaccinated since the first person got vaccinated.\
+\
+
+Additionally, since daily observations can be very noisy, we will also be testing the weekly average for each of the previously mentioned time series. In total, that will be 20 data sets.\
+\
+
+In regards to the names of the data sets:\
+  - '1' refers to the entire pandemic
+  - '2' refers to the time before the first vaccination
+  - '3' refers to the time since the first vaccination
+  - 'a' denotes daily observations
+  - 'b' denotes average weekly observations\
+\
 
 # Original Datasets
 ```{r}
 options(scipen = 9)
 covid <- read_excel("World_Covid.xlsx")
 
-# We will be testing the datasets corresponding to:
-#  - The smoothed amount of daily new COVID cases (Cases)
-#  - The smoothed amount of daily new deaths from COVID (Deathss)
-#  - The daily mortality rate of those who contract COVID (Mortality)
-#  - The daily percent of the world that has been vaccinated (Vaccinated)
 
-
-# For each data set, the length of the time series will be evaluated in at most 3 ways:
-#  - [January 8, 2020 - May 24, 2023]
-#     - Cases will begin on the 6th observation day, January 8, 2020, since there were some observations of 0 new cases before then
-#  - [January 12, 2020 - May 24, 2023]
-#     - Deaths and Mortality will begin on the 10th observation day, January 12, 2020, since that was the time of the first death
-#  - [January 8, 2020 - December 3, 2020]
-#     - This will account for all daily observations of Cases before the first person got vaccinated
-#  - [January 12, 2020 - December 3, 2020]
-#     - This will account for all daily observations for Deaths and Mortality before the first person got vaccinated
-#  - [December 4, 2020 - May 24, 2023]
-#     - This will account for all daily observations for Cases, Deaths, Mortality, and Vaccinated since the first person got vaccinated
-
-# Additionally, since daily observations can be very noisy, we will also be testing the weekly average for each of the previously mentioned time series. In total, that will be 20 data sets. 
-
-
-# In regards to the names of the data sets:
-#   - '1' refers to the entire pandemic
-#   - '2' refers to the time before the first vaccination
-#   - '3' refers to the time since the first vaccination
-#   - 'a' denotes daily observations
-#   - 'b' denotes average weekly observations
-
-
-Mortality1a = ts(covid$Mortality[10:1238])
-Mortality1a= data.frame(Mortality1a)
-
-Mortality1b=vector()
-for(i in 1:175){
-  x = 7 * (i-1) + 1
-  y = 7 * i
-  Mortality1b <- append(Mortality1b, mean(Mortality1a[x:y, 1]))
-  Mortality1b = ts(Mortality1b)}
-Mortality1b = data.frame(Mortality1b)
-
-
-Deaths1a = ts(covid$new_deaths_smoothed[10:1238])
-Deaths1a= data.frame(Deaths1a)
-
-Deaths1b=vector()
-for(i in 1:175){
-  x = 7 * (i-1) + 1
-  y = 7 * i
-  Deaths1b <- append(Deaths1b, mean(Deaths1a[x:y, 1]))
-  Deaths1b = ts(Deaths1b)}
-Deaths1b = data.frame(Deaths1b)
-
-
+# Cases: [January 8, 2020 - May 24, 2023]
+  # Daily
 Cases1a = ts(covid$new_cases_smoothed[6:1238])
 Cases1a= data.frame(Cases1a)
-
+  # Weekly
 Cases1b=vector()
 for(i in 1:176){
   x = 7 * (i-1) + 1
@@ -123,33 +104,39 @@ for(i in 1:176){
 Cases1b = data.frame(Cases1b)
 
 
-Mortality2a = ts(covid$Mortality[10:336])
-Mortality2a= data.frame(Mortality2a)
-  
-Mortality2b=vector()
-for(i in 1:46){
+# Deaths: [January 12, 2020 - May 24, 2023]
+  # Daily
+Deaths1a = ts(covid$new_deaths_smoothed[10:1238])
+Deaths1a= data.frame(Deaths1a)
+  # Weekly
+Deaths1b=vector()
+for(i in 1:175){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Mortality2b <- append(Mortality2b, mean(Mortality2a[x:y, 1]))
-  Mortality2b = ts(Mortality2b)}
-Mortality2b = data.frame(Mortality2b)
-  
+  Deaths1b <- append(Deaths1b, mean(Deaths1a[x:y, 1]))
+  Deaths1b = ts(Deaths1b)}
+Deaths1b = data.frame(Deaths1b)
 
-Deaths2a = ts(covid$new_deaths_smoothed[10:336])
-Deaths2a= data.frame(Deaths2a)
 
-Deaths2b=vector()
-for(i in 1:46){
+# Mortality: [January 12, 2020 - May 24, 2023]
+  # Daily
+Mortality1a = ts(covid$Mortality[10:1238])
+Mortality1a= data.frame(Mortality1a)
+  # Weekly
+Mortality1b=vector()
+for(i in 1:175){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Deaths2b <- append(Deaths2b, mean(Deaths2a[x:y, 1]))
-  Deaths2b = ts(Deaths2b)}
-Deaths2b = data.frame(Deaths2b)
+  Mortality1b <- append(Mortality1b, mean(Mortality1a[x:y, 1]))
+  Mortality1b = ts(Mortality1b)}
+Mortality1b = data.frame(Mortality1b)
 
 
+# Cases: [January 8, 2020 - December 3, 2020]
+  # Daily
 Cases2a = ts(covid$new_cases_smoothed[6:336])
 Cases2a= data.frame(Cases2a)
-
+  # Weekly
 Cases2b=vector()
 for(i in 1:47){
   x = 7 * (i-1) + 1
@@ -159,33 +146,39 @@ for(i in 1:47){
 Cases2b = data.frame(Cases2b)
 
 
-Mortality3a = ts(covid$Mortality[337:1238])
-Mortality3a= data.frame(Mortality3a)
-
-Mortality3b=vector()
-for(i in 1:128){
+# Deaths: [January 12, 2020 - December 3, 2020]
+  # Daily
+Deaths2a = ts(covid$new_deaths_smoothed[10:336])
+Deaths2a= data.frame(Deaths2a)
+  # Weekly
+Deaths2b=vector()
+for(i in 1:46){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Mortality3b <- append(Mortality3b, mean(Mortality3a[x:y, 1]))
-  Mortality3b = ts(Mortality3b)}
-Mortality3b = data.frame(Mortality3b)
-  
+  Deaths2b <- append(Deaths2b, mean(Deaths2a[x:y, 1]))
+  Deaths2b = ts(Deaths2b)}
+Deaths2b = data.frame(Deaths2b)
 
-Deaths3a = ts(covid$new_deaths_smoothed[337:1238])
-Deaths3a= data.frame(Deaths3a)
 
-Deaths3b=vector()
-for(i in 1:128){
+# Mortality: [January 12, 2020 - December 3, 2020]
+  # Daily
+Mortality2a = ts(covid$Mortality[10:336])
+Mortality2a= data.frame(Mortality2a)
+  # Weekly
+Mortality2b=vector()
+for(i in 1:46){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Deaths3b <- append(Deaths3b, mean(Deaths3a[x:y, 1]))
-  Deaths3b = ts(Deaths3b)}
-Deaths3b = data.frame(Deaths3b)
+  Mortality2b <- append(Mortality2b, mean(Mortality2a[x:y, 1]))
+  Mortality2b = ts(Mortality2b)}
+Mortality2b = data.frame(Mortality2b)
 
 
+# Cases: [December 4, 2020 - May 24, 2023]
+  # Daily
 Cases3a = ts(covid$new_cases_smoothed[337:1238])
 Cases3a= data.frame(Cases3a)
-
+  # Weekly
 Cases3b=vector()
 for(i in 1:128){
   x = 7 * (i-1) + 1
@@ -195,9 +188,39 @@ for(i in 1:128){
 Cases3b = data.frame(Cases3b)
 
 
+# Deaths: [December 4, 2020 - May 24, 2023]
+  # Daily
+Deaths3a = ts(covid$new_deaths_smoothed[337:1238])
+Deaths3a= data.frame(Deaths3a)
+  # Weekly
+Deaths3b=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Deaths3b <- append(Deaths3b, mean(Deaths3a[x:y, 1]))
+  Deaths3b = ts(Deaths3b)}
+Deaths3b = data.frame(Deaths3b)
+
+
+# Mortality: [December 4, 2020 - May 24, 2023]
+  # Daily
+Mortality3a = ts(covid$Mortality[337:1238])
+Mortality3a= data.frame(Mortality3a)
+  # Weekly
+Mortality3b=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Mortality3b <- append(Mortality3b, mean(Mortality3a[x:y, 1]))
+  Mortality3b = ts(Mortality3b)}
+Mortality3b = data.frame(Mortality3b)
+
+
+# Vaccinated: [December 4, 2020 - May 24, 2023]
+  # Daily
 Vaccinated3a = ts(covid$people_vaccinated[337:1238])
 Vaccinated3a= data.frame(Vaccinated3a)
-
+  # Weekly
 Vaccinated3b=vector()
 for(i in 1:128){
   x = 7 * (i-1) + 1
@@ -206,55 +229,55 @@ for(i in 1:128){
   Vaccinated3b = ts(Vaccinated3b)}
 Vaccinated3b = data.frame(Vaccinated3b)
 
+
 vect = vector()
+vect = append(vect, Cases1a)
+vect = append(vect, Cases1b)
+vect = append(vect, Deaths1a)
+vect = append(vect, Deaths1b)
 vect = append(vect, Mortality1a)
 vect = append(vect, Mortality1b)
+vect = append(vect, Cases2a)
+vect = append(vect, Cases2b)
+vect = append(vect, Deaths2a)
+vect = append(vect, Deaths2b)
 vect = append(vect, Mortality2a)
 vect = append(vect, Mortality2b)
+vect = append(vect, Cases3a)
+vect = append(vect, Cases3b)
+vect = append(vect, Deaths3a)
+vect = append(vect, Deaths3b)
 vect = append(vect, Mortality3a)
 vect = append(vect, Mortality3b)
 vect = append(vect, Vaccinated3a)
 vect = append(vect, Vaccinated3b)
-vect = append(vect, Deaths1a)
-vect = append(vect, Deaths1b)
-vect = append(vect, Deaths2a)
-vect = append(vect, Deaths2b)
-vect = append(vect, Deaths3a)
-vect = append(vect, Deaths3b)
-vect = append(vect, Cases1a)
-vect = append(vect, Cases1b)
-vect = append(vect, Cases2a)
-vect = append(vect, Cases2b)
-vect = append(vect, Cases3a)
-vect = append(vect, Cases3b)
 
 vect1 = vector()
+vect1 = append(vect1, "Cases1a")
+vect1 = append(vect1, "Cases1b")
+vect1 = append(vect1, "Deaths1a")
+vect1 = append(vect1, "Deaths1b")
 vect1 = append(vect1, "Mortality1a")
 vect1 = append(vect1, "Mortality1b")
+vect1 = append(vect1, "Cases2a")
+vect1 = append(vect1, "Cases2b")
+vect1 = append(vect1, "Deaths2a")
+vect1 = append(vect1, "Deaths2b")
 vect1 = append(vect1, "Mortality2a")
 vect1 = append(vect1, "Mortality2b")
+vect1 = append(vect1, "Cases3a")
+vect1 = append(vect1, "Cases3b")
+vect1 = append(vect1, "Deaths3a")
+vect1 = append(vect1, "Deaths3b")
 vect1 = append(vect1, "Mortality3a")
 vect1 = append(vect1, "Mortality3b")
 vect1 = append(vect1, "Vaccinated3a")
 vect1 = append(vect1, "Vaccinated3b")
-vect1 = append(vect1, "Deaths1a")
-vect1 = append(vect1, "Deaths1b")
-vect1 = append(vect1, "Deaths2a")
-vect1 = append(vect1, "Deaths2b")
-vect1 = append(vect1, "Deaths3a")
-vect1 = append(vect1, "Deaths3b")
-vect1 = append(vect1, "Cases1a")
-vect1 = append(vect1, "Cases1b")
-vect1 = append(vect1, "Cases2a")
-vect1 = append(vect1, "Cases2b")
-vect1 = append(vect1, "Cases3a")
-vect1 = append(vect1, "Cases3b")
 ```
 \
 
-# Normality and Stationarity Tests
+# Transformation, Differencing, Normality Tests, and Stationarity Tests
 ```{r, warning = FALSE}
-options(scipen = 9, digits = 3)
 
 # We will create 3 transformations of each model:
 #   - Box-Cox Transformation
@@ -266,8 +289,20 @@ bc = list()
 log = list()
 sqrt = list()
 Data <- data.frame(matrix(ncol=12, nrow=480))
-colnames(Data) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", "Anderson-Darling Test", "Shapiro test", "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", "Ljung-Box Test", "McLeod-Li Test")
-x=1
+colnames(Data) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", 
+                    "Anderson-Darling Test", "Shapiro test", "Augmented Dickey-Fuller Test", 
+                    "KPSS Test", "Box-Pierce Test", "Ljung-Box Test", "McLeod-Li Test")
+
+# For tests, reject if p < 0.05
+ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
+shapiro_test = list()   # H_0 = data is normal (do not want to reject)
+kpss_test = list()    # H_0 = data is stationary (do not want to reject)
+adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
+Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
+Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
+McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
+
+x = 1
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
 
@@ -286,7 +321,7 @@ for(i in 1:length(vect)){
   transform = append(transform, get(paste0(vect1[i], ".log")))
   transform = append(transform, get(paste0(vect1[i], ".sqrt")))
 
-  assign(paste0("form_", vect1[i]), transform)
+  # assign(paste0("form_", vect1[i]), transform)
   
   transform_name = vector()
   transform_name = append(transform_name, vect1[i])
@@ -298,9 +333,10 @@ for(i in 1:length(vect)){
   transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
   sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
 
-  assign(paste0("name", vect1[i]), transform_name)
+  # assign(paste0("name", vect1[i]), transform_name)
   
-# For each of the 3 transformations and the original for each data set, we will test the goodness of fit when each time series is differenced at: 
+# For each of the 3 transformations and the original for each data set, 
+# we will test the goodness of fit when each time series is differenced at: 
 #   - Lag 0 (no differencing) 
 #   - Lag 1 (non seasonal difference - yearly)
 #   - Lag 7 (seasonal difference - weekly) 
@@ -314,15 +350,6 @@ for(i in 1:length(vect)){
   for(j in 1:length(transform)){
     difference = vector()
     diff_name = vector()
-    
-    # For tests, reject if p < 0.05
-    ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
-    shapiro_test = list()   # H_0 = data is normal (do not want to reject)
-    kpss_test = list()    # H_0 = data is stationary (do not want to reject)
-    adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
-    Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
-    Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
-    McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
     
     for(k in 1:length(list)){
       Data$Dataset[x] = vect1[i]
@@ -346,79 +373,83 @@ for(i in 1:length(vect)){
         difference = append(difference, transform[j])}
       diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
       if(list[k]==1){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
+          transform[[j]], order = c(0,1,0), method="ML")$residuals)
         Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
         Data$Differencing[x] = "Lag = 1, Period = none"
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+        difference = append(difference, data.frame(get(
+          paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==7 | list[k]==12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
+          transform[[j]], order = c(0,0,0), seasonal=list(
+            order=c(0,1,0), period = list[k]), method="ML")$residuals)
         Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
         Data$Differencing[x] = paste0("Lag = none, Period = ", list[k])
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+        difference = append(difference, data.frame(get(
+          paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==1.7){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
+          transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 7), method="ML")$residuals)
         Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
         Data$Differencing[x] = "Lag = 1, Period = 7"
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
+        difference = append(difference, data.frame(get(
+          paste0(transform_name[j], "(", list[k], ")"))))}
       if(list[k]==1.12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
+        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
+          transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 12), method="ML")$residuals)
         Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
         Data$Differencing[x] = "Lag = 1, Period = 12"
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))
-    assign(paste0("diff_", transform_name[j]), difference)
-    assign(paste0("diff_name_", transform_name[j]), diff_name)}
+        difference = append(difference, data.frame(get(
+          paste0(transform_name[j], "(", list[k], ")"))))
+        assign(paste0("diff_", transform_name[j]), difference)
+        assign(paste0("diff_name_", transform_name[j]), diff_name)}
       
-      if(list[k]==0){
-        ad_test <- append(ad_test, ad.test(difference[[k]]))
-        Data[x, 6] = ad.test(difference[[k]])$p.value
-        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
-        Data[x, 7] = shapiro.test(difference[[k]])$p.value
-        adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Data[x, 8] = adf.test(difference[[k]])$p.value
-        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
-        Data[x, 9] = kpss.test(difference[[k]])$p.value
-        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
-        Data[x, 10] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value
-        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 11] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 12] = Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        x = x + 1}
+      ad_test <- append(ad_test, ad.test(difference[[k]]))
+      Data[x, 6] = round(ad.test(difference[[k]])$p.value, digits=5)
       
-      if(list[k]==1.12){
-        ad_test <- append(ad_test, ad.test(difference[[k]]))
-        Data[x, 6] = ad.test(difference[[k]])$p.value
-        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
-        Data[x, 7] = shapiro.test(difference[[k]])$p.value
-        adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Data[x, 8] = adf.test(difference[[k]])$p.value
-        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
-        Data[x, 9] = kpss.test(difference[[k]])$p.value
-        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
-        Data[x, 10] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value
-        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 11] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 12] = Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        x = x + 1}
-      else{
-        ad_test <- append(ad_test, ad.test(difference[[k]]))
-        Data[x, 6] = ad.test(difference[[k]])$p.value
-        shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
-        Data[x, 7] = shapiro.test(difference[[k]])$p.value
-        adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Data[x, 8] = adf.test(difference[[k]])$p.value
-        kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
-        Data[x, 9] = kpss.test(difference[[k]])$p.value
-        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
-        Data[x, 10] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value
-        Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 11] = Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
-        Data[x, 12] = Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value
-        x = x + 1}}}}
+      shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
+      Data[x, 7] = round(shapiro.test(difference[[k]])$p.value, digits=5)
+      
+      adf_test <- append(adf_test, adf.test(difference[[k]]))
+      Data[x, 8] = round(adf.test(difference[[k]])$p.value, digits=5)
+      
+      kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
+      Data[x, 9] = round(kpss.test(difference[[k]])$p.value, digits=5)
+      
+      Box_Pierce_test <- append(Box_Pierce_test, Box.test(
+        difference[[k]], lag = sqrt(length(difference[[k]])), 
+        type = c("Box-Pierce"), fitdf = 0))
+      Data[x, 10] = round(Box.test(difference[[k]], lag=sqrt(length(
+        difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5)
+      
+      Ljung_Box_test <- append(Ljung_Box_test, Box.test(
+        difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), 
+        fitdf = 0))
+      Data[x, 11] = round(Box.test(difference[[k]], lag=sqrt(length(
+        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
+      
+      McLeod_Li_test <- append(McLeod_Li_test, Box.test(
+        (difference[[k]])^2, lag=sqrt(length(difference[[k]])), 
+        type=c("Ljung-Box"), fitdf = 0))
+      Data[x, 12] = round(Box.test((difference[[k]])^2, lag=sqrt(length(
+        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
+      
+      x = x + 1}}}
 
-for(i in 1:540){
+# Data %>% 
+# mutate(
+#   `Anderson-Darling Test` = if_else(
+#     `Anderson-Darling Test` < 0.01, 
+#     formatC(`Anderson-Darling Test`, digits = 2, format = "e"), 
+#     formatC(`Anderson-Darling Test`, digits = 2, format = "f", drop0trailing = FALSE))) %>% 
+# mutate_if(
+#   is.numeric, 
+#   function(x){
+#     formatC(x, digits = 3, format = "f", drop0trailing = FALSE)})
+
+for(i in 1:length(Data$Name)){
   Data$Pass[i]=0
   for(x in c(6,7, 9:12)){
     if(Data[i,x]>=0.05){
@@ -431,9 +462,9 @@ Data_AD_Pass = subset(Data, Data$`Anderson-Darling Test` > 0.05)[, c(1:6, 13)]
 Data_AD_Pass
 Data_Shapiro_Pass = subset(Data, Data$`Shapiro test` > 0.05)[, c(1:5, 7, 13)]
 Data_Shapiro_Pass
-Data_ADF_Pass = subset(Data, Data$`Augmented Dickey-Fuller Test` > 0.05)[, c(1:5, 8,13)]
+Data_ADF_Pass = subset(Data, Data$`Augmented Dickey-Fuller Test` < 0.05)[, c(1:5, 8,13)]
 Data_ADF_Pass
-Data_KPSS_Pass = subset(Data, Data$`KPSS Test` > 0.05)[, c(1:5, 9,13)]
+Data_KPSS_Pass = subset(Data, Data$`KPSS Test` >= 0.05)[, c(1:5, 9,13)]
 Data_KPSS_Pass
 Data_Box_Pierce_Pass = subset(Data, Data$`Box-Pierce Test` > 0.05)[, c(1:5, 10,13)]
 Data_Box_Pierce_Pass
@@ -441,6 +472,15 @@ Data_Ljung_Box_Pass = subset(Data, Data$`Ljung-Box Test` > 0.05)[, c(1:5, 11,13)
 Data_Ljung_Box_Pass
 Data_McLeod_Li_Pass = subset(Data, Data$`McLeod-Li Test` > 0.05)[, c(1:5, 12,13)]
 Data_McLeod_Li_Pass
+
+Data1 = subset(Data, Data$Pass >= 3)
+Data1
+Tier1 = subset(Data, Data$Pass >= 5)
+Tier1
+Tier2 = subset(Data, Data$Pass == 4)
+Tier2
+Tier3 = subset(Data, Data$Pass == 3)
+Tier3
 ```
 
 
@@ -573,6 +613,7 @@ data1
 
 ```{r}
 dev.new(width=3, height=3, unit="cm")
+
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
 
@@ -628,11 +669,8 @@ for(i in 1:length(vect)){
     
     if(list[k]==0){
       op <- par("mfrow", "mar")
-      par(mfrow = c(2, 2), mar = c(rep.int(2, 3), 0.5))
-      model=ets(difference[[k]])
-      print(summary(model))
+      par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
       require(TSA)
-      # nf <- par(mfrow=c(2,2))
       plot.ts(difference[[k]], main=diff_name[k])
       abline(h=mean(difference[[k]]), col= "blue")
       abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
@@ -648,11 +686,8 @@ for(i in 1:length(vect)){
       par(mfrow = op$mfrow, mar = op$mar)}
     else{
       op <- par("mfrow", "mar")
-      par(mfrow = c(2, 2), mar = c(rep.int(3, 3), 0.5))
-      model=ets(difference[[k]])
-      print(summary(model))
+      par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
       require(TSA)
-      # nf <- par(mfrow=c(2,2))
       plot.ts(difference[[k]], main=diff_name[k+1])
       abline(h=mean(difference[[k]]), col= "blue")
       abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
