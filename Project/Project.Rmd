@@ -59,10 +59,8 @@ covid <- read_excel("World_Covid.xlsx")
 # covid <- read.csv("owid-covid-data 2.csv")
 # covid = read.csv("Covid.csv")
 # 
-# vect=vector()
-# for(i in 1:175){
-#   vect=append(vect, rep(i, 7))
-# }
+
+
 # covid=covid[1:1225,]
 # covid$Week = vect
 
@@ -96,30 +94,129 @@ Cases1= data.frame(Cases1)
 Cases2= data.frame(Cases2)
 Cases3= data.frame(Cases3)
 
+Mortality7=vector()
+for(i in 1:175){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Mortality7 <- append(Mortality7, mean(Mortality1[x:y, 1]))
+  Mortality7 = ts(Mortality7)}
+Mortality7 = data.frame(Mortality7)
+  
+Death7=vector()
+for(i in 1:175){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Death7 <- append(Death7, mean(Death1[x:y, 1]))
+  Death7 = ts(Death7)}
+Death7 = data.frame(Death7)
+
+Cases7=vector()
+for(i in 1:176){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Cases7 <- append(Cases7, mean(Cases1[x:y, 1]))
+  Cases7 = ts(Cases7)}
+Cases7 = data.frame(Cases7)
+  
+Mortality14=vector()
+for(i in 1:46){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Mortality14 <- append(Mortality14, mean(Mortality2[x:y, 1]))
+  Mortality14 = ts(Mortality14)}
+Mortality14 = data.frame(Mortality14)
+  
+Death14=vector()
+for(i in 1:46){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Death14 <- append(Death14, mean(Death2[x:y, 1]))
+  Death14 = ts(Death14)}
+Death14 = data.frame(Death14)
+
+Cases14=vector()
+for(i in 1:47){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Cases14 <- append(Cases14, mean(Cases2[x:y, 1]))
+  Cases14 = ts(Cases14)}
+Cases14 = data.frame(Cases14)
+
+Mortality21=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Mortality21 <- append(Mortality21, mean(Mortality3[x:y, 1]))
+  Mortality21 = ts(Mortality21)}
+Mortality21 = data.frame(Mortality21)
+  
+Death21=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Death21 <- append(Death21, mean(Death3[x:y, 1]))
+  Death21 = ts(Death21)}
+Death21 = data.frame(Death21)
+
+Cases21=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Cases21 <- append(Cases21, mean(Cases3[x:y, 1]))
+  Cases21 = ts(Cases21)}
+Cases21 = data.frame(Cases21)
+
+Vaccinated21=vector()
+for(i in 1:128){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Vaccinated21 <- append(Vaccinated21, mean(Vaccinated3[x:y, 1]))
+  Vaccinated21 = ts(Vaccinated21)}
+Vaccinated21 = data.frame(Vaccinated21)
+
 vect = vector()
 vect = append(vect, Mortality1)
+vect = append(vect, Mortality7)
 vect = append(vect, Mortality2)
+vect = append(vect, Mortality14)
 vect = append(vect, Mortality3)
-vect = append(vect, Vaccinated1)
+vect = append(vect, Mortality21)
+vect = append(vect, Vaccinated3)
+vect = append(vect, Vaccinated7)
 vect = append(vect, Death1)
+vect = append(vect, Death7)
 vect = append(vect, Death2)
+vect = append(vect, Death14)
 vect = append(vect, Death3)
+vect = append(vect, Death21)
 vect = append(vect, Cases1)
+vect = append(vect, Cases7)
 vect = append(vect, Cases2)
+vect = append(vect, Cases14)
 vect = append(vect, Cases3)
-
+vect = append(vect, Cases21)
 
 vect1 = vector()
 vect1 = append(vect1, "Mortality1")
+vect1 = append(vect1, "Mortality7")
 vect1 = append(vect1, "Mortality2")
+vect1 = append(vect1, "Mortality14")
 vect1 = append(vect1, "Mortality3")
-vect1 = append(vect1, "Vaccinated1")
+vect1 = append(vect1, "Mortality21")
+vect1 = append(vect1, "Vaccinated3")
+vect1 = append(vect1, "Vaccinated21")
 vect1 = append(vect1, "Death1")
+vect1 = append(vect1, "Death7")
 vect1 = append(vect1, "Death2")
+vect1 = append(vect1, "Death14")
 vect1 = append(vect1, "Death3")
+vect1 = append(vect1, "Death21")
 vect1 = append(vect1, "Cases1")
+vect1 = append(vect1, "Cases7")
 vect1 = append(vect1, "Cases2")
+vect1 = append(vect1, "Cases14")
 vect1 = append(vect1, "Cases3")
+vect1 = append(vect1, "Cases21")
 ```
 \
 # Transformed Datasets
@@ -467,7 +564,7 @@ for(i in 1:length(vect)){
         shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        _Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))}
       if(list[k]==1.12){
@@ -475,7 +572,7 @@ for(i in 1:length(vect)){
         shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        _Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         assign(paste0(transform_name[j], "_ad.test"), ad_test)
@@ -483,7 +580,7 @@ for(i in 1:length(vect)){
         assign(paste0(transform_name[j], "_adf.test"), adf_test)
         assign(paste0(transform_name[j], "_kpss.test"), kpss_test)
         assign(paste0(transform_name[j], "_Ljung-Box.test"), Ljung_Box_test)
-        assign(paste0(transform_name[j], "_Box-Pierce.test"), Bpx_Pierce_test)
+        assign(paste0(transform_name[j], "_Box-Pierce.test"), Box_Pierce_test)
         assign(paste0(transform_name[j], "_McLeod-Li.test"), McLeod_Li_test)
         tests = list()
         tests <- append(tests, ad_test)
@@ -499,7 +596,7 @@ for(i in 1:length(vect)){
         shapiro_test <- append(shapiro_test, shapiro.test(difference[[k]]))
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         adf_test <- append(adf_test, adf.test(difference[[k]]))
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         McLeod_Li_test <- append(McLeod_Li_test, Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))}}
     print(get(paste0("tests_", transform_name[j])))}}
@@ -616,7 +713,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
@@ -634,7 +731,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
@@ -647,7 +744,7 @@ for(i in 1:length(vect)){
         assign(paste0(transform_name[j], "_adf.test"), adf_test)
         assign(paste0(transform_name[j], "_kpss.test"), kpss_test)
         assign(paste0(transform_name[j], "_Ljung-Box.test"), Ljung_Box_test)
-        assign(paste0(transform_name[j], "_Box-Pierce.test"), Bpx_Pierce_test)
+        assign(paste0(transform_name[j], "_Box-Pierce.test"), Box_Pierce_test)
         assign(paste0(transform_name[j], "_McLeod-Li.test"), McLeod_Li_test)
         tests = list()
         tests <- append(tests, ad_test)
@@ -668,7 +765,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
@@ -803,7 +900,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
@@ -842,7 +939,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
@@ -866,7 +963,7 @@ for(i in 1:length(vect)){
         assign(paste0(transform_name[j], "_adf.test"), adf_test)
         assign(paste0(transform_name[j], "_kpss.test"), kpss_test)
         assign(paste0(transform_name[j], "_Ljung-Box.test"), Ljung_Box_test)
-        assign(paste0(transform_name[j], "_Box-Pierce.test"), Bpx_Pierce_test)
+        assign(paste0(transform_name[j], "_Box-Pierce.test"), Box_Pierce_test)
         assign(paste0(transform_name[j], "_McLeod-Li.test"), McLeod_Li_test)
         tests = list()
         tests <- append(tests, ad_test)
@@ -887,7 +984,7 @@ for(i in 1:length(vect)){
         Data[x, 7] = signif(adf.test(difference[[k]])$p.value, 5)
         kpss_test <- append(kpss_test, kpss.test(difference[[k]]))
         Data[x, 8] = signif(kpss.test(difference[[k]])$p.value, 5)
-        Bpx_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
+        Box_Pierce_test <- append(Box_Pierce_test, Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0))
         Data[x, 9] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, 5)
         Ljung_Box_test <- append(Ljung_Box_test, Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0))
         Data[x, 10] = signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, 5)
