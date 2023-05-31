@@ -684,8 +684,8 @@ for(i in 1:length(vect)){
       qqnorm(difference[[k]],main= paste0(diff_name[k], " Q-Q Plot"))
       qqline(difference[[k]],col="blue")
       x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=2.5, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=1.5, adj=1.2, cex=0.8)
+      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
+      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
       par(mfrow = op$mfrow, mar = op$mar)}
     else{
       op <- par("mfrow", "mar")
@@ -706,8 +706,8 @@ for(i in 1:length(vect)){
       qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
       qqline(difference[[k]],col="blue")
       x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=2.5, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=1.5, adj=1.2, cex=0.8)
+      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
+      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
       par(mfrow = op$mfrow, mar = op$mar)}}}}
 
 
