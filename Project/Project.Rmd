@@ -305,6 +305,12 @@ Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
 Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
 McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
 
+# Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
+
+# Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
+
+`Best_Models(0,0,0)` = list()
+Best_Models = list()
 x = 1
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
@@ -475,37 +481,67 @@ for(i in 1:length(vect)){
         type=c("Ljung-Box"), fitdf = 0))
       Data[x, 12] = round(Box.test((difference[[k]])^2, lag=sqrt(length(
         difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
+      
+      Data$Pass[x]=0
+      for(z in c(6,7, 9:12)){
+        if(Data[x,z]>=0.05){
+          Data$Pass[x] = 1 + Data$Pass[x]}}
+      if(Data[x, 8] <= 0.05){
+        Data$Pass[x] = 2 + Data$Pass[x]}
+      Variance_Order = data.frame(matrix(ncol=3, nrow=5))
+      colnames(Variance_Order) = c("Levels", "Variance", "Rank")
+      Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
+                                "Seasonality", "Current")
+      Variance_Order$Variance[1:5] = Data[x, c(13:17)]
+      Variance_Order$Variance = as.double(Variance_Order$Variance)
+      Variance_Order$Rank = as.integer(rank(Variance_Order$Variance, ties.method = "min"))
+      Data$Variance_test[x] = paste0(
+        Variance_Order$Rank[1], ", ", Variance_Order$Rank[2],
+        ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", 
+        Variance_Order$Rank[5])
+      Fails = 0
+      if(Data[x, 13] < Data[x, 14]){
+        Fails=Fails+1}
+      if((Data[x, 14] < Data[x, 15]) & (Data[x, 14] < Data[x, 16])){
+        Fails=Fails+1}
+      if((Data[x, 13] < Data[x, 15]) & (Data[x, 13] < Data[x, 16])){
+        Fails=Fails+1}
+      if((Data[x, 15] < Data[x, 17]) & (Data[x, 16] < Data[x, 17])){
+        Fails=Fails+1}
+      if(Data[x, 13] < Data[x, 17]){
+        Fails=Fails+1}
+      if(Data[x, 14] < Data[x, 17]){
+        Fails=Fails+1}
+      Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
+      if(Data$Pass[x] >= 4){
+        if(list[k]==0){
+          assign(paste0(transform_name[j], "(0,0,0)"), transform[[j]])
+          `Best_Models(0,0,0)` = append(`Best_Models(0,0,0)`, list(get(paste0(transform_name[j], "(0,0,0)"))))}
+        if(list[k]==1){
+          assign(paste0(transform_name[j], "(0,1,0)"), arima(
+            transform[[j]], order = c(0,1,0), method="ML"))
+          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,1,0)"))))}
+        if(list[k]==7){
+          assign(paste0(transform_name[j], "(0,7,0)"), arima(
+            transform[[j]], order = c(0,7,0), method="ML"))
+          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,7,0)"))))}
+        if(list[k]==12){
+          assign(paste0(transform_name[j], "(0,12,0)"), arima(
+            transform[[j]], order = c(0,12,0), method="ML"))
+          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,12,0)"))))}
+        if(list[k]==1.7){
+          assign(paste0(transform_name[j], "(0,1,0)x(0,1,0)_7"), arima(
+            transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 7), method="ML"))
+          Best_Models = append(Best_Models, list(get(
+            paste0(transform_name[j], "(0,1,0)x(0,1,0)_7"))))}
+        if(list[k]==1.12){
+          assign(paste0(transform_name[j], "(0,1,0)x(0,1,0)_12"), arima(
+            transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 12), method="ML"))
+          Best_Models = append(Best_Models, list(get(
+            paste0(transform_name[j], "(0,1,0)x(0,1,0)_12"))))}}
       x = x + 1}}}
-
-
-for(i in 1:length(Data$Name)){
-  Data$Pass[i]=0
-  for(x in c(6,7, 9:12)){
-    if(Data[i,x]>=0.05){
-      Data$Pass[i] = 1 + Data$Pass[i]}}
-  if(Data[i, 8] <= 0.05){
-    Data$Pass[i] = 1 + Data$Pass[i]}
-  Variance_Order = data.frame(matrix(ncol=3, nrow=5))
-  colnames(Variance_Order) = c("Levels", "Variance", "Rank")
-  Variance_Order$Levels = c("Original", "Transformation", "Differencing", "Seasonality", "Current")
-  Variance_Order$Variance[1:5] = Data[i, c(13:17)]
-  Variance_Order$Variance = as.double(Variance_Order$Variance)
-  Variance_Order$Rank = as.integer(rank(Variance_Order$Variance, ties.method = "min"))
-  Data$Variance_test[i] = paste0(Variance_Order$Rank[1], ", ", Variance_Order$Rank[2], ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", Variance_Order$Rank[5])
-  Fails = 0
-  if(Data[i, 13] < Data[i, 14]){
-    Fails=Fails+1}
-  if((Data[i, 14] < Data[i, 15]) & (Data[i, 14] < Data[i, 16])){
-    Fails=Fails+1}
-  if((Data[i, 13] < Data[i, 15]) & (Data[i, 13] < Data[i, 16])){
-    Fails=Fails+1}
-  if((Data[i, 15] < Data[i, 17]) & (Data[i, 16] < Data[i, 17])){
-    Fails=Fails+1}
-  if(Data[i, 13] < Data[i, 17]){
-    Fails=Fails+1}
-  if(Data[i, 14] < Data[i, 17]){
-    Fails=Fails+1}
-  Data$Pass[i] = (6-Fails)/6 + Data$Pass[i]}
 
 Data_AD_Pass = subset(Data, Data$`Anderson-Darling Test` > 0.05)[, c(1:12, 18, 20)]
 Data_AD_Pass
@@ -533,30 +569,24 @@ Tier3
 ```
 
 ```{r}
-Name = vector()
-for(i in 1:length(Tier1$Name)){
-  Name = append(Name, Tier$Name[i])}
+source("plot.roots.R")
+Data2 <- subset(Data, Data$`Augmented Dickey-Fuller Test`<= 0.05 & Data$`KPSS Test` >= 0.05 & Data$`Anderson-Darling Test` >= 0.05 & Data$`Shapiro test` >= 0.05)
 
-for(i in 1:length(Tier1$Name)){
-  Name = append(Name, Tier$Name[i])}
+Data2_minAIC = subset(Data2, Data2$AICc == min(Data2$AICc))
+Data2_minAIC$Name
 
-for(i in 1:length(Tier1$Name)){
-  Name = append(Name, Tier$Name[i])}
+x = auto.arima(`Cases2b.sqrt(1.7)`, start.p = 0, start.q = 0, d=1, D=1, start.P = 0, start.Q = 0, stationary=TRUE, seasonal = TRUE, allowmean=TRUE, trace = TRUE)
 
+acvf = acf(Mortality.diff, plot=FALSE, lag.max = length(Mortality.diff))$acf[,1,1] * var(Mortality.diff) 
+m = length(acvf)
+lh.ia = innovations.algorithm(m+1, acvf)
+lh.ia$thetas[9,1:9] # Preliminary estimates of coefficients for MA(9)
+lh.ia$thetas[10,1:10] # Preliminary estimates of coefficients for MA(10)
+lh.ia$thetas[11,1:11] # Preliminary estimates of coefficients for MA(11)
+lh.ia$thetas[12,1:12]
+x
 
-Models = vector()
-
-for(i in 1:length(Name)){
-  Models = append(Models, )
-  
-}
-
-Name = rbind(data.frame(Tier1$Name), data.frame(Tier2$Name), data.frame(Tier3$Name))
-Tier2$Name
-Tier3$Name
-Tier1$Name
-
-
+y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
