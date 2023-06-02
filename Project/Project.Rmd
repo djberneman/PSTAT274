@@ -308,8 +308,7 @@ McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reje
 # Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
 
 # Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
-
-`Best_Models(0,0,0)` = list()
+transformation_name = vector()
 Best_Models = list()
 x = 1
 for(i in 1:length(vect)){
@@ -330,8 +329,6 @@ for(i in 1:length(vect)){
   transform = append(transform, get(paste0(vect1[i], ".log")))
   transform = append(transform, get(paste0(vect1[i], ".sqrt")))
 
-  # assign(paste0("form_", vect1[i]), transform)
-  
   transform_name = vector()
   transform_name = append(transform_name, vect1[i])
   `_` = append(`_`, vect1[i])
@@ -341,8 +338,8 @@ for(i in 1:length(vect)){
   log = append(log, paste0(vect1[i], ".log"))
   transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
   sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
-
-  # assign(paste0("name", vect1[i]), transform_name)
+  
+  transformation_name = append(transformation_name, transform_name)
   
 # For each of the 3 transformations and the original for each data set, 
 # we will test the goodness of fit when each time series is differenced at: 
@@ -514,33 +511,44 @@ for(i in 1:length(vect)){
         Fails=Fails+1}
       Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
       if(Data$Pass[x] >= 4){
-        if(list[k]==0){
-          assign(paste0(transform_name[j], "(0,0,0)"), transform[[j]])
-          `Best_Models(0,0,0)` = append(`Best_Models(0,0,0)`, list(get(paste0(transform_name[j], "(0,0,0)"))))}
+        # None of the undifferenced transformations for each data set are part of the best models
         if(list[k]==1){
-          assign(paste0(transform_name[j], "(0,1,0)"), arima(
-            transform[[j]], order = c(0,1,0), method="ML"))
-          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,1,0)"))))}
+          arima = arima(transform[[j]], order = c(0,1,0), method="ML")
+          arima["Name"] = "ARIMA(0,1,0)"
+          arima["x"] = x
+          arima["i"] = i
+          arima["j"] = transform_name[j]
+          Best_Models = append(Best_Models, list(arima))}
         if(list[k]==7){
-          assign(paste0(transform_name[j], "(0,7,0)"), arima(
-            transform[[j]], order = c(0,7,0), method="ML"))
-          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,7,0)"))))}
+          arima = arima(transform[[j]], order = c(0,7,0), method="ML")
+          arima["Name"] = "SARIMA(0,0,0)x(0,1,0)_7"
+          arima["x"] = x
+          arima["i"] = i
+          arima["j"] = transform_name[j]
+          Best_Models = append(Best_Models, list(arima))}
         if(list[k]==12){
-          assign(paste0(transform_name[j], "(0,12,0)"), arima(
-            transform[[j]], order = c(0,12,0), method="ML"))
-          Best_Models = append(Best_Models, list(get(paste0(transform_name[j], "(0,12,0)"))))}
+          arima = arima(transform[[j]], order = c(0,12,0), method="ML")
+          arima["Name"] = "SARIMA(0,0,0)x(0,1,0)_12"
+          arima["x"] = x
+          arima["i"] = i
+          arima["j"] = transform_name[j]
+          Best_Models = append(Best_Models, list(arima))}
         if(list[k]==1.7){
-          assign(paste0(transform_name[j], "(0,1,0)x(0,1,0)_7"), arima(
-            transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 7), method="ML"))
-          Best_Models = append(Best_Models, list(get(
-            paste0(transform_name[j], "(0,1,0)x(0,1,0)_7"))))}
+          arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 7), method="ML")
+          arima["Name"] = "SARIMA(0,1,0)x(0,1,0)_7"
+          arima["x"] = x
+          arima["i"] = i
+          arima["j"] = transform_name[j]
+          Best_Models = append(Best_Models, list(arima))}
         if(list[k]==1.12){
-          assign(paste0(transform_name[j], "(0,1,0)x(0,1,0)_12"), arima(
-            transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 12), method="ML"))
-          Best_Models = append(Best_Models, list(get(
-            paste0(transform_name[j], "(0,1,0)x(0,1,0)_12"))))}}
+          arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 12), method="ML")
+          arima["Name"] = "SARIMA(0,1,0)x(0,1,0)_12"
+          arima["x"] = x
+          arima["i"] = i
+          arima["j"] = transform_name[j]
+          Best_Models = append(Best_Models, list(arima))}}
       x = x + 1}}}
 
 Data_AD_Pass = subset(Data, Data$`Anderson-Darling Test` > 0.05)[, c(1:12, 18, 20)]
@@ -558,14 +566,10 @@ Data_Ljung_Box_Pass
 Data_McLeod_Li_Pass = subset(Data, Data$`McLeod-Li Test` > 0.05)[, c(1:12, 18, 20)]
 Data_McLeod_Li_Pass
 
-Data1 = subset(Data, Data$Pass >= 3)
-Data1
-Tier1 = subset(Data, Data$Pass >= 5)
-Tier1
-Tier2 = subset(Data, Data$Pass >= 4 & Data$Pass < 5)
-Tier2
-Tier3 = subset(Data, Data$Pass >= 3 & Data$Pass < 4)
-Tier3
+Data1 = subset(Data, Data$Pass >= 4)
+Tier1 = subset(Data, Data$Pass >= 6)
+Tier2 = subset(Data, Data$Pass >= 5 & Data$Pass < 6)
+Tier3 = subset(Data, Data$Pass >= 4 & Data$Pass < 5)
 ```
 
 ```{r}
@@ -586,109 +590,73 @@ lh.ia$thetas[11,1:11] # Preliminary estimates of coefficients for MA(11)
 lh.ia$thetas[12,1:12]
 x
 
+
+vect=vector()
+vect=append(vect, 1)
+vect=append(vect, 1)
+vect=append(vect, 1)
+vect=append(vect, 1)
+vect=append(vect, 1)
+vect1=vector()
+vect1=append(vect1, 1)
+vect1=append(vect1, 1)
+vect1=append(vect1, 1)
+vect1=append(vect1, 1)
+vect1=append(vect1, 1)
+vect=append(vect, vect1)
+vect
 y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
 ```{r, warning=FALSE}
-for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
 
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
-  
-  # Perform transformations, plot transformed data, histograms:
-  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
-  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
-  
-  transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, get(paste0(vect1[i], ".bc")))
-  transform = append(transform, get(paste0(vect1[i], ".log")))
-  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
-
-  assign(paste0("form_", vect1[i]), transform)
-  
-
-  transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-
-  assign(paste0("name", vect1[i]), transform_name)
-  
-  list = c(0,1,7,12,1.7,1.12)
-  for(j in 1:length(transform)){
-    difference = vector()
-    diff_name = vector()
-    for(k in 1:length(list)){
-      if(list[k]==0){
-        diff_name = append(diff_name, transform_name[j])
-        difference = append(difference, transform[j])}
-      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-      if(list[k]==1){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==7 | list[k]==12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==1.7){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==1.12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-    assign(paste0("diff_", transform_name[j]), difference)
-    assign(paste0("diff_name_", transform_name[j]), diff_name)
-    
-    if(list[k]==0){
-      op <- par("mfrow", "mar")
-      par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
-      require(TSA)
-      plot.ts(difference[[k]], main=diff_name[k])
-      abline(h=mean(difference[[k]]), col= "blue")
-      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
-      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k], " Periodogram"))
-      abline(h=0)
-      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k], prob=TRUE)
-      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
-      m <- mean(difference[[k]])
-      std <- sqrt(var(difference[[k]]))
-      curve( dnorm(x,m,std), add=TRUE)
-      qqnorm(difference[[k]],main= paste0(diff_name[k], " Q-Q Plot"))
-      qqline(difference[[k]],col="blue")
-      x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
-      par(mfrow = op$mfrow, mar = op$mar)}
-    else{
-      op <- par("mfrow", "mar")
-      par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
-      require(TSA)
-      plot.ts(difference[[k]], main=diff_name[k+1])
-      abline(h=mean(difference[[k]]), col= "blue")
-      abline(lm(difference[[k]] ~ as.numeric(1:length(difference[[k]]))), col="red")
-      periodogram(difference[[k]], log = 'yes', main=paste0(diff_name[k+1], " Periodogram"))
-      abline(h=0)
-      periodogram(difference[[k]], log = 'no', main=paste0(diff_name[k+1], " Periodogram"))
-      abline(h=0)
-      hist(difference[[k]], col="light blue", xlab="", main=diff_name[k+1], prob=TRUE)
-      mtext(paste0("Variance = ", var(difference[[k]])), side=1, line = 2)
-      m <- mean(difference[[k]])
-      std <- sqrt(var(difference[[k]]))
-      curve( dnorm(x,m,std), add=TRUE)
-      qqnorm(difference[[k]],main= paste0(diff_name[k+1], " Q-Q Plot"))
-      qqline(difference[[k]],col="blue")
-      x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
-      par(mfrow = op$mfrow, mar = op$mar)}}}}
+for(i in 1:length(Mortality1a$Mortality1a)){
+  Mortality1a$Mortality1a[i] == Mortality1aa[i+1] 
+}
+Mortality1aa == Mortality1a$Mortality1a - diff(Mortality1a$Mortality1a, 12)
+Mortality1aa = diff(Mortality1a$Mortality1a, 12)
 
 
+data = data.frame(matrix(ncol=6, nrow = length(Mortality1a$Mortality1a)))
 
+arima(Mortality1a$Mortality1a, order = c(0,0,0), seasonal = list(order(c(0,1,0), period=7)), method = "ML")$residuals == diff(Mortality1a$Mortality1a, lag = 7)
+
+
+nsdiffs(Mortality1b[,1])
+nsdiffs(ts(Mortality1b$Mortality1b), test="ch")
+Best_Models[[3]]$residuals == -Mortality1aa + Mortality1a$Mortality1a
+
+for(t in 1:length(Best_Models)){
+  op <- par("mfrow", "mar")
+  par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+  res = Best_Models[[t]]$residuals
+  name = paste0(Best_Models[[t]]$j, "(", Best_Models[[t]]$Name, ")")
+  i = Best_Models[[t]]$i
+  j = Best_Models[[t]]$j
+  if(j %in% bc){
+    bcTransform <- boxcox(vect[[i]] ~ as.numeric(1:length(vect[[i]])))
+    bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+    lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+    title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))}
+  require(TSA)
+  plot.ts(res, main=name)
+  abline(h=mean(res), col= "blue")
+  abline(lm(res ~ as.numeric(1:length(res))), col="red")
+  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"))
+  periodogram(res, log = 'no', main=paste0(name, " Periodogram"))
+  abline(h=0)
+  hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+  mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+  m <- mean(res)
+  std <- sqrt(var(res))
+  curve( dnorm(x,m,std), add=TRUE)
+  qqnorm(res,main= paste0(name, " Q-Q Plot"))
+  qqline(res,col="blue")
+  x=acf2(res, main=name)
+  mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(res)$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
+  mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: p-value = ", signif(adf.test(res)$p.value, digits=3), "     Ljung-Box: p-value = ", signif(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(res)$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
+  par(mfrow = op$mfrow, mar = op$mar)}
 ```
 
 # ACFs and PACFs
