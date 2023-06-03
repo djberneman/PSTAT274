@@ -464,7 +464,7 @@ for(i in 1:length(vect)){
       if(Data_a[x, 14] < Data_a[x, 17]){
         Fails=Fails+1}
       Data_a$Pass[x] = (6-Fails)/6 + Data_a$Pass[x]
-      if(Data_a$Pass[x] >= 4){
+      if(Data_a$Pass[x] >= 6){
         # None of the undifferenced transformations for each data set are part of the best models
         if(list(k)==0){
           list1 = list("ARIMA(0,0,0)", x, i, transform_name[j])
@@ -487,22 +487,15 @@ for(i in 1:length(vect)){
           Best_Models_a1 = append(Best_Models_a1, list1)
           Best_Models_a = append(Best_Models_a, difference[k])}
         if(list[k]==1.12){
-          list1 = list("SARIMA(0,1,0)x(0,1,0)_7", x, i, transform_name[j])
+          list1 = list("SARIMA(0,1,0)x(0,1,0)_12", x, i, transform_name[j])
           Best_Models_a1 = append(Best_Models_a1, list1)
           Best_Models_a = append(Best_Models_a, difference[k])}}
       x = x + 1}}}
 
-Data_a_AD_Pass = subset(Data_a, Data_a$`Anderson-Darling Test` > 0.05)[, c(1:12, 18, 20)]
-Data_a_AD_Pass
-Data_a_Shapiro_Pass = subset(Data_a, Data_a$`Shapiro test` > 0.05)[, c(1:12, 18, 20)]
-Data_a_Shapiro_Pass
-Data_a_ADF_Pass = subset(Data_a, Data_a$`Augmented Dickey-Fuller Test` < 0.05)[, c(1:12, 18, 20)]
-Data_a_ADF_Pass
-Data_a_KPSS_Pass = subset(Data_a, Data_a$`KPSS Test` >= 0.05)[, c(1:12, 18, 20)]
-Data_a_KPSS_Pass
 
-Data_a1 = subset(Data_a, Data_a$Pass >= 4)
+
 Tier1_a1 = subset(Data_a, Data_a$Pass >= 6)
+
 ```
 
 # Transformation, Differencing, Normality Tests, and Stationarity Tests
@@ -748,6 +741,7 @@ for(i in 1:length(vect)){
           arima["x"] = x
           arima["i"] = i
           arima["j"] = transform_name[j]
+          arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}
         if(list[k]==7){
           arima = arima(transform[[j]], order = c(0,7,0), method="ML")
@@ -755,6 +749,7 @@ for(i in 1:length(vect)){
           arima["x"] = x
           arima["i"] = i
           arima["j"] = transform_name[j]
+          arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}
         if(list[k]==12){
           arima = arima(transform[[j]], order = c(0,12,0), method="ML")
@@ -762,6 +757,7 @@ for(i in 1:length(vect)){
           arima["x"] = x
           arima["i"] = i
           arima["j"] = transform_name[j]
+          arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}
         if(list[k]==1.7){
           arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
@@ -770,6 +766,7 @@ for(i in 1:length(vect)){
           arima["x"] = x
           arima["i"] = i
           arima["j"] = transform_name[j]
+          arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}
         if(list[k]==1.12){
           arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
@@ -778,6 +775,7 @@ for(i in 1:length(vect)){
           arima["x"] = x
           arima["i"] = i
           arima["j"] = transform_name[j]
+          arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}}
       x = x + 1}}}
 
@@ -789,12 +787,6 @@ Data_ADF_Pass = subset(Data, Data$`Augmented Dickey-Fuller Test` < 0.05)[, c(1:1
 Data_ADF_Pass
 Data_KPSS_Pass = subset(Data, Data$`KPSS Test` >= 0.05)[, c(1:12, 18, 20)]
 Data_KPSS_Pass
-Data_Box_Pierce_Pass = subset(Data, Data$`Box-Pierce Test` > 0.05)[, c(1:12, 18, 20)]
-Data_Box_Pierce_Pass
-Data_Ljung_Box_Pass = subset(Data, Data$`Ljung-Box Test` > 0.05)[, c(1:12, 18, 20)]
-Data_Ljung_Box_Pass
-Data_McLeod_Li_Pass = subset(Data, Data$`McLeod-Li Test` > 0.05)[, c(1:12, 18, 20)]
-Data_McLeod_Li_Pass
 
 Data1 = subset(Data, Data$Pass >= 4)
 Tier1 = subset(Data, Data$Pass >= 6)
@@ -840,16 +832,62 @@ y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
+# V1
 ```{r, warning=FALSE}
 
+Best_Models1 = sort(Best_Models[[t]]$pass)
+
 for(t in 1:length(Best_Models)){
-  for(s in )
+  for(s in 1:length(Best_Models[[t]]$residuals)){
+    if(is.na(Best_Models[[t]]$residuals[s])){
+      Best_Models[[t]]$residuals[s] = (Best_Models[[t]]$residuals[s-1] + Best_Models[[t]]$residuals[s+1])/2}}
+  if(Best_Models[[t]]$pass >= 6){
+    op <- par("mfrow", "mar")
+    par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+    res = Best_Models[[t]]$residuals
+    name = paste0(Best_Models[[t]]$j, "(", Best_Models[[t]]$Name, ")")
+    i = Best_Models[[t]]$i
+    j = Best_Models[[t]]$j
+    if(j %in% bc){
+      bcTransform <- boxcox(vect[[i]] ~ as.numeric(1:length(vect[[i]])))
+      bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+      lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+      title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))}
+    require(TSA)
+    plot.ts(res, main=name)
+    abline(h=mean(res), col= "blue")
+    abline(lm(res ~ as.numeric(1:length(res))), col="red")
+    periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+    periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
+    abline(h=0)
+    hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+    mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+    m <- mean(res)
+    std <- sqrt(var(res))
+    curve( dnorm(res,m,std), add=TRUE)
+    qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
+    qqline(res,col="blue")
+    x=acf2(res, main=name)
+    mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
+    mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
+    par(mfrow = op$mfrow, mar = op$mar)}}
+```
+
+# Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
+# V2
+```{r, warning=FALSE}
+
+
+for(t in 1:length(Best_Models)){
   op <- par("mfrow", "mar")
   par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
-  res = Best_Models[[t]]$residuals
-  name = paste0(Best_Models[[t]]$j, "(", Best_Models[[t]]$Name, ")")
-  i = Best_Models[[t]]$i
-  j = Best_Models[[t]]$j
+  res = Best_Models_a[[t]]
+  z = 4* (t-1) +1
+  zzz = 4*t-1
+  zzzz=4*t
+  name = paste0(Best_Models_a1[zzzz], "(", Best_Models_a1[z], ")")
+  i = Best_Models_a1[[zzz]]
+  j = Best_Models_a1[[zzzz]]
   if(j %in% bc){
     bcTransform <- boxcox(vect[[i]] ~ as.numeric(1:length(vect[[i]])))
     bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
@@ -859,21 +897,54 @@ for(t in 1:length(Best_Models)){
   plot.ts(res, main=name)
   abline(h=mean(res), col= "blue")
   abline(lm(res ~ as.numeric(1:length(res))), col="red")
-  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"))
-  periodogram(res, log = 'no', main=paste0(name, " Periodogram"))
+  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
   abline(h=0)
   hist(res, col="light blue", xlab="", main=name, prob=TRUE)
   mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
   m <- mean(res)
+  x = res
   std <- sqrt(var(res))
   curve( dnorm(x,m,std), add=TRUE)
-  qqnorm(res,main= paste0(name, " Q-Q Plot"))
+  qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
   qqline(res,col="blue")
   x=acf2(res, main=name)
-  mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(res)$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
-  mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: p-value = ", signif(adf.test(res)$p.value, digits=3), "     Ljung-Box: p-value = ", signif(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(res)$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)
+  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
+  mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
   par(mfrow = op$mfrow, mar = op$mar)}
+
 ```
+
+```{r}
+arima = arima(Best_Models_a[[12]], order=c(1,0,0), method="ML")
+ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("mle"))
+ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("ols"))
+
+ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("yule-walker"))
+ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("mle"))
+ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("ols"))
+
+arima
+plot.ts(res, main=name)
+abline(h=mean(res), col= "blue")
+abline(lm(res ~ as.numeric(1:length(res))), col="red")
+periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
+abline(h=0)
+hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+m <- mean(res)
+std <- sqrt(var(res)) 
+curve( dnorm(x,m,std), add=TRUE)
+qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
+qqline(res,col="blue")
+x=acf2(res, main=name)
+mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
+mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
+
+```
+
 
 # ACFs and PACFs
 ```{r, warning=FALSE}
@@ -1139,11 +1210,11 @@ colnames(Data) = c("Model", "AICc")
 
 auto.arima(Mortality_1.7)
 
-loop.s = c(7)
-loop.p = c(0,1,2,3,4,5)
-loop.d = c(1)
-loop.q = c(0,1,2,3,4,5)
-loop.P = c(0,1,2)
+loop.s = c(12)
+loop.p = c(0,1,2,3,4,5,6,7,8,9,10)
+loop.d = c(1,2)
+loop.q = c(0,1,2,3,4,5,6,7,8,9,10)
+loop.P = c(1,2)
 loop.Q = c(0,1,2)
 loop.D = c(0,1,2)
 
@@ -1234,16 +1305,17 @@ auto.arima(Mortality)
 
 
 ```{r}
+x
 Data = data.frame(matrix(nrow=972, ncol=2))
 colnames(Data) = c("Model", "AICc")
 
-loop.s = c(7)
-loop.p = c(0,1,2,3,4,5)
-loop.d = c(1)
-loop.q = c(0,1,2,3,4,5)
-loop.P = c(0,1,2)
-loop.Q = c(0,1,2)
-loop.D = c(0,1,2)
+loop.s = c(12)
+loop.p = c(0,1,2,3,4,5,12,15)
+loop.d = c(0,1)
+loop.q = c(0,1,2,3,4,5,12,15)
+loop.P = c(0,1)
+loop.Q = c(0,1)
+loop.D = c(0)
 
 i = 1
 for(s in loop.s){
@@ -1253,26 +1325,54 @@ for(s in loop.s){
         for(d in loop.d){
           for(q in loop.q){
             for(p in loop.p){
-              if((p==3 & d==1 & q==2 & P==1 & Q==1 & D==0) | (p==5 & d==1 & q==5 & P==1 & Q==1 & D==0) | (p==3 & d==1 & q==2 & P==2 & Q==1 & D==0) | (p==1 & d==1 & q==3 & P==2 & Q==1 & D==0) | (p==4 & d==1 & q==4 & P==2 & Q==1 & D==0)){
-                Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       arima(Mortality1a, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s)))
-                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
-              else{
-                if(P==0 & Q==0 & D==0){
-                  Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")}
-                else{
-                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)}
-                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
-                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
-              i=i+1}}}}}}}}
+                Data[i, 1] = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       try(arima(Best_Models_a[[12]], order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML")))
+                Data[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
+                x=try(acf2(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2])))
+                }
+              }}}}}}
 
 ```
+
+
+
+```{r}
+x
+Data = data.frame(matrix(nrow=972, ncol=2))
+colnames(Data) = c("Model", "AICc")
+
+loop.s = c(12)
+loop.p = c(0,1,2,3,4,5,12,15)
+loop.d = c(0,1)
+loop.q = c(0,1,2,3,4,5,12,15)
+loop.P = c(0,1)
+loop.Q = c(0,1)
+loop.D = c(0)
+
+i = 1
+for(s in loop.s){
+  for(D in loop.D){
+    for(Q in loop.Q){
+      for(P in loop.P){
+        for(d in loop.d){
+          for(q in loop.q){
+            for(p in loop.p){
+                Data[i, 1] = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       try(arima(Best_Models_a[[12]], order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML")))
+                Data[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
+                x=try(acf2(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2])))
+                i=i}
+              }}}}}}
+
+```
+
+
+
+
 ```{r}
 source('plot.roots.R')
 
