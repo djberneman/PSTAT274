@@ -290,13 +290,14 @@ vect1 = append(vect1, "Vaccinated3b")
 bc = list()
 log = list()
 sqrt = list()
-Data_a <- data.frame(matrix(ncol=20, nrow=480))
+Data_a <- data.frame(matrix(ncol=23, nrow=480))
 colnames(Data_a) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", 
                     "Anderson-Darling Test", "Shapiro test", 
                     "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", 
                     "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance", 
                     "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance", 
-                    "Variance", "Variance_test", "AICc", "X")
+                    "Variance", "Variance_test", "AICc", "Residual_Tests", 
+                    "Normality_Tests", "Stationarity_Tests", "X")
 
 # For tests, reject if p < 0.05
 ad_test_a = list()    # H_0 = data is normally distributed (do not want to reject)
@@ -495,16 +496,55 @@ for(i in 1:length(vect)){
           list1 = list("SARIMA(0,1,0)x(0,1,0)_12", x, i, transform_name[j])
           Best_Models_a1 = append(Best_Models_a1, list1)
           Best_Models_a = append(Best_Models_a, difference[k])}}
+      Pass1 = 0 
+      for(s in 10:12){
+        if(Data_a[x,s] >= 0.05){
+          Pass1 = Pass1 + 1}}
+      if(Pass1 == 3){
+        Data_a$Residual_Tests[x] = "Pass"}
+      else{
+        Data_a$Residual_Tests[x] = "Fail"}
+      Pass2 = 0
+      if(Data_a[x,6] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Data_a[x,7] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Pass2 >= 1){
+        Data_a$Normality_Tests[x] = "Pass"}
+      else{
+        Data_a$Normality_Tests[x] = "Fail"}
+      Pass3 = 0
+      if(Data_a[x,9] >= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Data_a[x,8] <= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Pass3 >= 1){
+        Data_a$Stationarity_Tests[x] = "Pass"}
+      else{
+        Data_a$Stationarity_Tests[x] = "Fail"}
       x = x + 1}}}
 
 Dict1 = dict(init_keys = NULL, init_values = NULL)
 for(i in 1:480){
   Dict1[Data_a$Name[i]] = Difference1[[i]]}
 
-Dict1$keys[3]
 
-Tier1_a1 = subset(Data_a, Data_a$Pass >= 6)
+Data_a1 = subset(Data_a, Data_a$Pass >= 4)
+Data_a1
 
+Stationarity_a = subset(Data_a, Data_a$Stationarity_Tests == "Pass")
+Stationarity_a
+Normality_a = subset(Data_a, Data_a$Normality_Tests == "Pass")
+Normality_a
+Residuals_a = subset(Data_a, Data_a$Residual_Tests == "Pass")
+Residuals_a
+
+
+Stat_Norm = subset(Stationarity_a, Stationarity_a$Normality_Tests == "Pass")
+Stat_Norm_Pass = subset(Stat_Norm, Stat_Norm$Pass >=4)
+Stat_Res = subset(Stationarity_a, Stationarity_a$Residual_Tests == "Pass")
+Stat_Res_Pass = subset(Stat_Res, Stat_Res$Pass >=4)
+Res_Norm = subset(Residuals_a, Residuals_a$Normality_Tests == "Pass")
 ```
 
 # Transformation, Differencing, Normality Tests, and Stationarity Tests
@@ -520,13 +560,14 @@ Tier1_a1 = subset(Data_a, Data_a$Pass >= 6)
 bc = list()
 log = list()
 sqrt = list()
-Data <- data.frame(matrix(ncol=20, nrow=480))
+Data <- data.frame(matrix(ncol=23, nrow=480))
 colnames(Data) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", 
                     "Anderson-Darling Test", "Shapiro test", 
                     "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", 
                     "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance", 
                     "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance", 
-                    "Variance", "Variance_test", "AICc", "X") 
+                    "Variance", "Variance_test", "AICc", "Residual_Tests", 
+                    "Normality_Tests", "Stationarity_Tests", "X") 
 
 # For tests, reject if p < 0.05
 ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
@@ -749,7 +790,7 @@ for(i in 1:length(vect)){
       if(Data[x, 14] < Data[x, 17]){
         Fails=Fails+1}
       Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
-      if(Data$Pass[x] >= 4){
+      if(Data$Pass[x] >= 5){
         # None of the undifferenced transformations for each data set are part of the best models
         if(list[k]==1){
           arima = arima(transform[[j]], order = c(0,1,0), method="ML")
@@ -793,16 +834,46 @@ for(i in 1:length(vect)){
           arima["j"] = transform_name[j]
           arima["pass"] = Data$Pass[x]
           Best_Models = append(Best_Models, list(arima))}}
+      Pass1 = 0 
+      for(s in 10:12){
+        if(Data[x,s] >= 0.05){
+          Pass1 = Pass1 + 1}}
+      if(Pass1 == 3){
+        Data$Residual_Tests[x] = "Pass"}
+      else{
+        Data$Residual_Tests[x] = "Fail"}
+      Pass2 = 0
+      if(Data[x,6] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Data[x,7] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Pass2 >= 1){
+        Data$Normality_Tests[x] = "Pass"}
+      else{
+        Data$Normality_Tests[x] = "Fail"}
+      Pass3 = 0
+      if(Data[x,9] >= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Data[x,8] <= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Pass3 >= 1){
+        Data$Stationarity_Tests[x] = "Pass"}
+      else{
+        Data$Stationarity_Tests[x] = "Fail"}
       x = x + 1}}}
 
 Dict = dict(init_keys = NULL, init_values = NULL)
 for(i in 1:480){
   Dict[Data$Name[i]] = Difference[[i]]}
 
-Data1 = subset(Data, Data$Pass >= 4)
-Tier1 = subset(Data, Data$Pass >= 6)
-Tier2 = subset(Data, Data$Pass >= 5 & Data$Pass < 6)
-Tier3 = subset(Data, Data$Pass >= 4 & Data$Pass < 5)
+Data1 = subset(Data, Data$Pass >= 5)
+Data1
+Stationarity = subset(Data, Data$Stationarity_Tests == "Pass")
+Stationarity
+Normality = subset(Data, Data$Normality_Tests == "Pass")
+Normality
+Residuals = subset(Data, Data$Residual_Tests == "Pass")
+Residuals
 ```
 
 
@@ -846,7 +917,6 @@ y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 # V1
 ```{r, warning=FALSE}
 
-Best_Models1 = sort(Best_Models[[t]]$pass)
 
 for(t in 1:length(Best_Models)){
   for(s in 1:length(Best_Models[[t]]$residuals)){
@@ -875,7 +945,8 @@ for(t in 1:length(Best_Models)){
     mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
     m <- mean(res)
     std <- sqrt(var(res))
-    curve( dnorm(res,m,std), add=TRUE)
+    x = res
+    curve( dnorm(x,m,std), add=TRUE)
     qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
     qqline(res,col="blue")
     x=acf2(res, main=name)
@@ -889,7 +960,7 @@ for(t in 1:length(Best_Models)){
 ```{r, warning=FALSE}
 
 
-for(t in 1:length(Best_Models)){
+for(t in 1:length(Best_Models_a)){
   op <- par("mfrow", "mar")
   par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
   res = Best_Models_a[[t]]
