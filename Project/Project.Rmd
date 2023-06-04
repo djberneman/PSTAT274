@@ -290,27 +290,28 @@ vect1 = append(vect1, "Vaccinated3b")
 bc = list()
 log = list()
 sqrt = list()
-Data_a <- data.frame(matrix(ncol=19, nrow=480))
+Data_a <- data.frame(matrix(ncol=20, nrow=480))
 colnames(Data_a) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", 
                     "Anderson-Darling Test", "Shapiro test", 
                     "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", 
                     "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance", 
                     "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance", 
-                    "Variance", "Variance_test", "AICc")
+                    "Variance", "Variance_test", "AICc", "X")
 
 # For tests, reject if p < 0.05
-ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
-shapiro_test = list()   # H_0 = data is normal (do not want to reject)
-kpss_test = list()    # H_0 = data is stationary (do not want to reject)
-adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
-Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
-Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
-McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
+ad_test_a = list()    # H_0 = data is normally distributed (do not want to reject)
+shapiro_test_a = list()   # H_0 = data is normal (do not want to reject)
+kpss_test_a = list()    # H_0 = data is stationary (do not want to reject)
+adf_test_a = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
+Box_Pierce_test_a = list()  # H_0 = data are white noise (do not want to reject)
+Ljung_Box_test_a = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
+McLeod_Li_test_a = list()   # H_0 = Independence of residuals (do not want to reject)
 
 # Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
 
 # Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
-transformation_name = vector()
+transformation_name1 = vector()
+Difference1 = vector()
 Best_Models_a = list()
 Best_Models_a1 = list()
 
@@ -323,27 +324,28 @@ for(i in 1:length(vect)){
   title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
   
   # Perform transformations, plot transformed data, histograms:
-  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
-  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
+  assign(paste0(vect1[i], "1"),  data.frame(vect[[i]]))
+  assign(paste0(vect1[i], ".bc1"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  assign(paste0(vect1[i], ".log1"),  data.frame(log(vect[[i]])))
+  assign(paste0(vect1[i], ".sqrt1"), data.frame(sqrt(vect[[i]])))
   
   transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, get(paste0(vect1[i], ".bc")))
-  transform = append(transform, get(paste0(vect1[i], ".log")))
-  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
+  transform = append(transform, get(paste0(vect1[i], "1")))
+  transform = append(transform, get(paste0(vect1[i], ".bc1")))
+  transform = append(transform, get(paste0(vect1[i], ".log1")))
+  transform = append(transform, get(paste0(vect1[i], ".sqrt1")))
 
   transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], "1"))
   `_` = append(`_`, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  bc = append(bc, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  log = append(log, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
+  transform_name = append(transform_name, paste0(vect1[i], ".bc1"))
+  bc = append(bc, paste0(vect1[i], ".bc1"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log1"))
+  log = append(log, paste0(vect1[i], ".log1"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt1"))
+  sqrt = append(sqrt, paste0(vect1[i], ".sqrt1"))
   
-  transformation_name = append(transformation_name, transform_name)
+  transformation_name1 = append(transformation_name1, transform_name)
   
 # For each of the 3 transformations and the original for each data set, 
 # we will test the goodness of fit when each time series is differenced at: 
@@ -361,6 +363,7 @@ for(i in 1:length(vect)){
     difference = vector()
     diff_name = vector()
     for(k in 1:length(list)){
+      Data_a$X[x] = x
       Data_a$Grandparent_Variance[x] = signif(var(vect[[i]]), 4)
       Data_a$Parent_Variance[x] = signif(var(transform[[j]]), 4)
       Data_a$Dataset[x] = vect1[i]
@@ -378,8 +381,7 @@ for(i in 1:length(vect)){
         Data_a$Average[x] = "Daily"}
       
       diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-      assign(paste0("diff_name_", transform_name[j]), diff_name)
-      
+
       if(list[k]==0){
         Data_a[x,1] = diff_name[k]
         Data_a$Differencing[x] = "Lag = none"
@@ -414,7 +416,10 @@ for(i in 1:length(vect)){
         if(list[k]==1.12){
           Data_a$Nonseasonal_Variance[x] = Data_a$Nonseasonal_Variance[x-4]}}
       if(list[k]==1.12){
-        assign(paste0("diff_", transform_name[j]), difference)}
+        assign(paste0("diff_", transform_name[j]), difference)
+        Difference1 = append(Difference1, get(paste0("diff_", transform_name[j])))
+        assign(paste0("diff_name_", transform_name[j]), diff_name)}
+      
       
       Data_a[x, 6] = round(ad.test(difference[[k]])$p.value, digits=5)
       
@@ -492,7 +497,11 @@ for(i in 1:length(vect)){
           Best_Models_a = append(Best_Models_a, difference[k])}}
       x = x + 1}}}
 
+Dict1 = dict(init_keys = NULL, init_values = NULL)
+for(i in 1:480){
+  Dict1[Data_a$Name[i]] = Difference1[[i]]}
 
+Dict1$keys[3]
 
 Tier1_a1 = subset(Data_a, Data_a$Pass >= 6)
 
@@ -511,13 +520,13 @@ Tier1_a1 = subset(Data_a, Data_a$Pass >= 6)
 bc = list()
 log = list()
 sqrt = list()
-Data <- data.frame(matrix(ncol=19, nrow=480))
+Data <- data.frame(matrix(ncol=20, nrow=480))
 colnames(Data) <- c("Name", "Dataset", "Average", "Transformation", "Differencing", 
                     "Anderson-Darling Test", "Shapiro test", 
                     "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test", 
                     "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance", 
                     "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance", 
-                    "Variance", "Variance_test", "AICc")
+                    "Variance", "Variance_test", "AICc", "X") 
 
 # For tests, reject if p < 0.05
 ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
@@ -533,6 +542,7 @@ McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reje
 # Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
 transformation_name = vector()
 Best_Models = list()
+Difference = vector()
 x = 1
 for(i in 1:length(vect)){
   bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
@@ -580,6 +590,7 @@ for(i in 1:length(vect)){
     difference = vector()
     diff_name = vector()
     for(k in 1:length(list)){
+      Data$X[x] = x
       Data$Grandparent_Variance[x] = signif(var(vect[[i]]), 4)
       Data$Parent_Variance[x] = signif(var(transform[[j]]), 4)
       Data$Dataset[x] = vect1[i]
@@ -597,7 +608,7 @@ for(i in 1:length(vect)){
         Data$Average[x] = "Daily"}
       
       if(list[k]==0){
-        diff_name = append(diff_name, transform_name[j])
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
         Data[x,1] = transform_name[j]
         Data$Differencing[x] = "Lag = none, Period = none"
         difference = append(difference, transform[j])
@@ -607,6 +618,7 @@ for(i in 1:length(vect)){
         Data$Seasonal_Variance[x] = Data$Variance[x]}
       diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
       if(list[k]==1){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
         assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
           transform[[j]], order = c(0,1,0), method="ML")$residuals)
         AICc = arima(transform[[j]], order = c(0,1,0), method="ML")
@@ -620,6 +632,7 @@ for(i in 1:length(vect)){
         Data$Nonseasonal_Variance[x] = Data$Variance[x]
         Data$Seasonal_Variance[x] = Data$Variance[x]}
       if(list[k]==7 | list[k]==12){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
         assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
           transform[[j]], order = c(0,0,0), seasonal=list(
             order=c(0,1,0), period = list[k]), method="ML")$residuals)
@@ -639,6 +652,7 @@ for(i in 1:length(vect)){
       if(list[k]==12){
         Data$Nonseasonal_Variance[x] = Data$Variance[x-3]}
       if(list[k]==1.7){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
         assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
           transform[[j]], order = c(0,1,0), seasonal=list(
             order=c(0,1,0), period = 7), method="ML")$residuals)
@@ -655,6 +669,7 @@ for(i in 1:length(vect)){
         Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-3]
         Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]}
       if(list[k]==1.12){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
         assign(paste0(transform_name[j], "(", list[k], ")"),  arima(
           transform[[j]], order = c(0,1,0), seasonal=list(
             order=c(0,1,0), period = 12), method="ML")$residuals)
@@ -670,6 +685,7 @@ for(i in 1:length(vect)){
         Data$Variance[x] = signif(var(get(
           paste0(transform_name[j], "(", list[k], ")"))), 4)
         assign(paste0("diff_", transform_name[j]), difference)
+        Difference = append(Difference, get(paste0("diff_", transform_name[j])))
         assign(paste0("diff_name_", transform_name[j]), diff_name)}
       
       ad_test <- append(ad_test, ad.test(difference[[k]]))
@@ -779,14 +795,9 @@ for(i in 1:length(vect)){
           Best_Models = append(Best_Models, list(arima))}}
       x = x + 1}}}
 
-Data_AD_Pass = subset(Data, Data$`Anderson-Darling Test` > 0.05)[, c(1:12, 18, 20)]
-Data_AD_Pass
-Data_Shapiro_Pass = subset(Data, Data$`Shapiro test` > 0.05)[, c(1:12, 18, 20)]
-Data_Shapiro_Pass
-Data_ADF_Pass = subset(Data, Data$`Augmented Dickey-Fuller Test` < 0.05)[, c(1:12, 18, 20)]
-Data_ADF_Pass
-Data_KPSS_Pass = subset(Data, Data$`KPSS Test` >= 0.05)[, c(1:12, 18, 20)]
-Data_KPSS_Pass
+Dict = dict(init_keys = NULL, init_values = NULL)
+for(i in 1:480){
+  Dict[Data$Name[i]] = Difference[[i]]}
 
 Data1 = subset(Data, Data$Pass >= 4)
 Tier1 = subset(Data, Data$Pass >= 6)
@@ -915,394 +926,6 @@ for(t in 1:length(Best_Models)){
 
 ```
 
-```{r}
-arima = arima(Best_Models_a[[12]], order=c(1,0,0), method="ML")
-ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("yule-walker"))
-ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("mle"))
-ar(Best_Models_a[[12]], aic = TRUE, order.max = NULL, method = c("ols"))
-
-ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("yule-walker"))
-ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("mle"))
-ar(Best_Models_a[[12]], aic = FALSE, order.max = NULL, method = c("ols"))
-
-arima
-plot.ts(res, main=name)
-abline(h=mean(res), col= "blue")
-abline(lm(res ~ as.numeric(1:length(res))), col="red")
-periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
-periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
-abline(h=0)
-hist(res, col="light blue", xlab="", main=name, prob=TRUE)
-mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
-m <- mean(res)
-std <- sqrt(var(res)) 
-curve( dnorm(x,m,std), add=TRUE)
-qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
-qqline(res,col="blue")
-x=acf2(res, main=name)
-mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
-mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
-
-```
-
-
-# ACFs and PACFs
-```{r, warning=FALSE}
-for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
-
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
-  
-  # Perform transformations, plot transformed data, histograms:
-  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
-  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
-  
-  transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, get(paste0(vect1[i], ".bc")))
-  transform = append(transform, get(paste0(vect1[i], ".log")))
-  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
-
-  assign(paste0("form_", vect1[i]), transform)
-  
-
-  transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-
-  assign(paste0("name", vect1[i]), transform_name)
-  
-  list = c(0,1,7,12,1.7,1.12)
-  for(j in 1:length(transform)){
-    difference = vector()
-    diff_name = vector()
-    for(k in 1:length(list)){
-      if(list[k]==0){
-        diff_name = append(diff_name, transform_name[j])
-        difference = append(difference, transform[j])}
-      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-      if(list[k]==1){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==7 | list[k]==12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,0,0), seasonal=list(order=c(0,1,0), period = list[k]), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==1.7){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 7), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-      if(list[k]==1.12){
-        assign(paste0(transform_name[j], "(", list[k], ")"),  arima(transform[[j]], order = c(0,1,0), seasonal=list(order=c(0,1,0), period = 12), method="ML")$residuals)
-        difference = append(difference, data.frame(get(paste0(transform_name[j], "(", list[k], ")"))))}
-    assign(paste0("diff_", transform_name[j]), difference)
-    assign(paste0("diff_name_", transform_name[j]), diff_name)
-    
-    if(list[k]==0){
-      x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)}
-    else{
-      x=acf2(difference[[k]], main=diff_name[k+1])
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(difference[[k]])$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test((difference[[k]])^2, lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(difference[[k]])$p.value, digits=3)), side=3, line=7, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(difference[[k]], lag = sqrt(length(difference[[k]])), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(difference[[k]], lag=sqrt(length(difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(difference[[k]])$p.value, digits=3)), side=3, line=6, adj=1.2, cex=0.8)}}}}
-
-
-
-```
-
-
-```{r, warning=FALSE}
-Tier1$Name
-= `Cases1a(1)`
-
-
-x = arima(`Cases1a`, order = c(2,0,2), seasonal=list(order=c(3,1,4), period = 2), method="ML", include.mean = TRUE)
-
-x = ARIMA_Cases1a_x$arma
-y=acf2(x$residuals, main = x$call)
-      mtext(paste0("Shapiro: p-value = ", signif(shapiro.test(x$residuals)$p.value, digits=3), "     McLeod-Li: p-value = ", signif(Box.test(x$residuals^2, lag=sqrt(length(x$residuals)), type=c("Ljung-Box"), fitdf = 2)$p.value, digits=3), "     ad.test: p-value = ", signif(ad.test(x$residuals)$p.value, digits=3)), side=1, line=-5.5, adj=1.15, cex=0.8)
-      mtext(paste0("Box-Pierce: p-value = ", signif(Box.test(x$residuals, lag = sqrt(length(x$residuals)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3),"     Ljung-Box: p-value = ", signif(Box.test(x$residuals, lag=sqrt(length(x$residuals)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: p-value = ", signif(kpss.test(x$residuals)$p.value, digits=3)), side=1, line=-6.5, adj=1.2, cex=0.8)
-
-
-title = paste0(x$series, "Arima(", x$arma[1], ",", x$arma[6], ",", x$arma[2], ")x(", x$arma[3], ",", x$arma[7], ",", x$arma[4], ")_", x$arma[5])
-x$arma[3]
-
-      
-      
-      
-for(i in 1)
-
-
-```
-
-```{r}
-for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
-
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
-  
-  # Perform transformations, plot transformed data, histograms:
-  assign(paste0(vect1[i], ".bc"),  data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  assign(paste0(vect1[i], ".log"),  data.frame(log(vect[[i]])))
-  assign(paste0(vect1[i], ".sqrt"), data.frame(sqrt(vect[[i]])))
-  
-  transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, get(paste0(vect1[i], ".bc")))
-  transform = append(transform, get(paste0(vect1[i], ".log")))
-  transform = append(transform, get(paste0(vect1[i], ".sqrt")))
-
-  assign(paste0("form_", vect1[i]), transform)
-  
-
-  transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-
-    assign(paste0("name", vect1[i]), transform_name)
-    
-    for(j in 1:length(transform)){
-      print(periodogram(transform[[j]], log = 'yes'))}}
-
-```
-# Differencing
-```{r}
-Mortality = Mortality.log
-
-# To produce decomposition of Mortality:
-x <- ts(as.ts(Mortality), frequency = 7)
-decomp1 <- decompose(x)
-plot(decomp1)
-
-y <- ts(as.ts(Mortality), frequency = 12)
-decomp2 <- decompose(y)
-plot(decomp2)
-
-z <- ts(as.ts(Mortality), frequency = 14)
-decomp3 <- decompose(z)
-plot(decomp3)
-
-Frame = data.frame(matrix(nrow=8, ncol=6))
-colnames(Frame) <- c("Model", "Nonseasonal", "Seasonal", "Mean", "Variance", "AICc")
-Frame$Model <- c("Mortality", "Mortality_1", "Mortality_7", "Mortality_12", "Mortality_14", "Mortality_1.7", "Mortality_1.12", "Mortality_1.14")
-Frame$Nonseasonal[1:8] <- c("None", 1, "None", "None", "None", 1, 1, 1)
-Frame$Seasonal[1:8] <- c("None", "None", 7, 12, 14, 7, 12, 14)
-
-
-# Original
-plot.ts(Mortality)
-nt=length(Mortality)
-abline(h=mean(Mortality), col= "blue")
-fit <- lm(Mortality ~ as.numeric(1:nt))
-abline(fit, col="red")
-x = arima(Mortality, order=c(0,0,0), method="ML")
-Frame$AICc[1]=AIC(x)
-Frame$Mean[1] = mean(Mortality)
-Frame$Variance[1] = var(Mortality)
-
-# Differencing Mortality:
-
-Mortality_1 <- diff(Mortality, lag=1)
-fit <- lm(Mortality_1 ~ as.numeric(1:length(Mortality_1)))
-plot.ts(Mortality_1, main="(Mortality) differenced at lag 1");
-abline(fit, col="red") 
-abline(h=mean(Mortality_1), col="blue")
-x = arima(Mortality_1, order=c(0,0,0), method="ML")
-Frame$AICc[2]=AIC(x)
-Frame$Mean[2] = mean(Mortality_1)
-Frame$Variance[2] = var(Mortality_1)
-
-Mortality_7 <- diff(Mortality, lag=7)
-fit <- lm(Mortality_7 ~ as.numeric(1:length(Mortality_7)))
-plot.ts(Mortality_7, main="(Mortality) differenced at lag 7")
-abline(fit, col="red")
-abline(h=mean(Mortality_7), col="blue")
-x = arima(Mortality_7, order=c(0,0,0), method="ML")
-Frame$AICc[3]=AIC(x)
-Frame$Mean[3] = mean(Mortality_7)
-Frame$Variance[3] = var(Mortality_7)
-
-Mortality_12 <- diff(Mortality, lag=12)
-fit <- lm(Mortality_12 ~ as.numeric(1:length(Mortality_12)))
-plot.ts(Mortality_12, main="(Mortality) differenced at lag 12")
-abline(fit, col="red")
-abline(h=mean(Mortality_12), col="blue")
-x = arima(Mortality_12, order=c(0,0,0), method="ML")
-Frame$AICc[4]=AIC(x)
-Frame$Mean[4] = mean(Mortality_12)
-Frame$Variance[4] = var(Mortality_12)
-
-Mortality_14 <- diff(Mortality, lag=14)
-fit <- lm(Mortality_14 ~ as.numeric(1:length(Mortality_14)))
-plot.ts(Mortality_14, main="(Mortality) differenced at lag 14")
-abline(fit, col="red")
-abline(h=mean(Mortality_14), col="blue")
-x = arima(Mortality_14, order=c(0,0,0), method="ML")
-Frame$AICc[5]=AIC(x)
-Frame$Mean[5] = mean(Mortality_14)
-Frame$Variance[5] = var(Mortality_14)
-
-Mortality_1.7 <- diff(Mortality_1, lag=7)
-fit <- lm(Mortality_1.7 ~ as.numeric(1:length(Mortality_1.7)))
-plot.ts(Mortality_1.7, main="(Mortality) differenced at lag 1 and lag 7")
-abline(fit, col="red")
-abline(h=mean(Mortality_1.7), col="blue")
-x = arima(Mortality_1.7, order=c(0,0,0), method="ML")
-Frame$AICc[6]=AIC(x)
-Frame$Mean[6] = mean(Mortality_1.7)
-Frame$Variance[6] = var(Mortality_1.7)
-
-Mortality_1.12 <- diff(Mortality_1, lag=12)
-fit <- lm(Mortality_1.12 ~ as.numeric(1:length(Mortality_1.12)))
-plot.ts(Mortality_1.12, main="(Mortality) differenced at lag 1 and lag 12")
-abline(fit, col="red")
-abline(h=mean(Mortality_1.12), col="blue")
-x = arima(Mortality_1.12, order=c(0,0,0), method="ML")
-Frame$AICc[7]=AIC(x)
-Frame$Mean[7] = mean(Mortality_1.12)
-Frame$Variance[7] = var(Mortality_1.12)
-
-Mortality_1.14 <- diff(Mortality_1, lag=14)
-fit <- lm(Mortality_1.14 ~ as.numeric(1:length(Mortality_1.14)))
-plot.ts(Mortality_1.14, main="(Mortality) differenced at lag 1 and lag 14")
-abline(fit, col="red")
-abline(h=mean(Mortality_1.14), col="blue")
-x = arima(Mortality_1.14, order=c(0,0,0), method="ML")
-Frame$AICc[8]=AIC(x)
-Frame$Mean[8] = mean(Mortality_1.14)
-Frame$Variance[8] = var(Mortality_1.14)
-
-Frame["Lowest AICc"] <- as.integer(rank(Frame$AICc))
-Frame["Lowest Variance"] <- as.integer(rank(Frame$Variance))
-Frame = Frame[1:8, c(1:5, 7, 6, 8)]
-Frame
-
-```
-\
-Since the trend line is the same as the mean when differencing at lag 1 and at either lag 7, lag 12, or lag 14, we will only be testing models that have a nonseasonal diference at lag 1. In addition, the largest AICcs were those with a nonseasonal and a seasonal difference.
-
-# Differencing ACF/PACF
-```{r}
-x=acf2(Mortality)
-x=acf2(Mortality_1)
-x=acf2(Mortality_7)
-x=acf2(Mortality_12)
-x=acf2(Mortality_14)
-x=acf2(Mortality_1.7)
-x=acf2(Mortality_1.12)
-x=acf2(Mortality_1.14)
-```
-
-# Test
-```{r}
-# Trying models. Some R Commands:
-
-Data = data.frame(matrix(nrow=972, ncol=2))
-colnames(Data) = c("Model", "AICc")
-
-auto.arima(Mortality_1.7)
-
-loop.s = c(12)
-loop.p = c(0,1,2,3,4,5,6,7,8,9,10)
-loop.d = c(1,2)
-loop.q = c(0,1,2,3,4,5,6,7,8,9,10)
-loop.P = c(1,2)
-loop.Q = c(0,1,2)
-loop.D = c(0,1,2)
-
-i = 1
-for(s in loop.s){
-  for(D in loop.D){
-    for(Q in loop.Q){
-      for(P in loop.P){
-        if(P==D & D==Q & D==0){
-          for(d in loop.d){
-            for(q in loop.q){
-              for(p in loop.p){
-                Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")
-                if(p==1 & q==1){
-                  assign(paste0("ARIMA(", p, ",", d, ",", q, ")"), arima(Mortality_1, order=c(p,0,q), method="ML"))
-                  Data[i, 2] = AIC(get(paste0("ARIMA(", p, ",", d, ",", q, ")")))
-                  x=acf2(get(paste0("ARIMA(", p, ",", d, ",", q, ")"))$residuals, main = paste0("ARIMA(", p, ",", d, ",", q, ")  AICc = ", Data[i,2]))}
-                else{
-                  assign(paste0("ARIMA(", p, ",", d, ",", q, ")"), arima(Mortality, order=c(p,d,q), method="ML"))
-                  Data[i, 2] = AIC(get(paste0("ARIMA(", p, ",", d, ",", q, ")")))
-                  x=acf2(get(paste0("ARIMA(", p, ",", d, ",", q, ")"))$residuals, main = paste0("ARIMA(", p, ",", d, ",", q, ")  AICc = ", Data[i,2]))}}
-              i=i+1}}}
-        else{
-          for(d in loop.d){
-            for(q in loop.q){
-              for(p in loop.p){
-                if(p==d & q==d){
-                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                  assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), arima(Mortality_1, order=c(p,0,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
-                  Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                  x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
-                else{
-                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                  assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
-                  Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                  x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
-              i = i + 1}}}}}}}}
-
-Data["Lowest AICc"] <- as.integer(rank(Data$AICc))
-Data
-arima(Mortality, order = c(1,1,1), seasonal=list(order=c(1,1,1), period = 7))
-auto.arima
-```
-
-
-
-```{r}
-Data = data.frame(matrix(nrow=972, ncol=2))
-colnames(Data) = c("Model", "AICc")
-
-loop.s = c(7)
-loop.p = c(0,1,2,3,4,5)
-loop.d = c(1)
-loop.q = c(0,1,2,3,4,5)
-loop.P = c(0,1,2)
-loop.Q = c(0,1,2)
-loop.D = c(0,1,2)
-
-i = 1
-for(s in loop.s){
-  for(D in loop.D){
-    for(Q in loop.Q){
-      for(P in loop.P){
-        for(d in loop.d){
-          for(q in loop.q){
-            for(p in loop.p){
-              if((p==3 & d==1 & q==2 & P==1 & Q==1 & D==0) | (p==5 & d==1 & q==5 & P==1 & Q==1 & D==0) | (p==3 & d==1 & q==2 & P==2 & Q==1 & D==0) | (p==1 & d==1 & q==3 & P==2 & Q==1 & D==0) | (p==4 & d==1 & q==4 & P==2 & Q==1 & D==0)){
-                Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s)))
-                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))}
-              else{
-                if(P==0 & Q==0 & D==0){
-                  Data[i, 1] = paste0("ARIMA(", p, ",", d, ",", q, ")")}
-                else{
-                  Data[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)}
-                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       arima(Mortality, order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML"))
-                Data[i, 2] = AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)))
-                x=acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2]))
-              i=i+1}}}}}}}}
-                  
-auto.arima(Mortality)
-```
-
 
 ```{r}
 x
@@ -1339,34 +962,104 @@ for(s in loop.s){
 
 
 ```{r}
-x
-Data = data.frame(matrix(nrow=972, ncol=2))
-colnames(Data) = c("Model", "AICc")
-
-loop.s = c(12)
-loop.p = c(0,1,2,3,4,5,12,15)
-loop.d = c(0,1)
-loop.q = c(0,1,2,3,4,5,12,15)
-loop.P = c(0,1)
-loop.Q = c(0,1)
-loop.D = c(0)
+Data_aa = data.frame(matrix(nrow=10000, ncol=3))
+colnames(Data_aa) = c("Model", "AICc", "Pass")
 
 i = 1
-for(s in loop.s){
-  for(D in loop.D){
-    for(Q in loop.Q){
-      for(P in loop.P){
-        for(d in loop.d){
-          for(q in loop.q){
-            for(p in loop.p){
-                Data[i, 1] = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                assign(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       try(arima(Best_Models_a[[12]], order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML")))
-                Data[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
-                x=try(acf2(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2])))
-                i=i}
-              }}}}}}
+for(x in 1:length(Best_Models_a)){
+  min = vector()
+  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order)}
+  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("mle"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("mle"))$order)}
+  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("ols"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("ols"))$order)}
+  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order)}
+  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("mle"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("mle"))$order)}
+  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order > 0){
+    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order)}
+  min = sort(min)[1]
+
+  num = 4 * (x-1) + 2
+  Set = 4 * (x-1) + 3
+  name = Best_Models_a1[[Set]]
+  Name = vect1[name]
+  number = Best_Models_a1[[num]]
+  if(Data_a$Differencing[[number]] == "Lag = 1 & Lag = 7"){
+    s = 7
+    d = 1
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = 1 & Lag = 12"){
+    s = 12
+    d = 1
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = 1"){
+    s = 0
+    d = 1
+    D = 0}
+  if(Data_a$Differencing[[number]] == "Lag = 7"){
+    s = 7
+    d = 0
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = 12"){
+    s = 12
+    d = 0
+    D = 1}
+  
+  if(min >= 4){
+    loop.p = c(0,1,2,min-1,min)
+    loop.q = c(0,1,2,min-1,min)}
+  else{
+    loop.p = c(seq(0,5))
+    loop.q = c(seq(0,5))}
+
+  loop.P = c(0,1,2)
+  loop.Q = c(0,1,2)
+  
+  for(Q in loop.Q){
+    for(P in loop.P){
+      for(q in loop.q){
+        for(p in loop.p){
+          print(paste0(i, ".", x))
+          Data_aa[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+          assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                 try(arima(Best_Models_a[[x]], order=c(p,d,q), seasonal=list(
+                   order=c(P,D,Q), period=s), method="ML")))
+          Data_aa[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
+          res = try(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals)
+          Data_aa$Pass[i] = 0
+          if(try(round(ad.test(difference[[k]])$p.value, digits=5) >= 0.05) |
+             try(round(shapiro.test(difference[[k]])$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(adf.test(difference[[k]])$p.value, digits=5) <= 0.05) |
+             try(round(kpss.test(difference[[k]])$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
+            difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
+            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test((difference[[k]])^2, lag=sqrt(length(
+            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(Data_aa$Pass[i] >= 3){
+            z=try(acf2(res, main = paste0(Name, "SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data_aa[i,2]), cex=0.8))
+            try(mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), 
+                             "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), 
+                                                                fitdf = 0)$p.value, digits=3),
+                             "     ad.test: ", round(ad.test(res)$p.value, digits=3)), 
+                      side=3, line=-9, adj=0, cex=0.7))
+            try(mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), 
+                                                            fitdf = 0)$p.value, digits=3), 
+                             "     adf.test: ", round(adf.test(res)$p.value, digits=3), 
+                             "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), 
+                                                            fitdf = 0)$p.value, digits=3), 
+                             "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), 
+                      side=3, line=-10, adj=0, cex=0.7))}
+                i=i+1}}}}}
 
 ```
 
