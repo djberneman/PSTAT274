@@ -949,10 +949,11 @@ for(t in 1:length(Best_Models)){
     curve( dnorm(x,m,std), add=TRUE)
     qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
     qqline(res,col="blue")
+    cpgram(res, main=name)
+    par(mfrow = op$mfrow, mar = op$mar)
     x=acf2(res, main=name)
-    mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
-    mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
-    par(mfrow = op$mfrow, mar = op$mar)}}
+    mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-7.5, adj=0, cex=0.7)
+    mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)}}
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
@@ -964,6 +965,7 @@ for(t in 1:length(Best_Models_a)){
   op <- par("mfrow", "mar")
   par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
   res = Best_Models_a[[t]]
+  res = 
   z = 4* (t-1) +1
   zzz = 4*t-1
   zzzz=4*t
@@ -990,10 +992,11 @@ for(t in 1:length(Best_Models_a)){
   curve( dnorm(x,m,std), add=TRUE)
   qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
   qqline(res,col="blue")
+  cpgram(res, main=name)
+    par(mfrow = op$mfrow, mar = op$mar)
   x=acf2(res, main=name)
-  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=3, line=6.75, adj=-2.5, cex=0.7)
-  mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=3, line=5.75, adj=2.5, cex=0.7)
-  par(mfrow = op$mfrow, mar = op$mar)}
+  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-7.5, adj=0, cex=0.7)
+    mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)}
 
 ```
 
