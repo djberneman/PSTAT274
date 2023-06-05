@@ -121,16 +121,16 @@ Deaths1b = data.frame(Deaths1b)
 
 # Mortality: [January 12, 2020 - May 24, 2023]
   # Daily
-Mortality1a = ts(covid$Mortality[10:1238])
-Mortality1a= data.frame(Mortality1a)
+Mort1a = ts(covid$Mortality[10:1238])
+Mort1a= data.frame(Mort1a)
   # Weekly
-Mortality1b=vector()
+Mort1b=vector()
 for(i in 1:175){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Mortality1b <- append(Mortality1b, mean(Mortality1a[x:y, 1]))
-  Mortality1b = ts(Mortality1b)}
-Mortality1b = data.frame(Mortality1b)
+  Mort1b <- append(Mort1b, mean(Mort1a[x:y, 1]))
+  Mort1b = ts(Mort1b)}
+Mort1b = data.frame(Mort1b)
 
 
 # Cases: [January 8, 2020 - December 3, 2020]
@@ -163,16 +163,16 @@ Deaths2b = data.frame(Deaths2b)
 
 # Mortality: [January 12, 2020 - December 3, 2020]
   # Daily
-Mortality2a = ts(covid$Mortality[10:336])
-Mortality2a= data.frame(Mortality2a)
+Mort2a = ts(covid$Mortality[10:336])
+Mort2a= data.frame(Mort2a)
   # Weekly
-Mortality2b=vector()
+Mort2b=vector()
 for(i in 1:46){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Mortality2b <- append(Mortality2b, mean(Mortality2a[x:y, 1]))
-  Mortality2b = ts(Mortality2b)}
-Mortality2b = data.frame(Mortality2b)
+  Mort2b <- append(Mort2b, mean(Mort2a[x:y, 1]))
+  Mort2b = ts(Mort2b)}
+Mort2b = data.frame(Mort2b)
 
 
 # Cases: [December 4, 2020 - May 24, 2023]
@@ -205,30 +205,30 @@ Deaths3b = data.frame(Deaths3b)
 
 # Mortality: [December 4, 2020 - May 24, 2023]
   # Daily
-Mortality3a = ts(covid$Mortality[337:1238])
-Mortality3a= data.frame(Mortality3a)
+Mort3a = ts(covid$Mortality[337:1238])
+Mort3a= data.frame(Mort3a)
   # Weekly
-Mortality3b=vector()
+Mort3b=vector()
 for(i in 1:128){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Mortality3b <- append(Mortality3b, mean(Mortality3a[x:y, 1]))
-  Mortality3b = ts(Mortality3b)}
-Mortality3b = data.frame(Mortality3b)
+  Mort3b <- append(Mort3b, mean(Mort3a[x:y, 1]))
+  Mort3b = ts(Mort3b)}
+Mort3b = data.frame(Mort3b)
 
 
-# Vaccinated: [December 4, 2020 - May 24, 2023]
+# Vax: [December 4, 2020 - May 24, 2023]
   # Daily
-Vaccinated3a = ts(covid$people_vaccinated[337:1238])
-Vaccinated3a= data.frame(Vaccinated3a)
+Vax3a = ts(covid$people_vaccinated[337:1238])
+Vax3a= data.frame(Vax3a)
   # Weekly
-Vaccinated3b=vector()
+Vax3b=vector()
 for(i in 1:128){
   x = 7 * (i-1) + 1
   y = 7 * i
-  Vaccinated3b <- append(Vaccinated3b, mean(Vaccinated3a[x:y, 1]))
-  Vaccinated3b = ts(Vaccinated3b)}
-Vaccinated3b = data.frame(Vaccinated3b)
+  Vax3b <- append(Vax3b, mean(Vax3a[x:y, 1]))
+  Vax3b = ts(Vax3b)}
+Vax3b = data.frame(Vax3b)
 
 
 vect = vector()
@@ -236,44 +236,44 @@ vect = append(vect, Cases1a)
 vect = append(vect, Cases1b)
 vect = append(vect, Deaths1a)
 vect = append(vect, Deaths1b)
-vect = append(vect, Mortality1a)
-vect = append(vect, Mortality1b)
+vect = append(vect, Mort1a)
+vect = append(vect, Mort1b)
 vect = append(vect, Cases2a)
 vect = append(vect, Cases2b)
 vect = append(vect, Deaths2a)
 vect = append(vect, Deaths2b)
-vect = append(vect, Mortality2a)
-vect = append(vect, Mortality2b)
+vect = append(vect, Mort2a)
+vect = append(vect, Mort2b)
 vect = append(vect, Cases3a)
 vect = append(vect, Cases3b)
 vect = append(vect, Deaths3a)
 vect = append(vect, Deaths3b)
-vect = append(vect, Mortality3a)
-vect = append(vect, Mortality3b)
-vect = append(vect, Vaccinated3a)
-vect = append(vect, Vaccinated3b)
+vect = append(vect, Mort3a)
+vect = append(vect, Mort3b)
+vect = append(vect, Vax3a)
+vect = append(vect, Vax3b)
 
 vect1 = vector()
 vect1 = append(vect1, "Cases1a")
 vect1 = append(vect1, "Cases1b")
 vect1 = append(vect1, "Deaths1a")
 vect1 = append(vect1, "Deaths1b")
-vect1 = append(vect1, "Mortality1a")
-vect1 = append(vect1, "Mortality1b")
+vect1 = append(vect1, "Mort1a")
+vect1 = append(vect1, "Mort1b")
 vect1 = append(vect1, "Cases2a")
 vect1 = append(vect1, "Cases2b")
 vect1 = append(vect1, "Deaths2a")
 vect1 = append(vect1, "Deaths2b")
-vect1 = append(vect1, "Mortality2a")
-vect1 = append(vect1, "Mortality2b")
+vect1 = append(vect1, "Mort2a")
+vect1 = append(vect1, "Mort2b")
 vect1 = append(vect1, "Cases3a")
 vect1 = append(vect1, "Cases3b")
 vect1 = append(vect1, "Deaths3a")
 vect1 = append(vect1, "Deaths3b")
-vect1 = append(vect1, "Mortality3a")
-vect1 = append(vect1, "Mortality3b")
-vect1 = append(vect1, "Vaccinated3a")
-vect1 = append(vect1, "Vaccinated3b")
+vect1 = append(vect1, "Mort3a")
+vect1 = append(vect1, "Mort3b")
+vect1 = append(vect1, "Vax3a")
+vect1 = append(vect1, "Vax3b")
 ```
 \
 
@@ -528,6 +528,7 @@ Dict1 = dict(init_keys = NULL, init_values = NULL)
 for(i in 1:480){
   Dict1[Data_a$Name[i]] = Difference1[[i]]}
 
+Data_a["Dict"] = 2
 
 Data_a1 = subset(Data_a, Data_a$Pass >= 4)
 Data_a1
@@ -866,6 +867,8 @@ Dict = dict(init_keys = NULL, init_values = NULL)
 for(i in 1:480){
   Dict[Data$Name[i]] = Difference[[i]]}
 
+Data["Dict"] = 1
+
 Data1 = subset(Data, Data$Pass >= 5)
 Data1
 Stationarity = subset(Data, Data$Stationarity_Tests == "Pass")
@@ -913,47 +916,221 @@ vect
 y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 ```
 
+```{r}
+plot_fn = function(name, arima){
+  x=acf2(res, main=name)
+  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
+  mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)
+  op <- par("mfrow", "mar")
+  par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+  res = arima$residuals
+  require(TSA)
+  plot.ts(res, main=name)
+  abline(h=mean(res), col= "blue")
+  abline(lm(res ~ as.numeric(1:length(res))), col="red")
+  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
+  abline(h=0)
+  hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+  mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+  m <- mean(res)
+  std <- sqrt(var(res))
+  x = res
+  curve( dnorm(x,m,std), add=TRUE)
+  qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
+  qqline(res,col="blue")
+  cpgram(res, main=name)
+  par(mfrow = op$mfrow, mar = op$mar)}
+
+plot_fxn = function(name, res){
+  x=acf2(res, main=name)
+  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
+  mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)
+  op <- par("mfrow", "mar")
+  par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+  require(TSA)
+  plot.ts(res, main=name)
+  abline(h=mean(res), col= "blue")
+  abline(lm(res ~ as.numeric(1:length(res))), col="red")
+  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
+  abline(h=0)
+  hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+  mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+  m <- mean(res)
+  std <- sqrt(var(res))
+  x = res
+  curve( dnorm(x,m,std), add=TRUE)
+  source("plot.roots.R")
+  qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
+  qqline(res,col="blue")
+  cpgram(res, main=name)
+  par(mfrow = op$mfrow, mar = op$mar)}
+
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+
+
+Residuals1 = rbind(Residuals, Residuals_a)
+
+Dict.res = dict(init_keys = NULL, init_values = NULL)
+
+for(t in 1:length(Residuals1$Name)){
+  par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+  name = Residuals1$Name[t]
+  if(Residuals1$Dict[t] == 1){
+    res = Dict[name]}
+  else{
+    res = Dict1[name]}
+  Dict.res[name] = res}
+
+# Vax3b.log(1)
+plot_fxn("Vax3b.log(1)", Dict.res["Vax3b.log(1)"])
+arima1 = arima(Dict.res["Vax3b.log(1)"], order = c(1,0,0), method = "ML")
+x = exp(arima1$residuals)
+Residuals = arima1$residuals
+plot_fn("Vax3b.log(1)(1,0,0)", arima1)
+polyroot(c(1, arima1$coef[1:length(arima1$coef)-1]))
+plot_fxn("Vax3b(1)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+arima1_1 = arima(Vax3b$Vax3b, order = c(1,1,0), method="ML")
+plot_fn("Vax3b(1,1,0)", arima1_1)
+
+# Best = "Vax3b(1,1,0)"
+
+--------------------------------------------------------------------
+# Vax3b.log(1.7)
+plot_fxn("Vax3b.log(1.7)", Dict.res["Vax3b.log(1.7)"])
+arima2 = arima(Dict.res["Vax3b.log(1.7)"], order = c(1,0,0), method = "ML")
+x = exp(arima2$residuals)
+Residuals = arima2$residuals
+plot_fn("Vax3b.log(1.7)(1,0,0)", arima2)
+polyroot(c(1, arima2$coef[1:length(arima2$coef)-1]))
+plot_fxn("Vax3b(1.7)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+arima2_1 = arima(Vax3b$Vax3b, order = c(1,1,0), seasonal = list(order=c(0,1,0), period= 7), method = "ML")
+plot_fn("Vax3b(1,1,0)(0,1,0)_7", arima2_1)
+
+# Best = "Vax3b(1,1,0)(0,1,0)_7"
+
+-------------------------------------------------------------------------
+
+
+# Vax3b.log(1.12)
+plot_fxn("Vax3b.log(1.12)", Dict.res["Vax3b.log(1.12)"])
+arima3 = arima(Dict.res["Vax3b.log(1.12)"], order = c(1,0,0), method = "ML")
+x = exp(arima3$residuals)
+Residuals = arima3$residuals
+plot_fn("Vax3b.log(1.12)(1,0,0)", arima3)
+polyroot(c(1, arima3$coef[1:length(arima3$coef)-1]))
+plot_fxn("Vax3b(1.12)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+arima3_1 = arima(Vax3b$Vax3b, order = c(1,1,0), seasonal = list(order=c(0,1,0), period= 12), method = "ML")
+plot_fn("Vax3b(1,1,0)(0,1,0)_12", arima3_1)
+
+# Best = "Vax3b(1,1,0)(0,1,0)_12"
+
+------------------------------------------------------------------------
+  
+# Vax3b.log1(1)
+plot_fxn("Vax3b.log1(1)", Dict.res["Vax3b.log1(1)"])
+arima1 = arima(Dict.res["Vax3b.log1(1)"], order = c(1,0,0), method = "ML")
+x = exp(arima1$residuals)
+Residuals = arima1$residuals
+plot_fn("Vax3b.log1(1)(1,0,0)", arima1)
+polyroot(c(1, arima1$coef[1:length(arima1$coef)-1]))
+plot_fxn("Vax3b(1)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+
+--------------------------------------------------------------------
+# Vax3b.log1(1.7)
+plot_fxn("Vax3b.log1(1.7)", Dict.res["Vax3b.log1(1.7)"])
+arima2 = arima(Dict.res["Vax3b.log1(1.7)"], order = c(1,0,0), method = "ML")
+x = exp(arima2$residuals)
+Residuals = arima2$residuals
+plot_fn("Vax3b.log1(1.7)(1,0,0)", arima2)
+polyroot(c(1, arima2$coef[1:length(arima2$coef)-1]))
+plot_fxn("Vax3b(1.7)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+
+-------------------------------------------------------------------------
+
+
+# Vax3b.log1(1.12)
+plot_fxn("Vax3b.log1(1.12)", Dict.res["Vax3b.log1(1.12)"])
+arima3 = arima(Dict.res["Vax3b.log1(1.12)"], order = c(1,0,0), method = "ML")
+x = exp(arima3$residuals)
+Residuals = arima3$residuals
+plot_fn("Vax3b.log1(1.12)(1,0,0)", arima3)
+polyroot(c(1, arima3$coef[1:length(arima3$coef)-1]))
+plot_fxn("Vax3b1(1.12)(1,0,0)", x)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+
+------------------------------------------------------------------------
+
+# Mort2b1(1.7)
+plot_fxn("Mort2b1(1.7)", Dict.res["Mort2b1(1.7)"])
+Residuals = Dict.res["Mort2b1(1.7)"]
+plot_fn("Mort2b1(1.7)", arima3)
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
+ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
+arima3_1 = arima(Mort2b$Mort2b, order = c(1,1,0), seasonal = list(order=c(0,1,0), period= 7), method = "ML")
+plot_fn("Mort2b(0,1,0)(0,1,0)_7", arima3_1)  
+
+
+arima2 = arima(exp(Dict.res["Vax3b.log(1.7)"]), order = c(1,0,0), method = "ML")
+x = exp(arima2$residuals)
+plot_fn("Vax3b.log(1.7)(1,0,1)", arima2)
+ar_fn(arima2$residuals)
+plot(arima2)
+plot(polyroot(c(1, 0.2444459)))
+polyroot(arima1$coef)
+
+```
+
+
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
 # V1
 ```{r, warning=FALSE}
 
-
-for(t in 1:length(Best_Models)){
-  for(s in 1:length(Best_Models[[t]]$residuals)){
-    if(is.na(Best_Models[[t]]$residuals[s])){
-      Best_Models[[t]]$residuals[s] = (Best_Models[[t]]$residuals[s-1] + Best_Models[[t]]$residuals[s+1])/2}}
-  if(Best_Models[[t]]$pass >= 6){
-    op <- par("mfrow", "mar")
-    par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
-    res = Best_Models[[t]]$residuals
-    name = paste0(Best_Models[[t]]$j, "(", Best_Models[[t]]$Name, ")")
-    i = Best_Models[[t]]$i
-    j = Best_Models[[t]]$j
-    if(j %in% bc){
-      bcTransform <- boxcox(vect[[i]] ~ as.numeric(1:length(vect[[i]])))
-      bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-      lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-      title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))}
-    require(TSA)
-    plot.ts(res, main=name)
-    abline(h=mean(res), col= "blue")
-    abline(lm(res ~ as.numeric(1:length(res))), col="red")
-    periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
-    periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
-    abline(h=0)
-    hist(res, col="light blue", xlab="", main=name, prob=TRUE)
-    mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
-    m <- mean(res)
-    std <- sqrt(var(res))
-    x = res
-    curve( dnorm(x,m,std), add=TRUE)
-    qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
-    qqline(res,col="blue")
-    cpgram(res, main=name)
-    par(mfrow = op$mfrow, mar = op$mar)
-    x=acf2(res, main=name)
-    mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-7.5, adj=0, cex=0.7)
-    mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)}}
+for(t in 1:length(Residuals1$Name)){
+  op <- par("mfrow", "mar")
+  par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
+  name = Residuals1$Name[t]
+  if(Residuals1$Dict[t] == 1){
+    res = Dict[name]}
+  else{
+    res = Dict1[name]}
+  for(s in 1:length(res)){
+    if(is.na(res)){
+      res[s] = (res[s-1] + res[s+1])/2}}
+  
+  require(TSA)
+  plot.ts(res, main=name)
+  abline(h=mean(res), col= "blue")
+  abline(lm(res ~ as.numeric(1:length(res))), col="red")
+  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
+  abline(h=0)
+  hist(res, col="light blue", xlab="", main=name, prob=TRUE)
+  mtext(paste0("Variance = ", round(var(res), digits = 4)), side=1, line = 3, cex = 0.8)
+  m <- mean(res)
+  std <- sqrt(var(res))
+  x = res
+  curve( dnorm(x,m,std), add=TRUE)
+  qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
+  qqline(res,col="blue")
+  cpgram(res, main=name)
+  par(mfrow = op$mfrow, mar = op$mar)
+  x=acf2(res, main=name)
+  mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
+  mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)}
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
@@ -969,6 +1146,7 @@ for(t in 1:length(Best_Models_a)){
   z = 4* (t-1) +1
   zzz = 4*t-1
   zzzz=4*t
+  Dict1$keys[Residuals$X[t]+2]
   name = paste0(Best_Models_a1[zzzz], "(", Best_Models_a1[z], ")")
   i = Best_Models_a1[[zzz]]
   j = Best_Models_a1[[zzzz]]
@@ -993,7 +1171,7 @@ for(t in 1:length(Best_Models_a)){
   qqnorm(res,main= paste0(name, " Q-Q Plot"), cex.main=0.8)
   qqline(res,col="blue")
   cpgram(res, main=name)
-    par(mfrow = op$mfrow, mar = op$mar)
+  par(mfrow = op$mfrow, mar = op$mar)
   x=acf2(res, main=name)
   mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-7.5, adj=0, cex=0.7)
     mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)}
@@ -1054,7 +1232,7 @@ for(x in 1:length(Best_Models_a)){
     min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("mle"))$order)}
   if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order > 0){
     min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order)}
-  min = sort(min)[1]
+  min1 = sort(min)[1]
 
   num = 4 * (x-1) + 2
   Set = 4 * (x-1) + 3
@@ -1083,8 +1261,8 @@ for(x in 1:length(Best_Models_a)){
     D = 1}
   
   if(min >= 4){
-    loop.p = c(0,1,2,min-1,min)
-    loop.q = c(0,1,2,min-1,min)}
+    loop.p = c(0,1,2,min1-1,min1)
+    loop.q = c(0,1,2,min1-1,min1)}
   else{
     loop.p = c(seq(0,5))
     loop.q = c(seq(0,5))}
