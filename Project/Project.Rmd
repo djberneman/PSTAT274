@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 install.packages('astsa')
 install.packages('tseries')
 install.packages('basicTrendline')
+install.packages("UnitCircle")
 install.packages("nortsTest")
 install.packages("nortest")
 install.packages('distributional')
@@ -28,6 +29,7 @@ install.packages("MuMIn")
 # devtools::install_github("FinYang/tsdl")
 library(devtools)
 library(tseries)
+library(UnitCircle)
 library(Dict)
 library(backports)
 library(nortsTest)
@@ -924,6 +926,7 @@ plot_fn = function(name, arima){
   op <- par("mfrow", "mar")
   par(mfrow = c(3, 2), mar = c(rep.int(2, 3), 0.5))
   res = arima$residuals
+  uc.check(pol_ = c(1, arima$coef[1:length(arima$coef)-1]), plot_output = TRUE)
   require(TSA)
   plot.ts(res, main=name)
   abline(h=mean(res), col= "blue")
@@ -1072,16 +1075,19 @@ plot_fxn("Vax3b1(1.12)(1,0,0)", x)
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 
-------------------------------------------------------------------------
 
-# Mort2b1(1.7)
-plot_fxn("Mort2b1(1.7)", Dict.res["Mort2b1(1.7)"])
-Residuals = Dict.res["Mort2b1(1.7)"]
-plot_fn("Mort2b1(1.7)", arima3)
+
+# Mort2b.bc1(1.12)
+plot_fxn("Mort2b.bc1(1.12)", Dict.res["Mort2b.bc1(1.12)"])
+arima2 = arima(Dict.res["Mort2b.bc1(1.12)"], order = c(1,0,0), method = "ML")
+plot_fn("Mort2b.bc1(1.12)(1,0,0)", arima2)
+Residuals = arima2$residuals
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
-arima3_1 = arima(Mort2b$Mort2b, order = c(1,1,0), seasonal = list(order=c(0,1,0), period= 7), method = "ML")
-plot_fn("Mort2b(0,1,0)(0,1,0)_7", arima3_1)  
+arima2_1 = arima(Dict["Mort2b.bc"], order = c(0,1,0), seasonal = list(order=c(0,1,0), period= 12), method = "ML", include.mean = FALSE)
+plot_fn("Mort2b.bc(0,1,0)(0,1,0)_12", arima2_1)
+
+# Best = "Vax3b(1,1,0)(0,1,0)_7"
 
 
 arima2 = arima(exp(Dict.res["Vax3b.log(1.7)"]), order = c(1,0,0), method = "ML")
