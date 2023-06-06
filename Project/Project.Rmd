@@ -12,6 +12,7 @@ install.packages('tseries')
 install.packages('basicTrendline')
 install.packages("UnitCircle")
 install.packages("nortsTest")
+install.packages("sae")
 install.packages("nortest")
 install.packages('distributional')
 install.packages("TSA")
@@ -33,6 +34,7 @@ library(UnitCircle)
 library(Dict)
 library(backports)
 library(nortsTest)
+library(sae)
 library(nortest)
 library(TSA)
 library(MuMIn)
@@ -919,6 +921,23 @@ y = arima(`Cases2b.sqrt(1.7)`,order=c(3,0,1), method="ML")
 ```
 
 ```{r}
+
+bcTransform <- boxcox(vect[[12]]~ as.numeric(1:length(vect[[12]])))       # plot the graph
+
+decomp = decompose(`Mort2b.bc`$X.1.lambda.....vect..i...lambda...1.)
+
+
+
+
+
+
+
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", lambda))
+  
+  
 plot_fn = function(name, arima){
   x=acf2(res, main=name)
   mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
@@ -955,7 +974,7 @@ plot_fxn = function(name, res){
   plot.ts(res, main=name)
   abline(h=mean(res), col= "blue")
   abline(lm(res ~ as.numeric(1:length(res))), col="red")
-  periodogram(res, log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  TSA::periodogram(Dict.res["Vax3b.log(12)"], log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
   periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
   abline(h=0)
   hist(res, col="light blue", xlab="", main=name, prob=TRUE)
@@ -1078,15 +1097,24 @@ ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 
 
 # Mort2b.bc1(1.12)
-plot_fxn("Mort2b.bc1(1.12)", Dict.res["Mort2b.bc1(1.12)"])
-arima2 = arima(Dict.res["Mort2b.bc1(1.12)"], order = c(1,0,0), method = "ML")
-plot_fn("Mort2b.bc1(1.12)(1,0,0)", arima2)
-Residuals = arima2$residuals
+plot_fxn("Mort2b.bc1(1.12)", Dict1["Mort2b.bc1(1.12)"])
+arima(Dict1["Mort2b.bc1(1.12)"], order=c(0,0,0), method="ML")
+Residuals =Dict1["Mort2b.bc1(1.12)"]
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 arima2_1 = arima(Dict["Mort2b.bc"], order = c(0,1,0), seasonal = list(order=c(0,1,0), period= 12), method = "ML", include.mean = FALSE)
-plot_fn("Mort2b.bc(0,1,0)(0,1,0)_12", arima2_1)
+plot_fxn("Mort2b.bc(0,1,0)(0,1,0)_12", arima2_1)
+ 
+forecast <- sarima.for(original, n.ahead=1, d=1)
 
+
+
+
+original = bxcx(Dict.res["Mort2b.bc1(1.12)"], InverseQ = TRUE, lambda = lambda)
+
+
+lambda
+Dict["Mort2b.bc"]
 # Best = "Vax3b(1,1,0)(0,1,0)_7"
 
 
@@ -1099,7 +1127,36 @@ plot(polyroot(c(1, 0.2444459)))
 polyroot(arima1$coef)
 
 ```
+```{r}
 
+forecast <- sarima.for(original, n.ahead=1)
+
+original = bxcx(`Mort2b.bc(1.12)`, InverseQ = TRUE, lambda = lambda)
+
+plot(x=c(1:52), y=Mort1b$Mort1b[1:52], xlab="Time")
+lines(x=c(1:52), y=Mort1b$Mort1b[1:52])
+points(forecast$pred, col="red")
+
+data=data.frame("Time"=c(1:175), Mort1b$Mort1b)
+
+forecast=data.frame(forecast)
+
+forecast<- forecast%>%
+  mutate("lcl" = max(0, (forecast$pred - 1.96*forecast$se)))
+forecast<- forecast%>%
+  mutate("ucl" = forecast$pred + 1.96*forecast$se)
+forecast["Time"] = c(47:175)
+
+frame = data.frame(matrix(ncol=5, nrow=1))
+colnames(frame) = colnames(forecast)
+frame[1, 1:5] <- c(data$Mort1b.Mort1b[46], 0, 0, 0, data$Time[46])
+forecast =  rbind(frame, forecast)
+
+colors <- c("Forecasted" = "red", "Actual" = "grey")
+ggplot(data[1:175, 1:2], aes(Time, original, color="grey")) + ylim(0.01, 0.02) + geom_line() + geom_point() + geom_line(data = forecast, aes(x=Time, y= pred, color="red")) + geom_point(data = forecast[2:7, 1:5], aes(x=Time, y= pred), color="red") + geom_ribbon(data = forecast, aes(x=Time, y=pred, ymin=lcl, ymax=ucl), color=NA, alpha=.2)+labs(color="Legend") + scale_color_manual(values = colors)
+
+
+```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
 # V1
