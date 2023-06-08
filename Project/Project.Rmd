@@ -1813,6 +1813,7 @@ decomp = decompose(`Mort2b.bc`$X.1.lambda.....vect..i...lambda...1.)
   
   
 plot_fn = function(name, arima){
+  res = arima$residuals
   x=acf2(res, main=name)
   mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
   mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)
@@ -1972,7 +1973,8 @@ ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 
 # Mort2b.bc1(1.12)
 plot_fxn("Mort2b.bc1(1.12)", Dict1["Mort2b.bc1(1.12)"])
-arima(Dict1["Mort2b.bc1(1.12)"], order=c(0,0,0), method="ML")
+arima = arima(Dict1["Mort2b.bc(0)"], order=c(1,1,0), seasonal = list(order=c(0,1,0), period=12), method="ML", include.mean=FALSE)
+plot_fn("Mort2b.bc1(1.12)", arima)
 Residuals =Dict1["Mort2b.bc1(1.12)"]
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
@@ -1980,13 +1982,14 @@ arima2_1 = arima(Dict["Mort2b.bc"], order = c(0,1,0), seasonal = list(order=c(0,
 plot_fxn("Mort2b.bc(0,1,0)(0,1,0)_12", arima2_1)
  
 forecast <- sarima.for(original, n.ahead=1, d=1)
+x = predict(arima, h=3)
+x$pred
+Dict1["Mort2b.bc(0)"][1]
+-22.08158^LAMBDA
 
+original = bxcx(Dict1["Mort2b.bc(1.12)"], InverseQ = TRUE, lambda = lambda)
 
-
-
-original = bxcx(Dict.res["Mort2b.bc1(1.12)"], InverseQ = TRUE, lambda = lambda)
-
-
+sarima.for(original, 128, 0,13,0, plot.all = TRUE)
 lambda
 Dict["Mort2b.bc"]
 # Best = "Vax3b(1,1,0)(0,1,0)_7"
@@ -2002,30 +2005,53 @@ polyroot(arima1$coef)
 
 ```
 ```{r}
-vect1
-((Dict1["Mort1b(0)"])^lambda)[1:46] == Dict1["Mort2b.bc(0)"]
+bcTransform <- boxcox(vect[[35]]~ as.numeric(1:length(vect[[35]])))       # plot the graph
 
-for(i in 1:46){
-  data[i,2] = Mort1b$Mort1b[i]**lambda}
-  data=data.frame(matrix(ncol=2, nrow=46))
-  data[, 1] = Dict1["Mort2b.bc(0)"]
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[35], "  lambda = ", round(lambda, 3)))
+  lambda
 
-comp = data.frame(Dict1["Mort1b.bc"])
-comp = data.frame("Mort1b" = Mort1b$Mort1b)
-comp["Mort2b"] = NA
-comp$Mort2b[1:46] = Mort2b$Mort2b[1:47]
-comp$Mort2b[47:175] = forecast$pred
-comp["Mort2b"][47:175] = NA
-comp$Mort2b[47:175] = NA
-comp = comp[,1:2]
-Mort.pred = rbind(Mort2b, data.frame("Mort2b" = forecast$pred))
-Mort.pred = 
-forecast <- sarima.for(original, d=1, D=0, S = 12, p=0, q=0, Q=0, P=0, n.ahead=128)
-arima()
-predict(a, n.ahead = 128)
-a = arima(Dict1["Mort2b.bc(0)"], order = c(0,1,0), seasonal = list(order=c(0,1,0), period=12), method="ML", include.mean=FALSE)
-Dict1
-a$residuals = ts(a$residuals)
+  
+  
+
+original = bxcx(Dict1["Mort2b.bc(1.12)"], InverseQ = TRUE, lambda = lambda)
+
+plot(x=c(1:52), y=Mort1b$Mort1b[1:52], xlab="Time")
+lines(x=c(1:52), y=Mort1b$Mort1b[1:52])
+points(forecast$pred, col="red")
+
+data=data.frame("Time"=c(1:175), Mort1b$Mort1b)
+
+forecast=data.frame(forecast)
+
+forecast<- forecast%>%
+  mutate("lcl" = max(0, (forecast$pred - 1.96*forecast$se)))
+forecast<- forecast%>%
+  mutate("ucl" = forecast$pred + 1.96*forecast$se)
+forecast["Time"] = c(47:175)
+
+frame = data.frame(matrix(ncol=5, nrow=1))
+colnames(frame) = colnames(forecast)
+frame[1, 1:5] <- c(data$Mort1b.Mort1b[46], 0, 0, 0, data$Time[46])
+forecast =  rbind(frame, forecast)
+
+colors <- c("Forecasted" = "red", "Actual" = "grey")
+ggplot(data[1:175, 1:2], aes(Time, original, color="grey")) + ylim(0.01, 0.02) + geom_line() + geom_point() + geom_line(data = forecast, aes(x=Time, y= pred, color="red")) + geom_point(data = forecast[2:7, 1:5], aes(x=Time, y= pred), color="red") + geom_ribbon(data = forecast, aes(x=Time, y=pred, ymin=lcl, ymax=ucl), color=NA, alpha=.2)+labs(color="Legend") + scale_color_manual(values = colors)
+
+Dict1["Mort2b.bc(1.12)"]
+
+pred.tr = predict(arima, n.ahead=12)
+pred.tr$pred
+pred = (abs(pred.tr$pred))^LAMBDA
+U.tr= (abs(pred.tr$pred + 2*pred.tr$se))^LAMBDA
+L.tr= (abs(pred.tr$pred - 2*pred.tr$se))^LAMBDA
+ts.plot(Mort2b$Mort2b, xlim=c(1,length(arima$residuals)+12))
+lines(U.tr, col="blue", lty="dashed")
+lines(L.tr, col="blue", lty="dashed")
+points((length(arima$residuals)+1):(length(arima$residuals)+12), pred, col="red")
+
+
 • Forecasting using model A:
 install.packages("forecast")
 library(forecast)
@@ -2059,38 +2085,7 @@ points((length(Mortality)+1):(length(Mortality)+12), pred.orig, col="green")
 points((length(Mortality)+1):(length(Mortality)+12), pred.orig, col="black")
 
 
-bcTransform <- boxcox(vect[[35]]~ as.numeric(1:length(vect[[35]])))       # plot the graph
 
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[35], "  lambda = ", round(lambda, 3)))
-  lambda
-
-original = bxcx(Dict1["Mort2b.bc(0)"], InverseQ = TRUE, lambda = lambda)
-
-plot(x=c(1:52), y=Mort1b$Mort1b[1:52], xlab="Time")
-lines(x=c(1:52), y=Mort1b$Mort1b[1:52])
-points(forecast$pred, col="red")
-
-data=data.frame("Time"=c(1:175), Mort1b$Mort1b)
-
-forecast=data.frame(forecast)
-
-forecast<- forecast%>%
-  mutate("lcl" = max(0, (forecast$pred - 1.96*forecast$se)))
-forecast<- forecast%>%
-  mutate("ucl" = forecast$pred + 1.96*forecast$se)
-forecast["Time"] = c(47:175)
-
-frame = data.frame(matrix(ncol=5, nrow=1))
-colnames(frame) = colnames(forecast)
-frame[1, 1:5] <- c(data$Mort1b.Mort1b[46], 0, 0, 0, data$Time[46])
-forecast =  rbind(frame, forecast)
-
-colors <- c("Forecasted" = "red", "Actual" = "grey")
-ggplot(data[1:175, 1:2], aes(Time, original, color="grey")) + ylim(0.01, 0.02) + geom_line() + geom_point() + geom_line(data = forecast, aes(x=Time, y= pred, color="red")) + geom_point(data = forecast[2:7, 1:5], aes(x=Time, y= pred), color="red") + geom_ribbon(data = forecast, aes(x=Time, y=pred, ymin=lcl, ymax=ucl), color=NA, alpha=.2)+labs(color="Legend") + scale_color_manual(values = colors)
-
-Dict1["Mort2b.bc(1.12)"]
 ```
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
