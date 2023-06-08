@@ -957,6 +957,9 @@ vect1 = append(vect1, "Vax3g")
 ```
 \
 
+
+
+
 # V3
 ```{r, warning = FALSE}
 
@@ -994,11 +997,11 @@ transformation_name2 = vector()
 Difference2 = vector()
 x = 1
 for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[1]]~ as.numeric(1:length(vect[[1]])))       # plot the graph
-  plot(bcTransform)
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
   bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
   lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[1], "  lambda = ", round(lambda, 3)))
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
   
   # Perform transformations, plot transformed data, histograms:
   transform = vector()
@@ -1008,14 +1011,14 @@ for(i in 1:length(vect)){
   transform = append(transform, data.frame(sqrt(vect[[i]])))
   
   transform_name = vector()
-  transform_name = append(transform_name, paste0(vect1[i], "1"))
+  transform_name = append(transform_name, paste0(vect1[i]))
   `_` = append(`_`, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc1"))
-  bc = append(bc, paste0(vect1[i], ".bc1"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log1"))
-  log = append(log, paste0(vect1[i], ".log1"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt1"))
-  sqrt = append(sqrt, paste0(vect1[i], ".sqrt1"))
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  bc = append(bc, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  log = append(log, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
   
   transformation_name2 = append(transformation_name2, transform_name)
   
@@ -1063,7 +1066,7 @@ for(i in 1:length(vect)){
         Data_aa$Average[x] = "Sext-Daily"}
       
       ok = list[k]
-      while(Data_aa$Stationarity[x] != "Pass" & Data_aa$Stationarity[x] != "Nonstationary"){
+      while(Data_aa$Stationarity_Tests[x] %in% c("Fail", NA)){
         if(ok==0){
           Data_aa[x, 9] = round(adf.test(transform[[j]])$p.value, digits=5)
           Data_aa[x, 10] = round(kpss.test(transform[[j]])$p.value, digits=5)
@@ -1072,20 +1075,19 @@ for(i in 1:length(vect)){
           if(Data_aa[x,9] > 0.05 & Data_aa[x,10] >= 0.05){
             Data_aa$Stationarity_Tests[x] = "Pass"}
           else{
-            Data_aa$Stationarity_Tests[x] = "Fail"}
-          if(Data_aa$Stationarity_Tests[x] == "Pass"){
-            diff_name = append(diff_name, paste0(transform_name[j]))
-            Data_aa[x,1] = diff_name[k]
-            Data_aa$Differencing[x] = "None"
-            arima = try(arima(transform[[j]], order = c(0,0,0), method = "ML"))
-            difference = append(difference, data.frame(transform[[j]]))
-            Data_aa$AICc[x] = try(AICc(arima))
-            Data_aa$Variance[x] = Data_aa$Parent_Variance[x]
-            Data_aa$Nonseasonal_Variance[x] = Data_aa$Variance[x]
-            Data_aa$Seasonal_Variance[x] = Data_aa$Variance[x]}}
+            Data_aa$Stationarity_Tests[x] = "Nonstationary"}
+          diff_name = append(diff_name, paste0(transform_name[j]))
+          Data_aa[x,1] = diff_name[k]
+          Data_aa$Differencing[x] = "None"
+          arima = try(arima(transform[[j]], order = c(0,0,0), method = "ML"))
+          difference = append(difference, data.frame(transform[[j]]))
+          Data_aa$AICc[x] = try(AICc(arima))
+          Data_aa$Variance[x] = Data_aa$Parent_Variance[x]
+          Data_aa$Nonseasonal_Variance[x] = Data_aa$Variance[x]
+          Data_aa$Seasonal_Variance[x] = Data_aa$Variance[x]}
         else{
           if(ok != floor(ok)){
-            num = 100*(ok-floor(ok))
+            num = round(100*(ok-floor(ok)), 0)
             if(num%%7==0){
               num = 7}
             diff1 = diff(transform[[j]], lag = floor(ok))
@@ -1101,13 +1103,13 @@ for(i in 1:length(vect)){
             Data_aa$Stationarity_Tests[x] = "Pass"}
           else{
             Data_aa$Stationarity_Tests[x] = "Fail"}
-          if(Data_aa$Stationarity_Tests[x] = "Fail" & 
+          if(Data_aa$Stationarity_Tests[x] == "Fail" & 
              ((ok %in% c(6, 7, 12)) | (floor(ok)==6 & num==12) | (floor(ok)==4 & num==7))){
             Data_aa$Stationarity_Tests[x] = "Nonstationary"}
           if(Data_aa$Stationarity_Tests[x] == "Pass" | Data_aa$Stationarity_Tests[x] == "Nonstationary"){
             arima = try(arima(diff, order = c(0,0,0), method="ML"))
             Data_aa$AICc[x] = try(AICc(arima))
-            difference = append(diference, data.frame(diff))
+            difference = append(difference, data.frame(diff))
             Data_aa$Variance[x] = signif(var(diff), 4)
             if(ok != floor(ok)){
               diff_name = append(diff_name, paste0(transform_name[j], "(", floor(ok), ".", num, ")"))
@@ -1139,13 +1141,13 @@ for(i in 1:length(vect)){
         difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
       
       Data_aa$Pass[x]=0
-      if(Data_a[x,7]>=0.05 | Data_a[x,8]>=0.05){
-        Data_a$Pass[x] = 1 + Data_a$Pass[x]}
-      if(Data_a[x, 9] <= 0.05 | Data_a[x,10]>=0.05){
-        Data_a$Pass[x] = 1 + Data_a$Pass[x]}
+      if(Data_aa[x,7]>=0.05 | Data_aa[x,8]>=0.05){
+        Data_aa$Pass[x] = 1 + Data_aa$Pass[x]}
+      if(Data_aa[x, 9] <= 0.05 | Data_aa[x,10]>=0.05){
+        Data_aa$Pass[x] = 1 + Data_aa$Pass[x]}
       for(z in 11:13){
-        if(Data_a[x,z] >= 0.05){
-          Data_a$Pass = 1 + Data_a$Pass}}
+        if(Data_aa[x,z] >= 0.05){
+          Data_aa$Pass[x] = 1 + Data_aa$Pass[x]}}
       Variance_Order = data.frame(matrix(ncol=3, nrow=5))
       colnames(Variance_Order) = c("Levels", "Variance", "Rank")
       Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
@@ -1197,7 +1199,7 @@ for(i in 1:length(vect)){
 
 Dict2 = dict(init_keys = NULL, init_values = NULL)
 for(i in 1:2112){
-  Dict1[Data_aa$Name[i]] = Difference2[[i]]}
+  Dict2[Data_aa$Name[i]] = Difference2[[i]]}
 
 
 Data_aa1 = subset(Data_aa, Data_aa$Pass >= 4)
@@ -1212,9 +1214,9 @@ Residuals_aa
 
 
 Stat_Norm_aa = subset(Stationarity_aa, Stationarity_aa$Normality_Tests == "Pass")
-Stat_Norm_Pass_aa = subset(Stat_Norm_aa, Stat_Norm_aa$Pass >=4)
+Stat_Norm_Pass_aa = subset(Stat_Norm_aa, Stat_Norm_aa$Pass >=3)
 Stat_Res_aa = subset(Stationarity_aa, Stationarity_aa$Residual_Tests != "Fail")
-Stat_Res_Pass_aa = subset(Stat_Res_aa, Stat_Res_aa$Pass >=4)
+Stat_Res_Pass_aa = subset(Stat_Res_aa, Stat_Res_aa$Pass >=3)
 Stat_Res_Norm_aa = subset(Stat_Res_aa, Stat_Res_aa$Normality_Tests == "Pass")
 Res_Norm_aa = subset(Residuals_aa, Residuals_aa$Normality_Tests == "Pass")
 ```
@@ -1812,8 +1814,8 @@ decomp = decompose(`Mort2b.bc`$X.1.lambda.....vect..i...lambda...1.)
   title(main = paste0(vect1[i], "  lambda = ", lambda))
   
   
-plot_fn = function(name, arima){
-  res = arima$residuals
+plot_fn = function(name, res){
+  res = try(res$residuals)
   x=acf2(res, main=name)
   mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
   mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)
@@ -1839,7 +1841,7 @@ plot_fn = function(name, arima){
   cpgram(res, main=name)
   par(mfrow = op$mfrow, mar = op$mar)}
 
-plot_fxn = function(name, res){
+plot_fxn = function(name, res, dict){
   x=acf2(res, main=name)
   mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     ad.test: ", round(ad.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)
   mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-5.5, adj=0, cex=0.7)
@@ -1849,7 +1851,7 @@ plot_fxn = function(name, res){
   plot.ts(res, main=name)
   abline(h=mean(res), col= "blue")
   abline(lm(res ~ as.numeric(1:length(res))), col="red")
-  TSA::periodogram(Dict.res["Vax3b.log(12)"], log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
+  TSA::periodogram(get(paste0("Dict", dict))[name], log = 'yes', main=paste0(name, " Periodogram"), cex.main=0.6)
   TSA::periodogram(res, log = 'no', main=paste0(name, " Periodogram"), cex.main=0.6)
   abline(h=0)
   hist(res, col="light blue", xlab="", main=name, prob=TRUE)
@@ -1970,26 +1972,32 @@ ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 
 
-
+class(arima) == "Arima"
 # Mort2b.bc1(1.12)
-plot_fxn("Mort2b.bc1(1.12)", Dict1["Mort2b.bc1(1.12)"])
-arima = arima(Dict1["Mort2b.bc(0)"], order=c(1,1,0), seasonal = list(order=c(0,1,0), period=12), method="ML", include.mean=FALSE)
-plot_fn("Mort2b.bc1(1.12)", arima)
+plot_fxn("Mort2_5b.bc1(1.7)", Dict2["Mort2_5b.bc1(1.7)"], 2)
+arima = arima(Dict2["Mort2_5b.bc(1.7)"], order=c(1,0,1), seasonal = list(order=c(0,0,0), period=7), method="ML", include.mean=FALSE)
+plot_fn("Mort2_5b.bc1(1.7)(1,0,1)", arima)
 Residuals =Dict1["Mort2b.bc1(1.12)"]
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("yule-walker"))
 ar(Residuals, aic = TRUE, order.max = NULL, method = c("mle"))
 arima2_1 = arima(Dict["Mort2b.bc"], order = c(0,1,0), seasonal = list(order=c(0,1,0), period= 12), method = "ML", include.mean = FALSE)
 plot_fxn("Mort2b.bc(0,1,0)(0,1,0)_12", arima2_1)
  
-forecast <- sarima.for(original, n.ahead=1, d=1)
+forecast <- sarima.for(Dict2["Mort2_5b.bc1(1.7)"], n.ahead=12, d=0, q=1, p=1)
 x = predict(arima, h=3)
+plot(x)
 x$pred
 Dict1["Mort2b.bc(0)"][1]
 -22.08158^LAMBDA
 
-original = bxcx(Dict1["Mort2b.bc(1.12)"], InverseQ = TRUE, lambda = lambda)
+plot(thetaf(arima$residuals, h = 12, level = 95))
 
-sarima.for(original, 128, 0,13,0, plot.all = TRUE)
+original = bxcx(arima$residuals, InverseQ = TRUE, lambda = lambda)
+
+ts.plot(Mortality, xlim=c(1,length(Mortality)+12), ylim = c(min(Mortality),max(U.tr)))
+lines(U.tr, col="blue", lty="dashed")
+lines(L.tr, col="blue", lty="dashed")
+sarima.for(Dict2["Mort2_5b.bc1(1.7)"], 111, 1,0,1)
 lambda
 Dict["Mort2b.bc"]
 # Best = "Vax3b(1,1,0)(0,1,0)_7"
@@ -2002,20 +2010,22 @@ ar_fn(arima2$residuals)
 plot(arima2)
 plot(polyroot(c(1, 0.2444459)))
 polyroot(arima1$coef)
-
+mean(Mort2_5b$Mort2_5b)
 ```
 ```{r}
-bcTransform <- boxcox(vect[[35]]~ as.numeric(1:length(vect[[35]])))       # plot the graph
+bcTransform <- boxcox(vect[[55]]~ as.numeric(1:length(vect[[55]])))       # plot the graph
 
   bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
   lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[35], "  lambda = ", round(lambda, 3)))
+  title(main = paste0(vect1[55], "  lambda = ", round(lambda, 3)))
   lambda
-
+LAMBDA = 1/lambda
+  Mort2_5b.bc1(1.7)
   
-  
+sarima
+original = bxcx(arima$residuals, InverseQ = TRUE, lambda = lambda)
 
-original = bxcx(Dict1["Mort2b.bc(1.12)"], InverseQ = TRUE, lambda = lambda)
+
 
 plot(x=c(1:52), y=Mort1b$Mort1b[1:52], xlab="Time")
 lines(x=c(1:52), y=Mort1b$Mort1b[1:52])

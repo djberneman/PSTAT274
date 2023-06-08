@@ -35,7 +35,7 @@ ddmilk <- diff(dmilk, 1)
 Let Y~t~ denote the series ddmilk. Then, Y~t~ = (1 − B)(1 − B^12^)X~t~. As Lab Assignment 5, we can use SARIMA(0, 1, 0) × (1, 1, 1)~12~. Now, we will conduct model diagnostic analysis.\
 
 ```{r}
-fit.i <- sarima(xdata=train, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
+fit.i <- astsa::sarima(xdata=train, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
 ```
 \
 
