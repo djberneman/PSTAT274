@@ -147,307 +147,48 @@ plot_fxn = function(name, res, dict){
   cpgram(res, main=name)
   par(mfrow = op$mfrow, mar = op$mar)}
 
-var(Mort2_5b$Mort2_5b)
-Mort2_5b$Mort2_5b == Dict2["Mort2_5b"]
-plot_fn("Mort2_5b", Mort2_5b$Mort2_5b)
-plot_fn("Mort2_5b.bc", Dict2["Mort2_5b.bc"])
-plot_fn("Mort2_5b.bc(7)", Dict2["Mort2_5b.bc(7)"])
-plot_fn("Mort2_5b.bc(1.7)", Dict2["Mort2_5b.bc(1.7)"])
-arima = arima(Dict2["Mort2_5b.bc(1.7)"], order=c(1,0,1), seasonal = list(order=c(0,0,0), period=7), method="ML", include.mean=FALSE)
-plot_fn("Mort2_5b.bc(1,1,1)x(0,1,0)_7", arima)
-sarima = sarima.for(Dict2["Mort2_5b.bc(1.7)"], 111, 1,0,1)
-sarima$pred
+
+bcTransform <- boxcox(Mort2_5b$Mort2_5b~ as.numeric(1:length(Mort2_5b$Mort2_5b)))       # plot the graph
+bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+title(main = paste0(vect1[i], "  lambda = ", round(lambda, 6)))
+
+sarima2 = sarima.for(Dict2["Mort2_5b.bc"], 111, p=1, q=1, d=1, D=1, S=7)
+original_pred = bxcx(sarima2$pred, InverseQ = TRUE, lambda = lambda)
+original_se = bxcx(sarima2$se, InverseQ = TRUE, lambda = lambda)
+
+plot(x=c(1:175), y=Mort1b$Mort1b, xlab="Time")
+lines(x=c(1:175), y=Mort1b$Mort1b)
+points(original_pred, col="red")
+
+data=data.frame("Time"=c(1:175), Mort1b$Mort1b)
+
+forecast=data.frame("pred" = original_pred, "se" = original_se)
+
+forecast[2,2] = forecast[3,2]
+forecast<- forecast%>%
+  mutate("lcl" = forecast$pred - 1.96*forecast$se)
+forecast<- forecast%>%
+  mutate("ucl" = forecast$pred + 1.96*forecast$se)
+forecast["Time"] = c(65:175)
+
+frame = data.frame(matrix(ncol=5, nrow=1))
+colnames(frame) = colnames(forecast)
+frame[1, 1:5] <- c(data$Mort1b.Mort1b[64], 0, data$Mort1b.Mort1b[64], data$Mort1b.Mort1b[64], data$Time[64])
+forecast =  rbind(frame, forecast)
+
+colors <- c("Forecasted" = "red", "Actual" = "grey")
+ggplot(data[125:140, 1:2], aes(Time, Mort1b.Mort1b, color="grey")) + geom_line() + geom_point() + geom_line(data = forecast[62:77,], aes(x=Time, y= pred, color="red")) + geom_point(data = forecast[62:77, 1:5], aes(x=Time, y= pred), color="red") + geom_ribbon(data = forecast[62:77,], aes(x=Time, y=pred, ymin=lcl, ymax=ucl), color="red", alpha=.2)+labs(color="Legend") + scale_color_manual(values = colors) + ylim(0, 0.005)
+
+
+pred = forecast$pred[2:112]
+U.tr= forecast$ucl[2:112]
+L.tr= forecast$lcl[2:112]
+ts.plot(Mort1b$Mort1b, xlim=c(1,175))
+lines(65:175, U.tr, col="blue", lty="dashed")
+lines(65:175, L.tr, col="blue", lty="dashed")
+points((65):(175), pred, col="red")
 ```
 
-
-
-```{r}
-`_` = list()
-bc = list()
-log = list()
-sqrt = list()
-Data <- data.frame(matrix(ncol=24, nrow=2112))
-colnames(Data) <- c("Name", "Pass", "Dataset", "Average", "Transformation", 
-                    "Differencing", "Anderson-Darling Test", "Shapiro test",
-                    "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test",
-                    "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance",
-                    "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance",
-                    "Variance", "Variance_test", "AICc", "Residual_Tests",
-                    "Normality_Tests", "Stationarity_Tests", "X")
-
-# For tests, reject if p < 0.05
-ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
-shapiro_test = list()   # H_0 = data is normal (do not want to reject)
-kpss_test = list()    # H_0 = data is stationary (do not want to reject)
-adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
-Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
-Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
-McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
-
-# Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
-
-# Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
-transformation_name = vector()
-Best_Models = list()
-Best_Models1 = list()
-Difference = vector()
-x = 1
-for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
-
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
-  
-  # Perform transformations, plot transformed data, histograms:
-  transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  transform = append(transform, data.frame(log(vect[[i]])))
-  transform = append(transform, data.frame(sqrt(vect[[i]])))
-
-  transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
-  `_` = append(`_`, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  bc = append(bc, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  log = append(log, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
-  
-  transformation_name = append(transformation_name, transform_name)
-  
-# For each of the 3 transformations and the original for each data set, 
-# we will test the goodness of fit when each time series is differenced at: 
-#   - Lag 0 (no differencing) 
-#   - Lag 1 (non seasonal difference - yearly)
-#   - Lag 7 (seasonal difference - weekly) 
-#   - Lag 12 (seasonal difference - monthly) 
-#   - Lag 1.7 (non seasonal difference - yearly & seasonal difference - weekly) 
-#   - Lag 1.12 (non seasonal difference - yearly & seasonal difference - monthly) 
-
-# This bring the total number of models being evaluated to 480.
-  
-  list = c(0,1,7,12,1.7,1.12)
-  for(j in 1:length(transform)){
-    difference = vector()
-    diff_name = vector()
-    for(k in 1:length(list)){
-      Data$X[x] = x
-      Data$Grandparent_Variance[x] = signif(var(vect[[i]]), 4)
-      Data$Parent_Variance[x] = signif(var(transform[[j]]), 4)
-      Data$Dataset[x] = vect1[i]
-      if(transform_name[j] %in% `_`){
-        Data$Transformation[x] = "none"}
-      if(transform_name[j] %in% bc){
-        Data$Transformation[x] = "Box-Cox"}
-      if(transform_name[j] %in% log){
-        Data$Transformation[x] = "Log"}
-      if(transform_name[j] %in% sqrt){
-        Data$Transformation[x] = "Square Root"}
-      if(i %in% c(1,8,15,22,28,34,40,47,54,61,68,75,82)){
-        Data$Average[x] = "Daily"}
-      if(i %in% c(2,9,16,23,29,35,41,48,55,62,69,76,83)){
-        Data$Average[x] = "Weekly"}
-      if(i %in% c(3,10,17,24,30,36,42,49,56,63,70,77,84)){
-        Data$Average[x] = "Bi-Daily"}
-      if(i %in% c(4,11,18,25,31,37,43,50,57,64,71,78,85)){
-        Data$Average[x] = "Tri-Daily"}
-      if(i %in% c(5,12,19,26,32,38,44,51,58,65,72,79,86)){
-        Data$Average[x] = "Quad-Daily"}
-      if(i %in% c(6,13,20,27,33,39,45,52,59,66,73,80,87)){
-        Data$Average[x] = "Penta-Daily"}
-      if(i %in% c(7,14,21,28,34,40,46,53,60,67,74,81,88)){
-        Data$Average[x] = "Sext-Daily"}
-      
-      if(list[k]==0){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        Data[x,1] = transform_name[j]
-        Data$Differencing[x] = "Lag = none, Period = none"
-        difference = append(difference, transform[j])
-        Data$AICc[x] = Data$Parent_Variance[x]
-        Data$Variance[x] = signif(var(transform[[j]]), 4)
-        Data$Nonseasonal_Variance[x] = Data$Variance[x]
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-      if(list[k]==1){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), method="ML")$residuals
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = none"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Nonseasonal_Variance[x] = Data$Variance[x]
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      if(list[k]==7 | list[k]==12){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,0,0), seasonal=list(
-            order=c(0,1,0), period = list[k]), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = paste0("Lag = none, Period = ", list[k])
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      if(list[k]==7){
-        Data$Nonseasonal_Variance[x] = Data$Variance[x-2]}
-      if(list[k]==12){
-        Data$Nonseasonal_Variance[x] = Data$Variance[x-3]}
-      if(list[k]==1.7){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 7), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = 7"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-3]
-        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]}
-      if(list[k]==1.12){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 12), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = 12"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-4]
-        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Difference = append(Difference, difference)}
-      
-      Data[x, 7] = round(ad.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 8] = round(shapiro.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 9] = round(adf.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 10] = round(kpss.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 11] = round(Box.test(difference[[k]], lag=sqrt(length(
-        difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5)
-      
-      Data[x, 12] = round(Box.test(difference[[k]], lag=sqrt(length(
-        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
-      
-      Data[x, 13] = round(Box.test((difference[[k]])^2, lag=sqrt(length(
-        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
-      
-      Data$Pass[x]=0
-      for(z in c(7,8, 10:13)){
-        if(Data[x,z]>=0.05){
-          Data$Pass[x] = 1 + Data$Pass[x]}}
-      if(Data[x, 9] <= 0.05){
-        Data$Pass[x] = 2 + Data$Pass[x]}
-      Variance_Order = data.frame(matrix(ncol=3, nrow=5))
-      colnames(Variance_Order) = c("Levels", "Variance", "Rank")
-      Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
-                                "Seasonality", "Current")
-      Variance_Order$Variance[1:5] = Data[x, c(14:18)]
-      Variance_Order$Variance = as.double(Variance_Order$Variance)
-      Variance_Order$Rank = as.integer(rank(Variance_Order$Variance, ties.method = "min"))
-      Data$Variance_test[x] = paste0(
-        Variance_Order$Rank[1], ", ", Variance_Order$Rank[2],
-        ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", 
-        Variance_Order$Rank[5])
-      Fails = 0
-      if(Data[x, 14] < Data[x, 15]){
-        Fails=Fails+1}
-      if((Data[x, 15] < Data[x, 16]) & (Data[x, 15] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 14] < Data[x, 16]) & (Data[x, 14] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 16] < Data[x, 18]) & (Data[x, 17] < Data[x, 18])){
-        Fails=Fails+1}
-      if(Data[x, 14] < Data[x, 18]){
-        Fails=Fails+1}
-      if(Data[x, 15] < Data[x, 18]){
-        Fails=Fails+1}
-      Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
-      if(Data$Pass[x] >= 6){
-        # None of the undifferenced transformations for each data set are part of the best models
-        if(list(k)==0){
-          list1 = list("ARIMA(0,0,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1){
-          list1 = list("ARIMA(0,1,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==7){
-          list1 = list("ARIMA(0,7,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==12){
-          list1 = list("ARIMA(0,12,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1.7){
-          list1 = list("SARIMA(0,1,0)x(0,1,0)_7", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1.12){
-          list1 = list("SARIMA(0,1,0)x(0,1,0)_12", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}}
-      Pass1 = 0 
-      for(s in 11:13){
-        if(Data[x,s] >= 0.05){
-          Pass1 = Pass1 + 1}}
-      if(Pass1 >= 3){
-        Data_a$Residual_Tests[x] = "Pass3"}
-      if(Pass1 > 1 & Pass1 < 3){
-        Data_a$Residual_Tests[x] = "Pass2"}
-      if(Pass1 > 0 & Pass1 < 2){
-        Data_a$Residual_Tests[x] = "Pass1"}
-      if(Pass1 == 0){
-        Data_a$Residual_Tests[x] = "Fail"}
-      Pass2 = 0
-      if(Data[x,7] >= 0.05){
-        Pass2 = Pass2 + 1}
-      if(Data[x,8] >= 0.05){
-        Pass2 = Pass2 + 1}
-      if(Pass2 >= 1){
-        Data$Normality_Tests[x] = "Pass"}
-      else{
-        Data$Normality_Tests[x] = "Fail"}
-      Pass3 = 0
-      if(Data[x,10] >= 0.05){
-        Pass3 = Pass3 + 1}
-      if(Data[x,9] <= 0.05){
-        Pass3 = Pass3 + 1}
-      if(Pass3 >= 1){
-        Data$Stationarity_Tests[x] = "Pass"}
-      else{
-        Data$Stationarity_Tests[x] = "Fail"}
-      x = x + 1}}}
-
-Dict1 = dict(init_keys = NULL, init_values = NULL)
-for(i in 1:576){
-  Dict1[Data$Name[i]] = Difference1[[i]]}
-
-Data["Dict"] = 2
-
-Data1 = subset(Data, Data$Pass >= 4)
-Data1
-
-Stationarity = subset(Data, Data$Stationarity_Tests == "Pass")
-Stationarity
-Normality = subset(Data, Data$Normality_Tests == "Pass")
-Normality
-Residuals = subset(Data, Data$Residual_Tests != "Fail")
-Residuals
-
-
-Stat_Norm = subset(Stationarity, Stationarity$Normality_Tests == "Pass")
-Stat_Norm_Pass = subset(Stat_Norm, Stat_Norm$Pass >=4)
-Stat_Res = subset(Stationarity, Stationarity$Residual_Tests != "Fail")
-Stat_Res_Pass = subset(Stat_Res, Stat_Res$Pass >=4)
-Stat_Res_Norm = subset(Stat_Res, Stat_Res$Normality_Tests == "Pass")
-Res_Norm = subset(Residuals, Residuals$Normality_Tests == "Pass")
-```
 
 
