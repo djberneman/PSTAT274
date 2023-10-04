@@ -6,55 +6,78 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-install.packages('astsa')
-install.packages('tseries')
-install.packages('basicTrendline')
-install.packages("UnitCircle")
-install.packages("nortsTest")
-install.packages("sae")
-install.packages("nortest")
-install.packages('distributional')
-install.packages("TSA")
-install.packages("AICcmodavg")
-install.packages('FinTS')
-install.packages('FitAR')
-install.packages("forecast")
-install.packages("Dict")
-install.packages('ggplot2')
-install.packages("ggfortify")
-install.packages('latex2exp')
-install.packages('polynom')
-install.packages('sarima')
-install.packages("MuMIn")
-# devtools::install_github("FinYang/tsdl")
-library(devtools)
-library(tseries)
-library(UnitCircle)
-library(Dict)
-library(backports)
-library(nortsTest)
-library(sae)
-library(nortest)
-library(TSA)
-library(MuMIn)
-library(astsa)
-library(basicTrendline)
-# library(tsdl)
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
+
+library(pkgload)
+library(stats)
+library(pkgbuild)
+library(pkgconfig)
+library(plyr)
 library(dplyr)
-library(FinTS)
-library(FitAR)
-library(forecast)
-library(ggplot2)
-library(latex2exp)
-library(ggfortify)
 library(MASS)
+library(devtools)
+library(grid)
+library(gtable)
+library(gtools)
+library(jsonlite)
+library(knitr)
+library(markdown)
+library(rmarkdown)
+library(parallel)
+library(scales)
+library(rlang)
+
+install.packages('astsa')
+library(astsa)
+install.packages('tseries')
+library(tseries)
+install.packages("UnitCircle")
+library(UnitCircle)
+install.packages("sae")
+library(sae)
+install.packages('distributional')
+library(distributional)
+install.packages('FinTS')
+library(FinTS)
+library(forecast)
+install.packages("Dict")
+library(Dict)
+library(ggplot2)
+install.packages('latex2exp')
+library(latex2exp)
+install.packages('polynom')
 library(polynom)
+install.packages("Formula")
+library(Formula)
+install.packages("ltsa")
+library(ltsa)
+install.packages("PolynomF")
+library(PolynomF)
+install.packages('sarima')
+library(sarima)
+install.packages("insight")
+library(insight)
+install.packages("MuMIn")
+library(MuMIn)
+install.packages("leaps")
+library(leaps)
+install.packages("locfit")
+library(locfit)
+install.packages("TSA")
+library(TSA)
+install.packages("uroot")
+library(uroot)
+install.packages("nortest")
+library(nortest)
+install.packages("nortsTest")
+library(nortsTest)
 library(readr)
 library(readxl)
-library(sarima)
 library(tinytex)
-
 ```
 \
 
@@ -92,16 +115,80 @@ In regards to the names of the data sets:\
 # Original Datasets
 ```{r}
 options(scipen = 9)
-covid <- read_excel("World_Covid.xlsx")
+covid <- read_excel("Covid_data.xlsx")
+
+covid <- covid %>%
+  mutate("Deaths_after_all_vax" = covid$total_deaths - covid$total_deaths[453]) %>%
+  mutate("Cases_after_all_vax" = covid$total_cases - covid$total_cases[453])
+
+covid <- covid %>%
+  mutate("Mortality_post_vax_final" = covid$Deaths_after_all_vax / covid$Cases_after_all_vax)
+
+covid[1:453, 20:23] = NA
 
 
-# Cases: [January 8, 2020 - May 24, 2023]
+# Smoothed_Cases: [January 8, 2020 - September 27, 2023]
   # Daily
-Cases1a = ts(covid$new_cases_smoothed[6:1238])
+Smoothed_Cases1a = ts(covid$new_cases_smoothed[1:1359])
+Smoothed_Cases1a= data.frame(Smoothed_Cases1a)
+  # Weekly
+Smoothed_Cases1b=vector()
+for(i in 1:194){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Cases1b <- append(Smoothed_Cases1b, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1b = ts(Smoothed_Cases1b)}
+Smoothed_Cases1b = data.frame(Smoothed_Cases1b)
+  # Bi-Daily
+Smoothed_Cases1c=vector()
+for(i in 1:679){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Cases1c <- append(Smoothed_Cases1c, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1c = ts(Smoothed_Cases1c)}
+Smoothed_Cases1c = data.frame(Smoothed_Cases1c)
+  # Tri-Daily
+Smoothed_Cases1d=vector()
+for(i in 1:453){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Cases1d <- append(Smoothed_Cases1d, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1d = ts(Smoothed_Cases1d)}
+Smoothed_Cases1d = data.frame(Smoothed_Cases1d)
+  # Quad-Daily
+Smoothed_Cases1e=vector()
+for(i in 1:339){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Cases1e <- append(Smoothed_Cases1e, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1e = ts(Smoothed_Cases1e)}
+Smoothed_Cases1e = data.frame(Smoothed_Cases1e)
+  # Penta-Daily
+Smoothed_Cases1f=vector()
+for(i in 1:271){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Cases1f <- append(Smoothed_Cases1f, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1f = ts(Smoothed_Cases1f)}
+Smoothed_Cases1f = data.frame(Smoothed_Cases1f)
+  # Sext-Daily
+Smoothed_Cases1g=vector()
+for(i in 1:226){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Cases1g <- append(Smoothed_Cases1g, mean(Smoothed_Cases1a[x:y, 1]))
+  Smoothed_Cases1g = ts(Smoothed_Cases1g)}
+Smoothed_Cases1g = data.frame(Smoothed_Cases1g)
+
+
+
+# Cases: [January 17, 2020 - September 24, 2023]
+  # Daily
+Cases1a = ts(covid$new_cases[10:1356])
 Cases1a= data.frame(Cases1a)
   # Weekly
 Cases1b=vector()
-for(i in 1:176){
+for(i in 1:192){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases1b <- append(Cases1b, mean(Cases1a[x:y, 1]))
@@ -109,7 +196,7 @@ for(i in 1:176){
 Cases1b = data.frame(Cases1b)
   # Bi-Daily
 Cases1c=vector()
-for(i in 1:616){
+for(i in 1:673){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases1c <- append(Cases1c, mean(Cases1a[x:y, 1]))
@@ -117,7 +204,7 @@ for(i in 1:616){
 Cases1c = data.frame(Cases1c)
   # Tri-Daily
 Cases1d=vector()
-for(i in 1:410){
+for(i in 1:449){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases1d <- append(Cases1d, mean(Cases1a[x:y, 1]))
@@ -125,7 +212,7 @@ for(i in 1:410){
 Cases1d = data.frame(Cases1d)
   # Quad-Daily
 Cases1e=vector()
-for(i in 1:308){
+for(i in 1:336){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases1e <- append(Cases1e, mean(Cases1a[x:y, 1]))
@@ -133,7 +220,7 @@ for(i in 1:308){
 Cases1e = data.frame(Cases1e)
   # Penta-Daily
 Cases1f=vector()
-for(i in 1:246){
+for(i in 1:269){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases1f <- append(Cases1f, mean(Cases1a[x:y, 1]))
@@ -141,7 +228,7 @@ for(i in 1:246){
 Cases1f = data.frame(Cases1f)
   # Sext-Daily
 Cases1g=vector()
-for(i in 1:205){
+for(i in 1:224){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases1g <- append(Cases1g, mean(Cases1a[x:y, 1]))
@@ -149,13 +236,69 @@ for(i in 1:205){
 Cases1g = data.frame(Cases1g)
 
 
-# Deaths: [January 12, 2020 - May 24, 2023]
+
+# Smoothed_Deaths: [January 8, 2020 - September 27, 2023]
   # Daily
-Deaths1a = ts(covid$new_deaths_smoothed[10:1238])
+Smoothed_Deaths1a = ts(covid$new_deaths_smoothed[1:1359])
+Smoothed_Deaths1a= data.frame(Smoothed_Deaths1a)
+  # Weekly
+Smoothed_Deaths1b=vector()
+for(i in 1:194){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Deaths1b <- append(Smoothed_Deaths1b, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1b = ts(Smoothed_Deaths1b)}
+Smoothed_Deaths1b = data.frame(Smoothed_Deaths1b)
+  # Bi-Daily
+Smoothed_Deaths1c=vector()
+for(i in 1:679){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Deaths1c <- append(Smoothed_Deaths1c, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1c = ts(Smoothed_Deaths1c)}
+Smoothed_Deaths1c = data.frame(Smoothed_Deaths1c)
+  # Tri-Daily
+Smoothed_Deaths1d=vector()
+for(i in 1:453){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Deaths1d <- append(Smoothed_Deaths1d, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1d = ts(Smoothed_Deaths1d)}
+Smoothed_Deaths1d = data.frame(Smoothed_Deaths1d)
+  # Quad-Daily
+Smoothed_Deaths1e=vector()
+for(i in 1:339){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Deaths1e <- append(Smoothed_Deaths1e, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1e = ts(Smoothed_Deaths1e)}
+Smoothed_Deaths1e = data.frame(Smoothed_Deaths1e)
+  # Penta-Daily
+Smoothed_Deaths1f=vector()
+for(i in 1:271){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Deaths1f <- append(Smoothed_Deaths1f, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1f = ts(Smoothed_Deaths1f)}
+Smoothed_Deaths1f = data.frame(Smoothed_Deaths1f)
+  # Sext-Daily
+Smoothed_Deaths1g=vector()
+for(i in 1:226){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Deaths1g <- append(Smoothed_Deaths1g, mean(Smoothed_Deaths1a[x:y, 1]))
+  Smoothed_Deaths1g = ts(Smoothed_Deaths1g)}
+Smoothed_Deaths1g = data.frame(Smoothed_Deaths1g)
+
+
+
+# Deaths: [January 19, 2020 - September 20, 2023]
+  # Daily
+Deaths1a = ts(covid$new_deaths[12:1352])
 Deaths1a= data.frame(Deaths1a)
   # Weekly
 Deaths1b=vector()
-for(i in 1:175){
+for(i in 1:191){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths1b <- append(Deaths1b, mean(Deaths1a[x:y, 1]))
@@ -163,7 +306,7 @@ for(i in 1:175){
 Deaths1b = data.frame(Deaths1b)
   # Bi-Daily
 Deaths1c=vector()
-for(i in 1:614){
+for(i in 1:670){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths1c <- append(Deaths1c, mean(Deaths1a[x:y, 1]))
@@ -171,7 +314,7 @@ for(i in 1:614){
 Deaths1c = data.frame(Deaths1c)
   # Tri-Daily
 Deaths1d=vector()
-for(i in 1:409){
+for(i in 1:447){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths1d <- append(Deaths1d, mean(Deaths1a[x:y, 1]))
@@ -179,7 +322,7 @@ for(i in 1:409){
 Deaths1d = data.frame(Deaths1d)
   # Quad-Daily
 Deaths1e=vector()
-for(i in 1:307){
+for(i in 1:335){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths1e <- append(Deaths1e, mean(Deaths1a[x:y, 1]))
@@ -187,7 +330,7 @@ for(i in 1:307){
 Deaths1e = data.frame(Deaths1e)
   # Penta-Daily
 Deaths1f=vector()
-for(i in 1:245){
+for(i in 1:268){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths1f <- append(Deaths1f, mean(Deaths1a[x:y, 1]))
@@ -195,7 +338,7 @@ for(i in 1:245){
 Deaths1f = data.frame(Deaths1f)
   # Sext-Daily
 Deaths1g=vector()
-for(i in 1:204){
+for(i in 1:223){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths1g <- append(Deaths1g, mean(Deaths1a[x:y, 1]))
@@ -203,13 +346,13 @@ for(i in 1:204){
 Deaths1g = data.frame(Deaths1g)
 
 
-# Mortality: [January 12, 2020 - May 24, 2023]
+# Mortality: [January 5, 2020 - September 27, 2023]
   # Daily
-Mort1a = ts(covid$Mortality[10:1238])
+Mort1a = ts(covid$Mortality[1:1359])
 Mort1a= data.frame(Mort1a)
   # Weekly
 Mort1b=vector()
-for(i in 1:175){
+for(i in 1:194){
   x = 7 * (i-1) + 1
   y = 7 * i
   Mort1b <- append(Mort1b, mean(Mort1a[x:y, 1]))
@@ -217,7 +360,7 @@ for(i in 1:175){
 Mort1b = data.frame(Mort1b)
   # Bi-Daily
 Mort1c=vector()
-for(i in 1:614){
+for(i in 1:679){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort1c <- append(Mort1c, mean(Mort1a[x:y, 1]))
@@ -225,7 +368,7 @@ for(i in 1:614){
 Mort1c = data.frame(Mort1c)
   # Tri-Daily
 Mort1d=vector()
-for(i in 1:409){
+for(i in 1:453){
   x = 3 * (i-1) + 1
   y = 3 * i
   Mort1d <- append(Mort1d, mean(Mort1a[x:y, 1]))
@@ -233,7 +376,7 @@ for(i in 1:409){
 Mort1d = data.frame(Mort1d)
   # Quad-Daily
 Mort1e=vector()
-for(i in 1:307){
+for(i in 1:339){
   x = 4 * (i-1) + 1
   y = 4 * i
   Mort1e <- append(Mort1e, mean(Mort1a[x:y, 1]))
@@ -241,7 +384,7 @@ for(i in 1:307){
 Mort1e = data.frame(Mort1e)
   # Penta-Daily
 Mort1f=vector()
-for(i in 1:245){
+for(i in 1:271){
   x = 5 * (i-1) + 1
   y = 5 * i
   Mort1f <- append(Mort1f, mean(Mort1a[x:y, 1]))
@@ -249,7 +392,7 @@ for(i in 1:245){
 Mort1f = data.frame(Mort1f)
   # Sext-Daily
 Mort1g=vector()
-for(i in 1:204){
+for(i in 1:226){
   x = 6 * (i-1) + 1
   y = 6 * i
   Mort1g <- append(Mort1g, mean(Mort1a[x:y, 1]))
@@ -257,13 +400,67 @@ for(i in 1:204){
 Mort1g = data.frame(Mort1g)
 
 
-# Cases: [January 8, 2020 - December 3, 2020]
+# Smoothed_Cases: [January 8, 2020 - December 3, 2020]
   # Daily
-Cases2a = ts(covid$new_cases_smoothed[6:336])
+Smoothed_Cases2a = ts(covid$new_cases_smoothed[1:331])
+Smoothed_Cases2a= data.frame(Smoothed_Cases2a)
+  # Weekly
+Smoothed_Cases2b=vector()
+for(i in 1:47){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Cases2b <- append(Smoothed_Cases2b, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2b = ts(Smoothed_Cases2b)}
+Smoothed_Cases2b = data.frame(Smoothed_Cases2b)
+  # Bi-Daily
+Smoothed_Cases2c=vector()
+for(i in 1:167){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Cases2c <- append(Smoothed_Cases2c, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2c = ts(Smoothed_Cases2c)}
+Smoothed_Cases2c = data.frame(Smoothed_Cases2c)
+  # Tri-Daily
+Smoothed_Cases2d=vector()
+for(i in 1:110){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Cases2d <- append(Smoothed_Cases2d, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2d = ts(Smoothed_Cases2d)}
+Smoothed_Cases2d = data.frame(Smoothed_Cases2d)
+  # Quad-Daily
+Smoothed_Cases2e=vector()
+for(i in 1:82){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Cases2e <- append(Smoothed_Cases2e, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2e = ts(Smoothed_Cases2e)}
+Smoothed_Cases2e = data.frame(Smoothed_Cases2e)
+  # Penta-Daily
+Smoothed_Cases2f=vector()
+for(i in 1:66){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Cases2f <- append(Smoothed_Cases2f, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2f = ts(Smoothed_Cases2f)}
+Smoothed_Cases2f = data.frame(Smoothed_Cases2f)
+  # Sext-Daily
+Smoothed_Cases2g=vector()
+for(i in 1:55){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Cases2g <- append(Smoothed_Cases2g, mean(Smoothed_Cases2a[x:y, 1]))
+  Smoothed_Cases2g = ts(Smoothed_Cases2g)}
+Smoothed_Cases2g = data.frame(Smoothed_Cases2g)
+
+
+# Cases: [January 17, 2020 - December 3, 2020]
+  # Daily
+Cases2a = ts(covid$new_cases[10:331])
 Cases2a= data.frame(Cases2a)
   # Weekly
 Cases2b=vector()
-for(i in 1:47){
+for(i in 1:46){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases2b <- append(Cases2b, mean(Cases2a[x:y, 1]))
@@ -271,7 +468,7 @@ for(i in 1:47){
 Cases2b = data.frame(Cases2b)
   # Bi-Daily
 Cases2c=vector()
-for(i in 1:165){
+for(i in 1:161){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases2c <- append(Cases2c, mean(Cases2a[x:y, 1]))
@@ -279,7 +476,7 @@ for(i in 1:165){
 Cases2c = data.frame(Cases2c)
   # Tri-Daily
 Cases2d=vector()
-for(i in 1:110){
+for(i in 1:107){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases2d <- append(Cases2d, mean(Cases2a[x:y, 1]))
@@ -287,7 +484,7 @@ for(i in 1:110){
 Cases2d = data.frame(Cases2d)
   # Quad-Daily
 Cases2e=vector()
-for(i in 1:82){
+for(i in 1:80){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases2e <- append(Cases2e, mean(Cases2a[x:y, 1]))
@@ -295,21 +492,84 @@ for(i in 1:82){
 Cases2e = data.frame(Cases2e)
   # Penta-Daily
 Cases2f=vector()
-for(i in 1:66){
+for(i in 1:64){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases2f <- append(Cases2f, mean(Cases2a[x:y, 1]))
   Cases2f = ts(Cases2f)}
 Cases2f = data.frame(Cases2f)
+  # Sext-Daily
+Cases2g=vector()
+for(i in 1:53){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Cases2g <- append(Cases2g, mean(Cases2a[x:y, 1]))
+  Cases2g = ts(Cases2g)}
+Cases2g = data.frame(Cases2g)
 
 
-# Deaths: [January 12, 2020 - December 3, 2020]
+# Smoothed_Deaths: [January 8, 2020 - December 3, 2020]
   # Daily
-Deaths2a = ts(covid$new_deaths_smoothed[10:336])
+Smoothed_Deaths2a = ts(covid$new_deaths_smoothed[1:331])
+Smoothed_Deaths2a= data.frame(Smoothed_Deaths2a)
+  # Weekly
+Smoothed_Deaths2b=vector()
+for(i in 1:47){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Deaths2b <- append(Smoothed_Deaths2b, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2b = ts(Smoothed_Deaths2b)}
+Smoothed_Deaths2b = data.frame(Smoothed_Deaths2b)
+  # Bi-Daily
+Smoothed_Deaths2c=vector()
+for(i in 1:167){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Deaths2c <- append(Smoothed_Deaths2c, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2c = ts(Smoothed_Deaths2c)}
+Smoothed_Deaths2c = data.frame(Smoothed_Deaths2c)
+  # Tri-Daily
+Smoothed_Deaths2d=vector()
+for(i in 1:110){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Deaths2d <- append(Smoothed_Deaths2d, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2d = ts(Smoothed_Deaths2d)}
+Smoothed_Deaths2d = data.frame(Smoothed_Deaths2d)
+  # Quad-Daily
+Smoothed_Deaths2e=vector()
+for(i in 1:82){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Deaths2e <- append(Smoothed_Deaths2e, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2e = ts(Smoothed_Deaths2e)}
+Smoothed_Deaths2e = data.frame(Smoothed_Deaths2e)
+  # Penta-Daily
+Smoothed_Deaths2f=vector()
+for(i in 1:66){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Deaths2f <- append(Smoothed_Deaths2f, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2f = ts(Smoothed_Deaths2f)}
+Smoothed_Deaths2f = data.frame(Smoothed_Deaths2f)
+  # Sext-Daily
+Smoothed_Deaths2g=vector()
+for(i in 1:55){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Deaths2g <- append(Smoothed_Deaths2g, mean(Smoothed_Deaths2a[x:y, 1]))
+  Smoothed_Deaths2g = ts(Smoothed_Deaths2g)}
+Smoothed_Deaths2g = data.frame(Smoothed_Deaths2g)
+
+
+
+# Deaths: [January 19, 2020 - December 3, 2020]
+  # Daily
+Deaths2a = ts(covid$new_deaths_smoothed[12:331])
 Deaths2a= data.frame(Deaths2a)
   # Weekly
 Deaths2b=vector()
-for(i in 1:46){
+for(i in 1:45){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths2b <- append(Deaths2b, mean(Deaths2a[x:y, 1]))
@@ -317,7 +577,7 @@ for(i in 1:46){
 Deaths2b = data.frame(Deaths2b)
   # Bi-Daily
 Deaths2c=vector()
-for(i in 1:163){
+for(i in 1:160){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths2c <- append(Deaths2c, mean(Deaths2a[x:y, 1]))
@@ -325,7 +585,7 @@ for(i in 1:163){
 Deaths2c = data.frame(Deaths2c)
   # Tri-Daily
 Deaths2d=vector()
-for(i in 1:108){
+for(i in 1:106){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths2d <- append(Deaths2d, mean(Deaths2a[x:y, 1]))
@@ -333,7 +593,7 @@ for(i in 1:108){
 Deaths2d = data.frame(Deaths2d)
   # Quad-Daily
 Deaths2e=vector()
-for(i in 1:81){
+for(i in 1:80){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths2e <- append(Deaths2e, mean(Deaths2a[x:y, 1]))
@@ -341,21 +601,29 @@ for(i in 1:81){
 Deaths2e = data.frame(Deaths2e)
   # Penta-Daily
 Deaths2f=vector()
-for(i in 1:65){
+for(i in 1:64){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths2f <- append(Deaths2f, mean(Deaths2a[x:y, 1]))
   Deaths2f = ts(Deaths2f)}
 Deaths2f = data.frame(Deaths2f)
+  # Sext-Daily
+Deaths2g=vector()
+for(i in 1:53){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Deaths2g <- append(Deaths2g, mean(Deaths2a[x:y, 1]))
+  Deaths2g = ts(Deaths2g)}
+Deaths2g = data.frame(Deaths2g)
 
 
-# Mortality: [January 12, 2020 - December 3, 2020]
+# Mortality: [January 8, 2020 - December 3, 2020]
   # Daily
-Mort2a = ts(covid$Mortality[10:336])
+Mort2a = ts(covid$Mortality[1:331])
 Mort2a= data.frame(Mort2a)
   # Weekly
 Mort2b=vector()
-for(i in 1:46){
+for(i in 1:47){
   x = 7 * (i-1) + 1
   y = 7 * i
   Mort2b <- append(Mort2b, mean(Mort2a[x:y, 1]))
@@ -363,7 +631,7 @@ for(i in 1:46){
 Mort2b = data.frame(Mort2b)
   # Bi-Daily
 Mort2c=vector()
-for(i in 1:163){
+for(i in 1:167){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort2c <- append(Mort2c, mean(Mort2a[x:y, 1]))
@@ -371,7 +639,7 @@ for(i in 1:163){
 Mort2c = data.frame(Mort2c)
   # Tri-Daily
 Mort2d=vector()
-for(i in 1:108){
+for(i in 1:110){
   x = 3 * (i-1) + 1
   y = 3 * i
   Mort2d <- append(Mort2d, mean(Mort2a[x:y, 1]))
@@ -379,7 +647,7 @@ for(i in 1:108){
 Mort2d = data.frame(Mort2d)
   # Quad-Daily
 Mort2e=vector()
-for(i in 1:81){
+for(i in 1:82){
   x = 4 * (i-1) + 1
   y = 4 * i
   Mort2e <- append(Mort2e, mean(Mort2a[x:y, 1]))
@@ -387,22 +655,84 @@ for(i in 1:81){
 Mort2e = data.frame(Mort2e)
   # Penta-Daily
 Mort2f=vector()
-for(i in 1:65){
+for(i in 1:66){
   x = 5 * (i-1) + 1
   y = 5 * i
   Mort2f <- append(Mort2f, mean(Mort2a[x:y, 1]))
   Mort2f = ts(Mort2f)}
 Mort2f = data.frame(Mort2f)
+  # Sext-Daily
+Mort2g=vector()
+for(i in 1:55){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Mort2g <- append(Mort2g, mean(Mort2a[x:y, 1]))
+  Mort2g = ts(Mort2g)}
+Mort2g = data.frame(Mort2g)
 
 
-
-# Cases: [January 8, 2020 - April 4, 2021]
+# Smoothed_Cases: [January 8, 2020 - April 4, 2021]
   # Daily
-Cases2_5a = ts(covid$new_cases_smoothed[6:458])
+Smoothed_Cases2_5a = ts(covid$new_cases_smoothed[1:453])
+Smoothed_Cases2_5a= data.frame(Smoothed_Cases2_5a)
+  # Weekly
+Smoothed_Cases2_5b=vector()
+for(i in 1:64){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Cases2_5b <- append(Smoothed_Cases2_5b, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5b = ts(Smoothed_Cases2_5b)}
+Smoothed_Cases2_5b = data.frame(Smoothed_Cases2_5b)
+  # Bi-Daily
+Smoothed_Cases2_5c=vector()
+for(i in 1:226){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Cases2_5c <- append(Smoothed_Cases2_5c, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5c = ts(Smoothed_Cases2_5c)}
+Smoothed_Cases2_5c = data.frame(Smoothed_Cases2_5c)
+  # Tri-Daily
+Smoothed_Cases2_5d=vector()
+for(i in 1:151){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Cases2_5d <- append(Smoothed_Cases2_5d, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5d = ts(Smoothed_Cases2_5d)}
+Smoothed_Cases2_5d = data.frame(Smoothed_Cases2_5d)
+  # Quad-Daily
+Smoothed_Cases2_5e=vector()
+for(i in 1:113){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Cases2_5e <- append(Smoothed_Cases2_5e, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5e = ts(Smoothed_Cases2_5e)}
+Smoothed_Cases2_5e = data.frame(Smoothed_Cases2_5e)
+  # Penta-Daily
+Smoothed_Cases2_5f=vector()
+for(i in 1:90){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Cases2_5f <- append(Smoothed_Cases2_5f, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5f = ts(Smoothed_Cases2_5f)}
+Smoothed_Cases2_5f = data.frame(Smoothed_Cases2_5f)
+  # Sext-Daily
+Smoothed_Cases2_5g=vector()
+for(i in 1:75){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Cases2_5g <- append(Smoothed_Cases2_5g, mean(Smoothed_Cases2_5a[x:y, 1]))
+  Smoothed_Cases2_5g = ts(Smoothed_Cases2_5g)}
+Smoothed_Cases2_5g = data.frame(Smoothed_Cases2_5g)
+
+
+
+# Cases: [January 17, 2020 - April 4, 2021]
+  # Daily
+Cases2_5a = ts(covid$new_cases[10:453])
 Cases2_5a= data.frame(Cases2_5a)
   # Weekly
 Cases2_5b=vector()
-for(i in 1:64){
+for(i in 1:63){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases2_5b <- append(Cases2_5b, mean(Cases2_5a[x:y, 1]))
@@ -410,7 +740,7 @@ for(i in 1:64){
 Cases2_5b = data.frame(Cases2_5b)
   # Bi-Daily
 Cases2_5c=vector()
-for(i in 1:226){
+for(i in 1:222){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases2_5c <- append(Cases2_5c, mean(Cases2_5a[x:y, 1]))
@@ -418,7 +748,7 @@ for(i in 1:226){
 Cases2_5c = data.frame(Cases2_5c)
   # Tri-Daily
 Cases2_5d=vector()
-for(i in 1:150){
+for(i in 1:148){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases2_5d <- append(Cases2_5d, mean(Cases2_5a[x:y, 1]))
@@ -426,7 +756,7 @@ for(i in 1:150){
 Cases2_5d = data.frame(Cases2_5d)
   # Quad-Daily
 Cases2_5e=vector()
-for(i in 1:113){
+for(i in 1:111){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases2_5e <- append(Cases2_5e, mean(Cases2_5a[x:y, 1]))
@@ -434,7 +764,7 @@ for(i in 1:113){
 Cases2_5e = data.frame(Cases2_5e)
   # Penta-Daily
 Cases2_5f=vector()
-for(i in 1:90){
+for(i in 1:88){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases2_5f <- append(Cases2_5f, mean(Cases2_5a[x:y, 1]))
@@ -442,7 +772,7 @@ for(i in 1:90){
 Cases2_5f = data.frame(Cases2_5f)
   # Sext-Daily
 Cases2_5g=vector()
-for(i in 1:75){
+for(i in 1:74){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases2_5g <- append(Cases2_5g, mean(Cases2_5a[x:y, 1]))
@@ -450,13 +780,68 @@ for(i in 1:75){
 Cases2_5g = data.frame(Cases2_5g)
 
 
-# Deaths: [January 12, 2020 - April 4, 2021]
+# Smoothed_Deaths: [January 8, 2020 - April 4, 2021]
   # Daily
-Deaths2_5a = ts(covid$new_deaths_smoothed[10:458])
+Smoothed_Deaths2_5a = ts(covid$new_deaths_smoothed[1:453])
+Smoothed_Deaths2_5a= data.frame(Smoothed_Deaths2_5a)
+  # Weekly
+Smoothed_Deaths2_5b=vector()
+for(i in 1:64){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Deaths2_5b <- append(Smoothed_Deaths2_5b, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5b = ts(Smoothed_Deaths2_5b)}
+Smoothed_Deaths2_5b = data.frame(Smoothed_Deaths2_5b)
+  # Bi-Daily
+Smoothed_Deaths2_5c=vector()
+for(i in 1:226){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Deaths2_5c <- append(Smoothed_Deaths2_5c, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5c = ts(Smoothed_Deaths2_5c)}
+Smoothed_Deaths2_5c = data.frame(Smoothed_Deaths2_5c)
+  # Tri-Daily
+Smoothed_Deaths2_5d=vector()
+for(i in 1:151){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Deaths2_5d <- append(Smoothed_Deaths2_5d, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5d = ts(Smoothed_Deaths2_5d)}
+Smoothed_Deaths2_5d = data.frame(Smoothed_Deaths2_5d)
+  # Quad-Daily
+Smoothed_Deaths2_5e=vector()
+for(i in 1:113){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Deaths2_5e <- append(Smoothed_Deaths2_5e, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5e = ts(Smoothed_Deaths2_5e)}
+Smoothed_Deaths2_5e = data.frame(Smoothed_Deaths2_5e)
+  # Penta-Daily
+Smoothed_Deaths2_5f=vector()
+for(i in 1:90){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Deaths2_5f <- append(Smoothed_Deaths2_5f, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5f = ts(Smoothed_Deaths2_5f)}
+Smoothed_Deaths2_5f = data.frame(Smoothed_Deaths2_5f)
+  # Sext-Daily
+Smoothed_Deaths2_5g=vector()
+for(i in 1:75){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Deaths2_5g <- append(Smoothed_Deaths2_5g, mean(Smoothed_Deaths2_5a[x:y, 1]))
+  Smoothed_Deaths2_5g = ts(Smoothed_Deaths2_5g)}
+Smoothed_Deaths2_5g = data.frame(Smoothed_Deaths2_5g)
+
+
+
+# Deaths: [January 19, 2020 - April 4, 2021]
+  # Daily
+Deaths2_5a = ts(covid$new_deaths[12:453])
 Deaths2_5a= data.frame(Deaths2_5a)
   # Weekly
 Deaths2_5b=vector()
-for(i in 1:64){
+for(i in 1:63){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths2_5b <- append(Deaths2_5b, mean(Deaths2_5a[x:y, 1]))
@@ -464,7 +849,7 @@ for(i in 1:64){
 Deaths2_5b = data.frame(Deaths2_5b)
   # Bi-Daily
 Deaths2_5c=vector()
-for(i in 1:224){
+for(i in 1:221){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths2_5c <- append(Deaths2_5c, mean(Deaths2_5a[x:y, 1]))
@@ -472,7 +857,7 @@ for(i in 1:224){
 Deaths2_5c = data.frame(Deaths2_5c)
   # Tri-Daily
 Deaths2_5d=vector()
-for(i in 1:149){
+for(i in 1:147){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths2_5d <- append(Deaths2_5d, mean(Deaths2_5a[x:y, 1]))
@@ -480,7 +865,7 @@ for(i in 1:149){
 Deaths2_5d = data.frame(Deaths2_5d)
   # Quad-Daily
 Deaths2_5e=vector()
-for(i in 1:112){
+for(i in 1:110){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths2_5e <- append(Deaths2_5e, mean(Deaths2_5a[x:y, 1]))
@@ -488,7 +873,7 @@ for(i in 1:112){
 Deaths2_5e = data.frame(Deaths2_5e)
   # Penta-Daily
 Deaths2_5f=vector()
-for(i in 1:89){
+for(i in 1:88){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths2_5f <- append(Deaths2_5f, mean(Deaths2_5a[x:y, 1]))
@@ -496,7 +881,7 @@ for(i in 1:89){
 Deaths2_5f = data.frame(Deaths2_5f)
   # Sext-Daily
 Deaths2_5g=vector()
-for(i in 1:74){
+for(i in 1:73){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths2_5g <- append(Deaths2_5g, mean(Deaths2_5a[x:y, 1]))
@@ -504,9 +889,9 @@ for(i in 1:74){
 Deaths2_5g = data.frame(Deaths2_5g)
 
 
-# Mortality: [January 12, 2020 - April 4, 2021]
+# Mortality: [January 8, 2020 - April 4, 2021]
   # Daily
-Mort2_5a = ts(covid$Mortality[10:458])
+Mort2_5a = ts(covid$Mortality[1:453])
 Mort2_5a= data.frame(Mort2_5a)
   # Weekly
 Mort2_5b=vector()
@@ -518,7 +903,7 @@ for(i in 1:64){
 Mort2_5b = data.frame(Mort2_5b)
   # Bi-Daily
 Mort2_5c=vector()
-for(i in 1:224){
+for(i in 1:226){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort2_5c <- append(Mort2_5c, mean(Mort2_5a[x:y, 1]))
@@ -526,7 +911,7 @@ for(i in 1:224){
 Mort2_5c = data.frame(Mort2_5c)
   # Tri-Daily
 Mort2_5d=vector()
-for(i in 1:149){
+for(i in 1:151){
   x = 3 * (i-1) + 1
   y = 3 * i
   Mort2_5d <- append(Mort2_5d, mean(Mort2_5a[x:y, 1]))
@@ -534,7 +919,7 @@ for(i in 1:149){
 Mort2_5d = data.frame(Mort2_5d)
   # Quad-Daily
 Mort2_5e=vector()
-for(i in 1:112){
+for(i in 1:113){
   x = 4 * (i-1) + 1
   y = 4 * i
   Mort2_5e <- append(Mort2_5e, mean(Mort2_5a[x:y, 1]))
@@ -542,7 +927,7 @@ for(i in 1:112){
 Mort2_5e = data.frame(Mort2_5e)
   # Penta-Daily
 Mort2_5f=vector()
-for(i in 1:89){
+for(i in 1:90){
   x = 5 * (i-1) + 1
   y = 5 * i
   Mort2_5f <- append(Mort2_5f, mean(Mort2_5a[x:y, 1]))
@@ -550,7 +935,7 @@ for(i in 1:89){
 Mort2_5f = data.frame(Mort2_5f)
   # Sext-Daily
 Mort2_5g=vector()
-for(i in 1:74){
+for(i in 1:75){
   x = 6 * (i-1) + 1
   y = 6 * i
   Mort2_5g <- append(Mort2_5g, mean(Mort2_5a[x:y, 1]))
@@ -558,14 +943,68 @@ for(i in 1:74){
 Mort2_5g = data.frame(Mort2_5g)
 
 
-
-# Cases: [December 4, 2020 - May 24, 2023]
+# Smoothed_Cases: [December 4, 2020 - September 27, 2023]
   # Daily
-Cases3a = ts(covid$new_cases_smoothed[337:1238])
+Smoothed_Cases3a = ts(covid$new_cases_smoothed[332:1359])
+Smoothed_Cases3a= data.frame(Smoothed_Cases3a)
+  # Weekly
+Smoothed_Cases3b=vector()
+for(i in 1:146){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Cases3b <- append(Smoothed_Cases3b, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3b = ts(Smoothed_Cases3b)}
+Smoothed_Cases3b = data.frame(Smoothed_Cases3b)
+  # Bi-Daily
+Smoothed_Cases3c=vector()
+for(i in 1:514){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Cases3c <- append(Smoothed_Cases3c, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3c = ts(Smoothed_Cases3c)}
+Smoothed_Cases3c = data.frame(Smoothed_Cases3c)
+  # Tri-Daily
+Smoothed_Cases3d=vector()
+for(i in 1:342){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Cases3d <- append(Smoothed_Cases3d, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3d = ts(Smoothed_Cases3d)}
+Smoothed_Cases3d = data.frame(Smoothed_Cases3d)
+  # Quad-Daily
+Smoothed_Cases3e=vector()
+for(i in 1:257){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Cases3e <- append(Smoothed_Cases3e, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3e = ts(Smoothed_Cases3e)}
+Smoothed_Cases3e = data.frame(Smoothed_Cases3e)
+  # Penta-Daily
+Smoothed_Cases3f=vector()
+for(i in 1:205){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Cases3f <- append(Smoothed_Cases3f, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3f = ts(Smoothed_Cases3f)}
+Smoothed_Cases3f = data.frame(Smoothed_Cases3f)
+  # Sext-Daily
+Smoothed_Cases3g=vector()
+for(i in 1:171){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Cases3g <- append(Smoothed_Cases3g, mean(Smoothed_Cases3a[x:y, 1]))
+  Smoothed_Cases3g = ts(Smoothed_Cases3g)}
+Smoothed_Cases3g = data.frame(Smoothed_Cases3g)
+
+
+
+# Cases: [December 4, 2020 - September 24, 2023]
+  # Daily
+Cases3a = ts(covid$new_cases[332:1356])
 Cases3a= data.frame(Cases3a)
   # Weekly
 Cases3b=vector()
-for(i in 1:128){
+for(i in 1:146){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases3b <- append(Cases3b, mean(Cases3a[x:y, 1]))
@@ -573,7 +1012,7 @@ for(i in 1:128){
 Cases3b = data.frame(Cases3b)
   # Bi-Daily
 Cases3c=vector()
-for(i in 1:450){
+for(i in 1:512){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases3c <- append(Cases3c, mean(Cases3a[x:y, 1]))
@@ -581,7 +1020,7 @@ for(i in 1:450){
 Cases3c = data.frame(Cases3c)
   # Tri-Daily
 Cases3d=vector()
-for(i in 1:300){
+for(i in 1:341){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases3d <- append(Cases3d, mean(Cases3a[x:y, 1]))
@@ -589,7 +1028,7 @@ for(i in 1:300){
 Cases3d = data.frame(Cases3d)
   # Quad-Daily
 Cases3e=vector()
-for(i in 1:225){
+for(i in 1:256){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases3e <- append(Cases3e, mean(Cases3a[x:y, 1]))
@@ -597,7 +1036,7 @@ for(i in 1:225){
 Cases3e = data.frame(Cases3e)
   # Penta-Daily
 Cases3f=vector()
-for(i in 1:180){
+for(i in 1:205){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases3f <- append(Cases3f, mean(Cases3a[x:y, 1]))
@@ -605,7 +1044,7 @@ for(i in 1:180){
 Cases3f = data.frame(Cases3f)
   # Sext-Daily
 Cases3g=vector()
-for(i in 1:150){
+for(i in 1:170){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases3g <- append(Cases3g, mean(Cases3a[x:y, 1]))
@@ -613,13 +1052,68 @@ for(i in 1:150){
 Cases3g = data.frame(Cases3g)
 
 
-# Deaths: [December 4, 2020 - May 24, 2023]
+# Smoothed_Deaths: [December 4, 2020 - September 27, 2023]
   # Daily
-Deaths3a = ts(covid$new_deaths_smoothed[337:1238])
+Smoothed_Deaths3a = ts(covid$new_deaths_smoothed[332:1359])
+Smoothed_Deaths3a= data.frame(Smoothed_Deaths3a)
+  # Weekly
+Smoothed_Deaths3b=vector()
+for(i in 1:146){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Deaths3b <- append(Smoothed_Deaths3b, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3b = ts(Smoothed_Deaths3b)}
+Smoothed_Deaths3b = data.frame(Smoothed_Deaths3b)
+  # Bi-Daily
+Smoothed_Deaths3c=vector()
+for(i in 1:514){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Deaths3c <- append(Smoothed_Deaths3c, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3c = ts(Smoothed_Deaths3c)}
+Smoothed_Deaths3c = data.frame(Smoothed_Deaths3c)
+  # Tri-Daily
+Smoothed_Deaths3d=vector()
+for(i in 1:342){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Deaths3d <- append(Smoothed_Deaths3d, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3d = ts(Smoothed_Deaths3d)}
+Smoothed_Deaths3d = data.frame(Smoothed_Deaths3d)
+  # Quad-Daily
+Smoothed_Deaths3e=vector()
+for(i in 1:257){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Deaths3e <- append(Smoothed_Deaths3e, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3e = ts(Smoothed_Deaths3e)}
+Smoothed_Deaths3e = data.frame(Smoothed_Deaths3e)
+  # Penta-Daily
+Smoothed_Deaths3f=vector()
+for(i in 1:205){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Deaths3f <- append(Smoothed_Deaths3f, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3f = ts(Smoothed_Deaths3f)}
+Smoothed_Deaths3f = data.frame(Smoothed_Deaths3f)
+  # Sext-Daily
+Smoothed_Deaths3g=vector()
+for(i in 1:171){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Deaths3g <- append(Smoothed_Deaths3g, mean(Smoothed_Deaths3a[x:y, 1]))
+  Smoothed_Deaths3g = ts(Smoothed_Deaths3g)}
+Smoothed_Deaths3g = data.frame(Smoothed_Deaths3g)
+
+
+
+# Deaths: [December 4, 2020 - September 27, 2023]
+  # Daily
+Deaths3a = ts(covid$new_deaths[332:1352])
 Deaths3a= data.frame(Deaths3a)
   # Weekly
 Deaths3b=vector()
-for(i in 1:128){
+for(i in 1:145){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths3b <- append(Deaths3b, mean(Deaths3a[x:y, 1]))
@@ -627,7 +1121,7 @@ for(i in 1:128){
 Deaths3b = data.frame(Deaths3b)
   # Bi-Daily
 Deaths3c=vector()
-for(i in 1:450){
+for(i in 1:510){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths3c <- append(Deaths3c, mean(Deaths3a[x:y, 1]))
@@ -635,7 +1129,7 @@ for(i in 1:450){
 Deaths3c = data.frame(Deaths3c)
   # Tri-Daily
 Deaths3d=vector()
-for(i in 1:300){
+for(i in 1:340){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths3d <- append(Deaths3d, mean(Deaths3a[x:y, 1]))
@@ -643,7 +1137,7 @@ for(i in 1:300){
 Deaths3d = data.frame(Deaths3d)
   # Quad-Daily
 Deaths3e=vector()
-for(i in 1:225){
+for(i in 1:255){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths3e <- append(Deaths3e, mean(Deaths3a[x:y, 1]))
@@ -651,7 +1145,7 @@ for(i in 1:225){
 Deaths3e = data.frame(Deaths3e)
   # Penta-Daily
 Deaths3f=vector()
-for(i in 1:180){
+for(i in 1:204){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths3f <- append(Deaths3f, mean(Deaths3a[x:y, 1]))
@@ -659,7 +1153,7 @@ for(i in 1:180){
 Deaths3f = data.frame(Deaths3f)
   # Sext-Daily
 Deaths3g=vector()
-for(i in 1:150){
+for(i in 1:170){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths3g <- append(Deaths3g, mean(Deaths3a[x:y, 1]))
@@ -667,13 +1161,14 @@ for(i in 1:150){
 Deaths3g = data.frame(Deaths3g)
 
 
-# Mortality: [December 4, 2020 - May 24, 2023]
+
+# Mortality: [December 4, 2020 - September 27, 2023]
   # Daily
-Mort3a = ts(covid$Mortality[337:1238])
+Mort3a = ts(covid$Mortality_post_vax[332:1359])
 Mort3a= data.frame(Mort3a)
   # Weekly
 Mort3b=vector()
-for(i in 1:128){
+for(i in 1:146){
   x = 7 * (i-1) + 1
   y = 7 * i
   Mort3b <- append(Mort3b, mean(Mort3a[x:y, 1]))
@@ -681,7 +1176,7 @@ for(i in 1:128){
 Mort3b = data.frame(Mort3b)
   # Bi-Daily
 Mort3c=vector()
-for(i in 1:450){
+for(i in 1:514){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort3c <- append(Mort3c, mean(Mort3a[x:y, 1]))
@@ -689,7 +1184,7 @@ for(i in 1:450){
 Mort3c = data.frame(Mort3c)
   # Tri-Daily
 Mort3d=vector()
-for(i in 1:300){
+for(i in 1:342){
   x = 3 * (i-1) + 1
   y = 3 * i
   Mort3d <- append(Mort3d, mean(Mort3a[x:y, 1]))
@@ -697,7 +1192,7 @@ for(i in 1:300){
 Mort3d = data.frame(Mort3d)
   # Quad-Daily
 Mort3e=vector()
-for(i in 1:225){
+for(i in 1:257){
   x = 4 * (i-1) + 1
   y = 4 * i
   Mort3e <- append(Mort3e, mean(Mort3a[x:y, 1]))
@@ -705,7 +1200,7 @@ for(i in 1:225){
 Mort3e = data.frame(Mort3e)
   # Penta-Daily
 Mort3f=vector()
-for(i in 1:180){
+for(i in 1:205){
   x = 5 * (i-1) + 1
   y = 5 * i
   Mort3f <- append(Mort3f, mean(Mort3a[x:y, 1]))
@@ -713,7 +1208,7 @@ for(i in 1:180){
 Mort3f = data.frame(Mort3f)
   # Sext-Daily
 Mort3g=vector()
-for(i in 1:150){
+for(i in 1:171){
   x = 6 * (i-1) + 1
   y = 6 * i
   Mort3g <- append(Mort3g, mean(Mort3a[x:y, 1]))
@@ -721,13 +1216,500 @@ for(i in 1:150){
 Mort3g = data.frame(Mort3g)
 
 
-# Vax: [December 4, 2020 - May 24, 2023]
+# Vax1_rate: [December 4, 2020 - September 27, 2023]
   # Daily
-Vax3a = ts(covid$people_vaccinated[337:1238])
+Vax1_rate_3a = ts(covid$Vax_rate1[332:1359])
+Vax1_rate_3a= data.frame(Vax1_rate_3a)
+  # Weekly
+Vax1_rate_3b=vector()
+for(i in 1:146){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Vax1_rate_3b <- append(Vax1_rate_3b, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3b = ts(Vax1_rate_3b)}
+Vax1_rate_3b = data.frame(Vax1_rate_3b)
+  # Bi-Daily
+Vax1_rate_3c=vector()
+for(i in 1:514){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Vax1_rate_3c <- append(Vax1_rate_3c, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3c = ts(Vax1_rate_3c)}
+Vax1_rate_3c = data.frame(Vax1_rate_3c)
+  # Tri-Daily
+Vax1_rate_3d=vector()
+for(i in 1:342){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Vax1_rate_3d <- append(Vax1_rate_3d, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3d = ts(Vax1_rate_3d)}
+Vax1_rate_3d = data.frame(Vax1_rate_3d)
+  # Quad-Daily
+Vax1_rate_3e=vector()
+for(i in 1:257){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Vax1_rate_3e <- append(Vax1_rate_3e, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3e = ts(Vax1_rate_3e)}
+Vax1_rate_3e = data.frame(Vax1_rate_3e)
+  # Penta-Daily
+Vax1_rate_3f=vector()
+for(i in 1:205){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Vax1_rate_3f <- append(Vax1_rate_3f, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3f = ts(Vax1_rate_3f)}
+Vax1_rate_3f = data.frame(Vax1_rate_3f)
+  # Sext-Daily
+Vax1_rate_3g=vector()
+for(i in 1:171){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Vax1_rate_3g <- append(Vax1_rate_3g, mean(Vax1_rate_3a[x:y, 1]))
+  Vax1_rate_3g = ts(Vax1_rate_3g)}
+Vax1_rate_3g = data.frame(Vax1_rate_3g)
+
+
+
+# Vax2_rate: [December 4, 2020 - September 27, 2023]
+  # Daily
+Vax2_rate_3a = ts(covid$Vax_rate2[332:1359])
+Vax2_rate_3a= data.frame(Vax2_rate_3a)
+  # Weekly
+Vax2_rate_3b=vector()
+for(i in 1:146){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Vax2_rate_3b <- append(Vax2_rate_3b, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3b = ts(Vax2_rate_3b)}
+Vax2_rate_3b = data.frame(Vax2_rate_3b)
+  # Bi-Daily
+Vax2_rate_3c=vector()
+for(i in 1:514){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Vax2_rate_3c <- append(Vax2_rate_3c, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3c = ts(Vax2_rate_3c)}
+Vax2_rate_3c = data.frame(Vax2_rate_3c)
+  # Tri-Daily
+Vax2_rate_3d=vector()
+for(i in 1:342){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Vax2_rate_3d <- append(Vax2_rate_3d, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3d = ts(Vax2_rate_3d)}
+Vax2_rate_3d = data.frame(Vax2_rate_3d)
+  # Quad-Daily
+Vax2_rate_3e=vector()
+for(i in 1:257){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Vax2_rate_3e <- append(Vax2_rate_3e, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3e = ts(Vax2_rate_3e)}
+Vax2_rate_3e = data.frame(Vax2_rate_3e)
+  # Penta-Daily
+Vax2_rate_3f=vector()
+for(i in 1:205){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Vax2_rate_3f <- append(Vax2_rate_3f, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3f = ts(Vax2_rate_3f)}
+Vax2_rate_3f = data.frame(Vax2_rate_3f)
+  # Sext-Daily
+Vax2_rate_3g=vector()
+for(i in 1:171){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Vax2_rate_3g <- append(Vax2_rate_3g, mean(Vax2_rate_3a[x:y, 1]))
+  Vax2_rate_3g = ts(Vax2_rate_3g)}
+Vax2_rate_3g = data.frame(Vax2_rate_3g)
+
+
+# Full_Vax1_rate: [December 13, 2020 - September 27, 2023]
+  # Daily
+Full_Vax1_rate_3a = ts(covid$Full_Vax_rate1[341:1359])
+Full_Vax1_rate_3a= data.frame(Full_Vax1_rate_3a)
+  # Weekly
+Full_Vax1_rate_3b=vector()
+for(i in 1:145){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Full_Vax1_rate_3b <- append(Full_Vax1_rate_3b, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3b = ts(Full_Vax1_rate_3b)}
+Full_Vax1_rate_3b = data.frame(Full_Vax1_rate_3b)
+  # Bi-Daily
+Full_Vax1_rate_3c=vector()
+for(i in 1:509){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Full_Vax1_rate_3c <- append(Full_Vax1_rate_3c, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3c = ts(Full_Vax1_rate_3c)}
+Full_Vax1_rate_3c = data.frame(Full_Vax1_rate_3c)
+  # Tri-Daily
+Full_Vax1_rate_3d=vector()
+for(i in 1:339){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Full_Vax1_rate_3d <- append(Full_Vax1_rate_3d, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3d = ts(Full_Vax1_rate_3d)}
+Full_Vax1_rate_3d = data.frame(Full_Vax1_rate_3d)
+  # Quad-Daily
+Full_Vax1_rate_3e=vector()
+for(i in 1:254){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Full_Vax1_rate_3e <- append(Full_Vax1_rate_3e, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3e = ts(Full_Vax1_rate_3e)}
+Full_Vax1_rate_3e = data.frame(Full_Vax1_rate_3e)
+  # Penta-Daily
+Full_Vax1_rate_3f=vector()
+for(i in 1:203){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Full_Vax1_rate_3f <- append(Full_Vax1_rate_3f, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3f = ts(Full_Vax1_rate_3f)}
+Full_Vax1_rate_3f = data.frame(Full_Vax1_rate_3f)
+  # Sext-Daily
+Full_Vax1_rate_3g=vector()
+for(i in 1:169){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Full_Vax1_rate_3g <- append(Full_Vax1_rate_3g, mean(Full_Vax1_rate_3a[x:y, 1]))
+  Full_Vax1_rate_3g = ts(Full_Vax1_rate_3g)}
+Full_Vax1_rate_3g = data.frame(Full_Vax1_rate_3g)
+
+
+# Full_Vax2_rate: [December 13, 2020 - September 27, 2023]
+  # Daily
+Full_Vax2_rate_3a = ts(covid$Full_Vax_rate2[341:1359])
+Full_Vax2_rate_3a= data.frame(Full_Vax2_rate_3a)
+  # Weekly
+Full_Vax2_rate_3b=vector()
+for(i in 1:145){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Full_Vax2_rate_3b <- append(Full_Vax2_rate_3b, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3b = ts(Full_Vax2_rate_3b)}
+Full_Vax2_rate_3b = data.frame(Full_Vax2_rate_3b)
+  # Bi-Daily
+Full_Vax2_rate_3c=vector()
+for(i in 1:509){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Full_Vax2_rate_3c <- append(Full_Vax2_rate_3c, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3c = ts(Full_Vax2_rate_3c)}
+Full_Vax2_rate_3c = data.frame(Full_Vax2_rate_3c)
+  # Tri-Daily
+Full_Vax2_rate_3d=vector()
+for(i in 1:339){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Full_Vax2_rate_3d <- append(Full_Vax2_rate_3d, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3d = ts(Full_Vax2_rate_3d)}
+Full_Vax2_rate_3d = data.frame(Full_Vax2_rate_3d)
+  # Quad-Daily
+Full_Vax2_rate_3e=vector()
+for(i in 1:254){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Full_Vax2_rate_3e <- append(Full_Vax2_rate_3e, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3e = ts(Full_Vax2_rate_3e)}
+Full_Vax2_rate_3e = data.frame(Full_Vax2_rate_3e)
+  # Penta-Daily
+Full_Vax2_rate_3f=vector()
+for(i in 1:203){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Full_Vax2_rate_3f <- append(Full_Vax2_rate_3f, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3f = ts(Full_Vax2_rate_3f)}
+Full_Vax2_rate_3f = data.frame(Full_Vax2_rate_3f)
+  # Sext-Daily
+Full_Vax2_rate_3g=vector()
+for(i in 1:169){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Full_Vax2_rate_3g <- append(Full_Vax2_rate_3g, mean(Full_Vax2_rate_3a[x:y, 1]))
+  Full_Vax2_rate_3g = ts(Full_Vax2_rate_3g)}
+Full_Vax2_rate_3g = data.frame(Full_Vax2_rate_3g)
+
+
+# Smoothed_Cases: [April 5, 2021 - September 27, 2023]
+  # Daily
+Smoothed_Cases3_5a = ts(covid$new_cases_smoothed[454:1359])
+Smoothed_Cases3_5a= data.frame(Smoothed_Cases3_5a)
+  # Weekly
+Smoothed_Cases3_5b=vector()
+for(i in 1:129){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Cases3_5b <- append(Smoothed_Cases3_5b, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5b = ts(Smoothed_Cases3_5b)}
+Smoothed_Cases3_5b = data.frame(Smoothed_Cases3_5b)
+  # Bi-Daily
+Smoothed_Cases3_5c=vector()
+for(i in 1:453){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Cases3_5c <- append(Smoothed_Cases3_5c, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5c = ts(Smoothed_Cases3_5c)}
+Smoothed_Cases3_5c = data.frame(Smoothed_Cases3_5c)
+  # Tri-Daily
+Smoothed_Cases3_5d=vector()
+for(i in 1:302){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Cases3_5d <- append(Smoothed_Cases3_5d, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5d = ts(Smoothed_Cases3_5d)}
+Smoothed_Cases3_5d = data.frame(Smoothed_Cases3_5d)
+  # Quad-Daily
+Smoothed_Cases3_5e=vector()
+for(i in 1:226){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Cases3_5e <- append(Smoothed_Cases3_5e, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5e = ts(Smoothed_Cases3_5e)}
+Smoothed_Cases3_5e = data.frame(Smoothed_Cases3_5e)
+  # Penta-Daily
+Smoothed_Cases3_5f=vector()
+for(i in 1:181){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Cases3_5f <- append(Smoothed_Cases3_5f, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5f = ts(Smoothed_Cases3_5f)}
+Smoothed_Cases3_5f = data.frame(Smoothed_Cases3_5f)
+  # Sext-Daily
+Smoothed_Cases3_5g=vector()
+for(i in 1:151){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Cases3_5g <- append(Smoothed_Cases3_5g, mean(Smoothed_Cases3_5a[x:y, 1]))
+  Smoothed_Cases3_5g = ts(Smoothed_Cases3_5g)}
+Smoothed_Cases3_5g = data.frame(Smoothed_Cases3_5g)
+
+
+# Cases: [April 5, 2021 - September 27, 2023]
+  # Daily
+Cases3_5a = ts(covid$new_cases[454:1359])
+Cases3_5a= data.frame(Cases3_5a)
+  # Weekly
+Cases3_5b=vector()
+for(i in 1:129){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Cases3_5b <- append(Cases3_5b, mean(Cases3_5a[x:y, 1]))
+  Cases3_5b = ts(Cases3_5b)}
+Cases3_5b = data.frame(Cases3_5b)
+  # Bi-Daily
+Cases3_5c=vector()
+for(i in 1:453){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Cases3_5c <- append(Cases3_5c, mean(Cases3_5a[x:y, 1]))
+  Cases3_5c = ts(Cases3_5c)}
+Cases3_5c = data.frame(Cases3_5c)
+  # Tri-Daily
+Cases3_5d=vector()
+for(i in 1:302){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Cases3_5d <- append(Cases3_5d, mean(Cases3_5a[x:y, 1]))
+  Cases3_5d = ts(Cases3_5d)}
+Cases3_5d = data.frame(Cases3_5d)
+  # Quad-Daily
+Cases3_5e=vector()
+for(i in 1:226){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Cases3_5e <- append(Cases3_5e, mean(Cases3_5a[x:y, 1]))
+  Cases3_5e = ts(Cases3_5e)}
+Cases3_5e = data.frame(Cases3_5e)
+  # Penta-Daily
+Cases3_5f=vector()
+for(i in 1:181){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Cases3_5f <- append(Cases3_5f, mean(Cases3_5a[x:y, 1]))
+  Cases3_5f = ts(Cases3_5f)}
+Cases3_5f = data.frame(Cases3_5f)
+  # Sext-Daily
+Cases3_5g=vector()
+for(i in 1:151){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Cases3_5g <- append(Cases3_5g, mean(Cases3_5a[x:y, 1]))
+  Cases3_5g = ts(Cases3_5g)}
+Cases3_5g = data.frame(Cases3_5g)
+
+
+# Smoothed_Deaths: [April 5, 2021 - September 27, 2023]
+  # Daily
+Smoothed_Deaths3_5a = ts(covid$new_deaths_smoothed[454:1359])
+Smoothed_Deaths3_5a= data.frame(Smoothed_Deaths3_5a)
+  # Weekly
+Smoothed_Deaths3_5b=vector()
+for(i in 1:129){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Smoothed_Deaths3_5b <- append(Smoothed_Deaths3_5b, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5b = ts(Smoothed_Deaths3_5b)}
+Smoothed_Deaths3_5b = data.frame(Smoothed_Deaths3_5b)
+  # Bi-Daily
+Smoothed_Deaths3_5c=vector()
+for(i in 1:453){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Smoothed_Deaths3_5c <- append(Smoothed_Deaths3_5c, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5c = ts(Smoothed_Deaths3_5c)}
+Smoothed_Deaths3_5c = data.frame(Smoothed_Deaths3_5c)
+  # Tri-Daily
+Smoothed_Deaths3_5d=vector()
+for(i in 1:302){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Smoothed_Deaths3_5d <- append(Smoothed_Deaths3_5d, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5d = ts(Smoothed_Deaths3_5d)}
+Smoothed_Deaths3_5d = data.frame(Smoothed_Deaths3_5d)
+  # Quad-Daily
+Smoothed_Deaths3_5e=vector()
+for(i in 1:226){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Smoothed_Deaths3_5e <- append(Smoothed_Deaths3_5e, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5e = ts(Smoothed_Deaths3_5e)}
+Smoothed_Deaths3_5e = data.frame(Smoothed_Deaths3_5e)
+  # Penta-Daily
+Smoothed_Deaths3_5f=vector()
+for(i in 1:181){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Smoothed_Deaths3_5f <- append(Smoothed_Deaths3_5f, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5f = ts(Smoothed_Deaths3_5f)}
+Smoothed_Deaths3_5f = data.frame(Smoothed_Deaths3_5f)
+  # Sext-Daily
+Smoothed_Deaths3_5g=vector()
+for(i in 1:151){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Smoothed_Deaths3_5g <- append(Smoothed_Deaths3_5g, mean(Smoothed_Deaths3_5a[x:y, 1]))
+  Smoothed_Deaths3_5g = ts(Smoothed_Deaths3_5g)}
+Smoothed_Deaths3_5g = data.frame(Smoothed_Deaths3_5g)
+
+
+# Deaths: [April 5, 2021 - September 27, 2023]
+  # Daily
+Deaths3_5a = ts(covid$new_deaths[454:1359])
+Deaths3_5a= data.frame(Deaths3_5a)
+  # Weekly
+Deaths3_5b=vector()
+for(i in 1:129){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Deaths3_5b <- append(Deaths3_5b, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5b = ts(Deaths3_5b)}
+Deaths3_5b = data.frame(Deaths3_5b)
+  # Bi-Daily
+Deaths3_5c=vector()
+for(i in 1:453){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Deaths3_5c <- append(Deaths3_5c, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5c = ts(Deaths3_5c)}
+Deaths3_5c = data.frame(Deaths3_5c)
+  # Tri-Daily
+Deaths3_5d=vector()
+for(i in 1:302){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Deaths3_5d <- append(Deaths3_5d, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5d = ts(Deaths3_5d)}
+Deaths3_5d = data.frame(Deaths3_5d)
+  # Quad-Daily
+Deaths3_5e=vector()
+for(i in 1:226){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Deaths3_5e <- append(Deaths3_5e, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5e = ts(Deaths3_5e)}
+Deaths3_5e = data.frame(Deaths3_5e)
+  # Penta-Daily
+Deaths3_5f=vector()
+for(i in 1:181){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Deaths3_5f <- append(Deaths3_5f, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5f = ts(Deaths3_5f)}
+Deaths3_5f = data.frame(Deaths3_5f)
+  # Sext-Daily
+Deaths3_5g=vector()
+for(i in 1:151){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Deaths3_5g <- append(Deaths3_5g, mean(Deaths3_5a[x:y, 1]))
+  Deaths3_5g = ts(Deaths3_5g)}
+Deaths3_5g = data.frame(Deaths3_5g)
+
+----------------
+# Mortality: [April 5, 2021 - September 27, 2023]
+  # Daily
+Mort3_5a = ts(covid$Mortality[454:1359])
+Mort3_5a= data.frame(Mort3_5a)
+  # Weekly
+Mort3_5b=vector()
+for(i in 1:129){
+  x = 7 * (i-1) + 1
+  y = 7 * i
+  Mort3_5b <- append(Mort3_5b, mean(Mort3_5a[x:y, 1]))
+  Mort3_5b = ts(Mort3_5b)}
+Mort3_5b = data.frame(Mort3_5b)
+  # Bi-Daily
+Mort3_5c=vector()
+for(i in 1:453){
+  x = 2 * (i-1) + 1
+  y = 2 * i
+  Mort3_5c <- append(Mort3_5c, mean(Mort3_5a[x:y, 1]))
+  Mort3_5c = ts(Mort3_5c)}
+Mort3_5c = data.frame(Mort3_5c)
+  # Tri-Daily
+Mort3_5d=vector()
+for(i in 1:302){
+  x = 3 * (i-1) + 1
+  y = 3 * i
+  Mort3_5d <- append(Mort3_5d, mean(Mort3_5a[x:y, 1]))
+  Mort3_5d = ts(Mort3_5d)}
+Mort3_5d = data.frame(Mort3_5d)
+  # Quad-Daily
+Mort3_5e=vector()
+for(i in 1:226){
+  x = 4 * (i-1) + 1
+  y = 4 * i
+  Mort3_5e <- append(Mort3_5e, mean(Mort3_5a[x:y, 1]))
+  Mort3_5e = ts(Mort3_5e)}
+Mort3_5e = data.frame(Mort3_5e)
+  # Penta-Daily
+Mort3_5f=vector()
+for(i in 1:181){
+  x = 5 * (i-1) + 1
+  y = 5 * i
+  Mort3_5f <- append(Mort3_5f, mean(Mort3_5a[x:y, 1]))
+  Mort3_5f = ts(Mort3_5f)}
+Mort3_5f = data.frame(Mort3_5f)
+  # Sext-Daily
+Mort3_5g=vector()
+for(i in 1:151){
+  x = 6 * (i-1) + 1
+  y = 6 * i
+  Mort3_5g <- append(Mort3_5g, mean(Mort3_5a[x:y, 1]))
+  Mort3_5g = ts(Mort3_5g)}
+Mort3_5g = data.frame(Mort3_5g)
+
+
+# Vax: [April 5, 2021 - May 24, 2023]
+  # Daily
+Vax3a = ts(covid$people_vaccinated[332:1359])
 Vax3a= data.frame(Vax3a)
   # Weekly
 Vax3b=vector()
-for(i in 1:128){
+for(i in 1:146){
   x = 7 * (i-1) + 1
   y = 7 * i
   Vax3b <- append(Vax3b, mean(Vax3a[x:y, 1]))
@@ -735,7 +1717,7 @@ for(i in 1:128){
 Vax3b = data.frame(Vax3b)
   # Bi-Daily
 Vax3c=vector()
-for(i in 1:450){
+for(i in 1:514){
   x = 2 * (i-1) + 1
   y = 2 * i
   Vax3c <- append(Vax3c, mean(Vax3a[x:y, 1]))
@@ -743,7 +1725,7 @@ for(i in 1:450){
 Vax3c = data.frame(Vax3c)
   # Tri-Daily
 Vax3d=vector()
-for(i in 1:300){
+for(i in 1:342){
   x = 3 * (i-1) + 1
   y = 3 * i
   Vax3d <- append(Vax3d, mean(Vax3a[x:y, 1]))
@@ -751,7 +1733,7 @@ for(i in 1:300){
 Vax3d = data.frame(Vax3d)
   # Quad-Daily
 Vax3e=vector()
-for(i in 1:225){
+for(i in 1:257){
   x = 4 * (i-1) + 1
   y = 4 * i
   Vax3e <- append(Vax3e, mean(Vax3a[x:y, 1]))
@@ -759,7 +1741,7 @@ for(i in 1:225){
 Vax3e = data.frame(Vax3e)
   # Penta-Daily
 Vax3f=vector()
-for(i in 1:180){
+for(i in 1:205){
   x = 5 * (i-1) + 1
   y = 5 * i
   Vax3f <- append(Vax3f, mean(Vax3a[x:y, 1]))
@@ -767,7 +1749,7 @@ for(i in 1:180){
 Vax3f = data.frame(Vax3f)
   # Sext-Daily
 Vax3g=vector()
-for(i in 1:150){
+for(i in 1:171){
   x = 6 * (i-1) + 1
   y = 6 * i
   Vax3g <- append(Vax3g, mean(Vax3a[x:y, 1]))
@@ -776,20 +1758,20 @@ Vax3g = data.frame(Vax3g)
 
 
 vect = vector()
-vect = append(vect, Cases1a)
-vect = append(vect, Cases1b)
-vect = append(vect, Cases1c)
-vect = append(vect, Cases1d)
-vect = append(vect, Cases1e)
-vect = append(vect, Cases1f)
-vect = append(vect, Cases1g)
-vect = append(vect, Deaths1a)
-vect = append(vect, Deaths1b)
-vect = append(vect, Deaths1c)
-vect = append(vect, Deaths1d)
-vect = append(vect, Deaths1e)
-vect = append(vect, Deaths1f)
-vect = append(vect, Deaths1g)
+vect = append(vect, Smoothed_Cases1a)
+vect = append(vect, Smoothed_Cases1b)
+vect = append(vect, Smoothed_Cases1c)
+vect = append(vect, Smoothed_Cases1d)
+vect = append(vect, Smoothed_Cases1e)
+vect = append(vect, Smoothed_Cases1f)
+vect = append(vect, Smoothed_Cases1g)
+vect = append(vect, Smoothed_Deaths1a)
+vect = append(vect, Smoothed_Deaths1b)
+vect = append(vect, Smoothed_Deaths1c)
+vect = append(vect, Smoothed_Deaths1d)
+vect = append(vect, Smoothed_Deaths1e)
+vect = append(vect, Smoothed_Deaths1f)
+vect = append(vect, Smoothed_Deaths1g)
 vect = append(vect, Mort1a)
 vect = append(vect, Mort1b)
 vect = append(vect, Mort1c)
@@ -797,38 +1779,38 @@ vect = append(vect, Mort1d)
 vect = append(vect, Mort1e)
 vect = append(vect, Mort1f)
 vect = append(vect, Mort1g)
-vect = append(vect, Cases2a)
-vect = append(vect, Cases2b)
-vect = append(vect, Cases2c)
-vect = append(vect, Cases2d)
-vect = append(vect, Cases2e)
-vect = append(vect, Cases2f)
-vect = append(vect, Deaths2a)
-vect = append(vect, Deaths2b)
-vect = append(vect, Deaths2c)
-vect = append(vect, Deaths2d)
-vect = append(vect, Deaths2e)
-vect = append(vect, Deaths2f)
+vect = append(vect, Smoothed_Cases2a)
+vect = append(vect, Smoothed_Cases2b)
+vect = append(vect, Smoothed_Cases2c)
+vect = append(vect, Smoothed_Cases2d)
+vect = append(vect, Smoothed_Cases2e)
+vect = append(vect, Smoothed_Cases2f)
+vect = append(vect, Smoothed_Deaths2a)
+vect = append(vect, Smoothed_Deaths2b)
+vect = append(vect, Smoothed_Deaths2c)
+vect = append(vect, Smoothed_Deaths2d)
+vect = append(vect, Smoothed_Deaths2e)
+vect = append(vect, Smoothed_Deaths2f)
 vect = append(vect, Mort2a)
 vect = append(vect, Mort2b)
 vect = append(vect, Mort2c)
 vect = append(vect, Mort2d)
 vect = append(vect, Mort2e)
 vect = append(vect, Mort2f)
-vect = append(vect, Cases2_5a)
-vect = append(vect, Cases2_5b)
-vect = append(vect, Cases2_5c)
-vect = append(vect, Cases2_5d)
-vect = append(vect, Cases2_5e)
-vect = append(vect, Cases2_5f)
-vect = append(vect, Cases2_5g)
-vect = append(vect, Deaths2_5a)
-vect = append(vect, Deaths2_5b)
-vect = append(vect, Deaths2_5c)
-vect = append(vect, Deaths2_5d)
-vect = append(vect, Deaths2_5e)
-vect = append(vect, Deaths2_5f)
-vect = append(vect, Deaths2_5g)
+vect = append(vect, Smoothed_Cases2_5a)
+vect = append(vect, Smoothed_Cases2_5b)
+vect = append(vect, Smoothed_Cases2_5c)
+vect = append(vect, Smoothed_Cases2_5d)
+vect = append(vect, Smoothed_Cases2_5e)
+vect = append(vect, Smoothed_Cases2_5f)
+vect = append(vect, Smoothed_Cases2_5g)
+vect = append(vect, Smoothed_Deaths2_5a)
+vect = append(vect, Smoothed_Deaths2_5b)
+vect = append(vect, Smoothed_Deaths2_5c)
+vect = append(vect, Smoothed_Deaths2_5d)
+vect = append(vect, Smoothed_Deaths2_5e)
+vect = append(vect, Smoothed_Deaths2_5f)
+vect = append(vect, Smoothed_Deaths2_5g)
 vect = append(vect, Mort2_5a)
 vect = append(vect, Mort2_5b)
 vect = append(vect, Mort2_5c)
@@ -836,20 +1818,20 @@ vect = append(vect, Mort2_5d)
 vect = append(vect, Mort2_5e)
 vect = append(vect, Mort2_5f)
 vect = append(vect, Mort2_5g)
-vect = append(vect, Cases3a)
-vect = append(vect, Cases3b)
-vect = append(vect, Cases3c)
-vect = append(vect, Cases3d)
-vect = append(vect, Cases3e)
-vect = append(vect, Cases3f)
-vect = append(vect, Cases3g)
-vect = append(vect, Deaths3a)
-vect = append(vect, Deaths3b)
-vect = append(vect, Deaths3c)
-vect = append(vect, Deaths3d)
-vect = append(vect, Deaths3e)
-vect = append(vect, Deaths3f)
-vect = append(vect, Deaths3g)
+vect = append(vect, Smoothed_Cases3a)
+vect = append(vect, Smoothed_Cases3b)
+vect = append(vect, Smoothed_Cases3c)
+vect = append(vect, Smoothed_Cases3d)
+vect = append(vect, Smoothed_Cases3e)
+vect = append(vect, Smoothed_Cases3f)
+vect = append(vect, Smoothed_Cases3g)
+vect = append(vect, Smoothed_Deaths3a)
+vect = append(vect, Smoothed_Deaths3b)
+vect = append(vect, Smoothed_Deaths3c)
+vect = append(vect, Smoothed_Deaths3d)
+vect = append(vect, Smoothed_Deaths3e)
+vect = append(vect, Smoothed_Deaths3f)
+vect = append(vect, Smoothed_Deaths3g)
 vect = append(vect, Mort3a)
 vect = append(vect, Mort3b)
 vect = append(vect, Mort3c)
@@ -866,20 +1848,20 @@ vect = append(vect, Vax3f)
 vect = append(vect, Vax3g)
 
 vect1 = vector()
-vect1 = append(vect1, "Cases1a")
-vect1 = append(vect1, "Cases1b")
-vect1 = append(vect1, "Cases1c")
-vect1 = append(vect1, "Cases1d")
-vect1 = append(vect1, "Cases1e")
-vect1 = append(vect1, "Cases1f")
-vect1 = append(vect1, "Cases1g")
-vect1 = append(vect1, "Deaths1a")
-vect1 = append(vect1, "Deaths1b")
-vect1 = append(vect1, "Deaths1c")
-vect1 = append(vect1, "Deaths1d")
-vect1 = append(vect1, "Deaths1e")
-vect1 = append(vect1, "Deaths1f")
-vect1 = append(vect1, "Deaths1g")
+vect1 = append(vect1, "Smoothed_Cases1a")
+vect1 = append(vect1, "Smoothed_Cases1b")
+vect1 = append(vect1, "Smoothed_Cases1c")
+vect1 = append(vect1, "Smoothed_Cases1d")
+vect1 = append(vect1, "Smoothed_Cases1e")
+vect1 = append(vect1, "Smoothed_Cases1f")
+vect1 = append(vect1, "Smoothed_Cases1g")
+vect1 = append(vect1, "Smoothed_Deaths1a")
+vect1 = append(vect1, "Smoothed_Deaths1b")
+vect1 = append(vect1, "Smoothed_Deaths1c")
+vect1 = append(vect1, "Smoothed_Deaths1d")
+vect1 = append(vect1, "Smoothed_Deaths1e")
+vect1 = append(vect1, "Smoothed_Deaths1f")
+vect1 = append(vect1, "Smoothed_Deaths1g")
 vect1 = append(vect1, "Mort1a")
 vect1 = append(vect1, "Mort1b")
 vect1 = append(vect1, "Mort1c")
@@ -887,18 +1869,18 @@ vect1 = append(vect1, "Mort1d")
 vect1 = append(vect1, "Mort1e")
 vect1 = append(vect1, "Mort1f")
 vect1 = append(vect1, "Mort1g")
-vect1 = append(vect1, "Cases2a")
-vect1 = append(vect1, "Cases2b")
-vect1 = append(vect1, "Cases2c")
-vect1 = append(vect1, "Cases2d")
-vect1 = append(vect1, "Cases2e")
-vect1 = append(vect1, "Cases2f")
-vect1 = append(vect1, "Deaths2a")
-vect1 = append(vect1, "Deaths2b")
-vect1 = append(vect1, "Deaths2c")
-vect1 = append(vect1, "Deaths2d")
-vect1 = append(vect1, "Deaths2e")
-vect1 = append(vect1, "Deaths2f")
+vect1 = append(vect1, "Smoothed_Cases2a")
+vect1 = append(vect1, "Smoothed_Cases2b")
+vect1 = append(vect1, "Smoothed_Cases2c")
+vect1 = append(vect1, "Smoothed_Cases2d")
+vect1 = append(vect1, "Smoothed_Cases2e")
+vect1 = append(vect1, "Smoothed_Cases2f")
+vect1 = append(vect1, "Smoothed_Deaths2a")
+vect1 = append(vect1, "Smoothed_Deaths2b")
+vect1 = append(vect1, "Smoothed_Deaths2c")
+vect1 = append(vect1, "Smoothed_Deaths2d")
+vect1 = append(vect1, "Smoothed_Deaths2e")
+vect1 = append(vect1, "Smoothed_Deaths2f")
 vect1 = append(vect1, "Mort2a")
 vect1 = append(vect1, "Mort2b")
 vect1 = append(vect1, "Mort2c")
@@ -926,20 +1908,20 @@ vect1 = append(vect1, "Mort2_5d")
 vect1 = append(vect1, "Mort2_5e")
 vect1 = append(vect1, "Mort2_5f")
 vect1 = append(vect1, "Mort2_5g")
-vect1 = append(vect1, "Cases3a")
-vect1 = append(vect1, "Cases3b")
-vect1 = append(vect1, "Cases3c")
-vect1 = append(vect1, "Cases3d")
-vect1 = append(vect1, "Cases3e")
-vect1 = append(vect1, "Cases3f")
-vect1 = append(vect1, "Cases3g")
-vect1 = append(vect1, "Deaths3a")
-vect1 = append(vect1, "Deaths3b")
-vect1 = append(vect1, "Deaths3c")
-vect1 = append(vect1, "Deaths3d")
-vect1 = append(vect1, "Deaths3e")
-vect1 = append(vect1, "Deaths3f")
-vect1 = append(vect1, "Deaths3g")
+vect1 = append(vect1, "Smoothed_Cases3a")
+vect1 = append(vect1, "Smoothed_Cases3b")
+vect1 = append(vect1, "Smoothed_Cases3c")
+vect1 = append(vect1, "Smoothed_Cases3d")
+vect1 = append(vect1, "Smoothed_Cases3e")
+vect1 = append(vect1, "Smoothed_Cases3f")
+vect1 = append(vect1, "Smoothed_Cases3g")
+vect1 = append(vect1, "Smoothed_Deaths3a")
+vect1 = append(vect1, "Smoothed_Deaths3b")
+vect1 = append(vect1, "Smoothed_Deaths3c")
+vect1 = append(vect1, "Smoothed_Deaths3d")
+vect1 = append(vect1, "Smoothed_Deaths3e")
+vect1 = append(vect1, "Smoothed_Deaths3f")
+vect1 = append(vect1, "Smoothed_Deaths3g")
 vect1 = append(vect1, "Mort3a")
 vect1 = append(vect1, "Mort3b")
 vect1 = append(vect1, "Mort3c")
