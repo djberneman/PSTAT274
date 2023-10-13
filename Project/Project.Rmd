@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
 	include = FALSE
 )
 
+
 library(pkgload)
 library(stats)
 library(pkgbuild)
@@ -30,55 +31,79 @@ library(rmarkdown)
 library(parallel)
 library(scales)
 library(rlang)
-
-install.packages('astsa')
-library(astsa)
-install.packages('tseries')
-library(tseries)
-install.packages("UnitCircle")
-library(UnitCircle)
-install.packages("sae")
-library(sae)
-install.packages('distributional')
 library(distributional)
-install.packages('FinTS')
-library(FinTS)
 library(forecast)
-install.packages("Dict")
-library(Dict)
-library(ggplot2)
-install.packages('latex2exp')
-library(latex2exp)
-install.packages('polynom')
-library(polynom)
-install.packages("Formula")
-library(Formula)
-install.packages("ltsa")
-library(ltsa)
-install.packages("PolynomF")
-library(PolynomF)
-install.packages('sarima')
-library(sarima)
-install.packages("insight")
-library(insight)
-install.packages("MuMIn")
-library(MuMIn)
-install.packages("leaps")
-library(leaps)
-install.packages("locfit")
-library(locfit)
-install.packages("TSA")
-library(TSA)
-install.packages("uroot")
-library(uroot)
-install.packages("nortest")
-library(nortest)
-install.packages("nortsTest")
-library(nortsTest)
 library(readr)
 library(readxl)
 library(tinytex)
+library(stringr)
+library(ggplot2)
+
+pkgs <- c("uroot", "FinTS", "Rdpack", "latex2exp", "plot3D", "ks", "rugarch",
+          "~/PSTAT274/Project/Packages/astsa_2.0.tar.gz",
+          "~/PSTAT274/Project/Packages/Dict_0.1.0.tar.gz",
+          "~/PSTAT274/Project/Packages/UnitCircle_0.1.3.tar.gz",
+          "~/PSTAT274/Project/Packages/expm_0.999-7.tar.gz",
+          "~/PSTAT274/Project/Packages/MSGARCH_2.51.tar.gz",
+          "~/PSTAT274/Project/Packages/polynom_1.4-1.tar.gz",
+          "~/PSTAT274/Project/Packages/PolynomF_2.0-5.tar.gz",
+          "~/PSTAT274/Project/Packages/locfit_1.5-9.8.tar.gz",
+          "~/PSTAT274/Project/Packages/leaps_3.1.tar.gz",
+          "~/PSTAT274/Project/Packages/rbibutils_2.2.15.tar.gz",
+          "~/PSTAT274/Project/Packages/Rdpack_2.5.tar.gz",
+          "~/PSTAT274/Project/Packages/Formula_1.2-5.tar.gz",
+          "~/PSTAT274/Project/Packages/lagged_0.3.2.tar.gz",
+          "~/PSTAT274/Project/Packages/ltsa_1.4.6.tar.gz",
+          "~/PSTAT274/Project/Packages/insight_0.19.5.tar.gz",
+          "~/PSTAT274/Project/Packages/MuMIn_1.47.5.tar.gz",
+          "~/PSTAT274/Project/Packages/nortest_1.0-4.tar.gz",
+          "~/PSTAT274/Project/Packages/nortsTest_1.0.3.tar.gz",
+          "~/PSTAT274/Project/Packages/sarima_0.9.1.tar.gz",
+          "~/PSTAT274/Project/Packages/SBAGM_0.1.0.tar.gz",
+          "~/PSTAT274/Project/Packages/sae_1.3.tar.gz",
+          "~/PSTAT274/Project/Packages/tseries_0.10-54.tar.gz",
+          "~/PSTAT274/Project/Packages/TSA_1.3.1.tar.gz")
+
+for(i in 1:length(pkgs)){
+  if(substr(pkgs[i], 1, 28) != "~/PSTAT274/Project/Packages/"){
+    res = pkgs[i]
+    if(res %in% installed.packages() == FALSE){
+      install.packages(res)
+      library(res, character.only = TRUE)}}
+  if(substr(pkgs[i], 1, 28) == "~/PSTAT274/Project/Packages/"){
+    res = str_match(pkgs[i], "~/PSTAT274/Project/Packages/(.*?)_")[2]
+    if(res %in% installed.packages() == FALSE){
+      install.packages(pkgs[i], repos=NULL, type="source")
+      library(res, character.only = TRUE)}}}
+
+
+library(astsa)
+library(tseries)
+library(UnitCircle)
+library(sae)
+library(FinTS)
+library(Dict)
+library(latex2exp)
+library(polynom)
+library(Formula)
+library(ltsa)
+library(lagged)
+library(rbibutils)
+library(Rdpack)
+library(PolynomF)
+library(sarima)
+library(insight)
+library(MuMIn)
+library(leaps)
+library(locfit)
+library(TSA)
+library(uroot)
+library(nortest)
+library(nortsTest)
+library(MSGARCH)
+library(SBAGM)
 ```
+
 \
 
 We will be testing the datasets corresponding to:\
@@ -115,7 +140,9 @@ In regards to the names of the data sets:\
 # Original Datasets
 ```{r}
 options(scipen = 9)
-covid <- read_excel("Covid_data.xlsx")
+covid <- read_excel("Covid_data_copy.xlsx")
+
+covid <- covid[5:1363,]
 
 covid <- covid %>%
   mutate("Deaths_after_all_vax" = covid$total_deaths - covid$total_deaths[453]) %>%
@@ -124,7 +151,7 @@ covid <- covid %>%
 covid <- covid %>%
   mutate("Mortality_post_vax_final" = covid$Deaths_after_all_vax / covid$Cases_after_all_vax)
 
-covid[1:453, 20:23] = NA
+covid[1:453, 21:23] = NA
 
 
 # Smoothed_Cases: [January 8, 2020 - September 27, 2023]
@@ -414,7 +441,7 @@ for(i in 1:47){
 Smoothed_Cases2b = data.frame(Smoothed_Cases2b)
   # Bi-Daily
 Smoothed_Cases2c=vector()
-for(i in 1:167){
+for(i in 1:165){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Cases2c <- append(Smoothed_Cases2c, mean(Smoothed_Cases2a[x:y, 1]))
@@ -522,7 +549,7 @@ for(i in 1:47){
 Smoothed_Deaths2b = data.frame(Smoothed_Deaths2b)
   # Bi-Daily
 Smoothed_Deaths2c=vector()
-for(i in 1:167){
+for(i in 1:165){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Deaths2c <- append(Smoothed_Deaths2c, mean(Smoothed_Deaths2a[x:y, 1]))
@@ -631,7 +658,7 @@ for(i in 1:47){
 Mort2b = data.frame(Mort2b)
   # Bi-Daily
 Mort2c=vector()
-for(i in 1:167){
+for(i in 1:165){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort2c <- append(Mort2c, mean(Mort2a[x:y, 1]))
@@ -1487,9 +1514,9 @@ for(i in 1:151){
 Smoothed_Cases3_5g = data.frame(Smoothed_Cases3_5g)
 
 
-# Cases: [April 5, 2021 - September 27, 2023]
+# Cases: [April 5, 2021 - September 24, 2023]
   # Daily
-Cases3_5a = ts(covid$new_cases[454:1359])
+Cases3_5a = ts(covid$new_cases[454:1356])
 Cases3_5a= data.frame(Cases3_5a)
   # Weekly
 Cases3_5b=vector()
@@ -1501,7 +1528,7 @@ for(i in 1:129){
 Cases3_5b = data.frame(Cases3_5b)
   # Bi-Daily
 Cases3_5c=vector()
-for(i in 1:453){
+for(i in 1:451){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases3_5c <- append(Cases3_5c, mean(Cases3_5a[x:y, 1]))
@@ -1509,7 +1536,7 @@ for(i in 1:453){
 Cases3_5c = data.frame(Cases3_5c)
   # Tri-Daily
 Cases3_5d=vector()
-for(i in 1:302){
+for(i in 1:301){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases3_5d <- append(Cases3_5d, mean(Cases3_5a[x:y, 1]))
@@ -1517,7 +1544,7 @@ for(i in 1:302){
 Cases3_5d = data.frame(Cases3_5d)
   # Quad-Daily
 Cases3_5e=vector()
-for(i in 1:226){
+for(i in 1:225){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases3_5e <- append(Cases3_5e, mean(Cases3_5a[x:y, 1]))
@@ -1525,7 +1552,7 @@ for(i in 1:226){
 Cases3_5e = data.frame(Cases3_5e)
   # Penta-Daily
 Cases3_5f=vector()
-for(i in 1:181){
+for(i in 1:180){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases3_5f <- append(Cases3_5f, mean(Cases3_5a[x:y, 1]))
@@ -1533,7 +1560,7 @@ for(i in 1:181){
 Cases3_5f = data.frame(Cases3_5f)
   # Sext-Daily
 Cases3_5g=vector()
-for(i in 1:151){
+for(i in 1:150){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases3_5g <- append(Cases3_5g, mean(Cases3_5a[x:y, 1]))
@@ -1595,13 +1622,13 @@ for(i in 1:151){
 Smoothed_Deaths3_5g = data.frame(Smoothed_Deaths3_5g)
 
 
-# Deaths: [April 5, 2021 - September 27, 2023]
+# Deaths: [April 5, 2021 - September 20, 2023]
   # Daily
-Deaths3_5a = ts(covid$new_deaths[454:1359])
+Deaths3_5a = ts(covid$new_deaths[454:1352])
 Deaths3_5a= data.frame(Deaths3_5a)
   # Weekly
 Deaths3_5b=vector()
-for(i in 1:129){
+for(i in 1:128){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths3_5b <- append(Deaths3_5b, mean(Deaths3_5a[x:y, 1]))
@@ -1609,7 +1636,7 @@ for(i in 1:129){
 Deaths3_5b = data.frame(Deaths3_5b)
   # Bi-Daily
 Deaths3_5c=vector()
-for(i in 1:453){
+for(i in 1:449){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths3_5c <- append(Deaths3_5c, mean(Deaths3_5a[x:y, 1]))
@@ -1617,7 +1644,7 @@ for(i in 1:453){
 Deaths3_5c = data.frame(Deaths3_5c)
   # Tri-Daily
 Deaths3_5d=vector()
-for(i in 1:302){
+for(i in 1:299){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths3_5d <- append(Deaths3_5d, mean(Deaths3_5a[x:y, 1]))
@@ -1625,7 +1652,7 @@ for(i in 1:302){
 Deaths3_5d = data.frame(Deaths3_5d)
   # Quad-Daily
 Deaths3_5e=vector()
-for(i in 1:226){
+for(i in 1:224){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths3_5e <- append(Deaths3_5e, mean(Deaths3_5a[x:y, 1]))
@@ -1633,7 +1660,7 @@ for(i in 1:226){
 Deaths3_5e = data.frame(Deaths3_5e)
   # Penta-Daily
 Deaths3_5f=vector()
-for(i in 1:181){
+for(i in 1:179){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths3_5f <- append(Deaths3_5f, mean(Deaths3_5a[x:y, 1]))
@@ -1641,14 +1668,13 @@ for(i in 1:181){
 Deaths3_5f = data.frame(Deaths3_5f)
   # Sext-Daily
 Deaths3_5g=vector()
-for(i in 1:151){
+for(i in 1:149){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths3_5g <- append(Deaths3_5g, mean(Deaths3_5a[x:y, 1]))
   Deaths3_5g = ts(Deaths3_5g)}
 Deaths3_5g = data.frame(Deaths3_5g)
 
-----------------
 # Mortality: [April 5, 2021 - September 27, 2023]
   # Daily
 Mort3_5a = ts(covid$Mortality[454:1359])
@@ -1703,60 +1729,6 @@ for(i in 1:151){
 Mort3_5g = data.frame(Mort3_5g)
 
 
-# Vax: [April 5, 2021 - May 24, 2023]
-  # Daily
-Vax3a = ts(covid$people_vaccinated[332:1359])
-Vax3a= data.frame(Vax3a)
-  # Weekly
-Vax3b=vector()
-for(i in 1:146){
-  x = 7 * (i-1) + 1
-  y = 7 * i
-  Vax3b <- append(Vax3b, mean(Vax3a[x:y, 1]))
-  Vax3b = ts(Vax3b)}
-Vax3b = data.frame(Vax3b)
-  # Bi-Daily
-Vax3c=vector()
-for(i in 1:514){
-  x = 2 * (i-1) + 1
-  y = 2 * i
-  Vax3c <- append(Vax3c, mean(Vax3a[x:y, 1]))
-  Vax3c = ts(Vax3c)}
-Vax3c = data.frame(Vax3c)
-  # Tri-Daily
-Vax3d=vector()
-for(i in 1:342){
-  x = 3 * (i-1) + 1
-  y = 3 * i
-  Vax3d <- append(Vax3d, mean(Vax3a[x:y, 1]))
-  Vax3d = ts(Vax3d)}
-Vax3d = data.frame(Vax3d)
-  # Quad-Daily
-Vax3e=vector()
-for(i in 1:257){
-  x = 4 * (i-1) + 1
-  y = 4 * i
-  Vax3e <- append(Vax3e, mean(Vax3a[x:y, 1]))
-  Vax3e = ts(Vax3e)}
-Vax3e = data.frame(Vax3e)
-  # Penta-Daily
-Vax3f=vector()
-for(i in 1:205){
-  x = 5 * (i-1) + 1
-  y = 5 * i
-  Vax3f <- append(Vax3f, mean(Vax3a[x:y, 1]))
-  Vax3f = ts(Vax3f)}
-Vax3f = data.frame(Vax3f)
-  # Sext-Daily
-Vax3g=vector()
-for(i in 1:171){
-  x = 6 * (i-1) + 1
-  y = 6 * i
-  Vax3g <- append(Vax3g, mean(Vax3a[x:y, 1]))
-  Vax3g = ts(Vax3g)}
-Vax3g = data.frame(Vax3g)
-
-
 vect = vector()
 vect = append(vect, Smoothed_Cases1a)
 vect = append(vect, Smoothed_Cases1b)
@@ -1765,6 +1737,13 @@ vect = append(vect, Smoothed_Cases1d)
 vect = append(vect, Smoothed_Cases1e)
 vect = append(vect, Smoothed_Cases1f)
 vect = append(vect, Smoothed_Cases1g)
+vect = append(vect, Cases1a)
+vect = append(vect, Cases1b)
+vect = append(vect, Cases1c)
+vect = append(vect, Cases1d)
+vect = append(vect, Cases1e)
+vect = append(vect, Cases1f)
+vect = append(vect, Cases1g)
 vect = append(vect, Smoothed_Deaths1a)
 vect = append(vect, Smoothed_Deaths1b)
 vect = append(vect, Smoothed_Deaths1c)
@@ -1772,6 +1751,13 @@ vect = append(vect, Smoothed_Deaths1d)
 vect = append(vect, Smoothed_Deaths1e)
 vect = append(vect, Smoothed_Deaths1f)
 vect = append(vect, Smoothed_Deaths1g)
+vect = append(vect, Deaths1a)
+vect = append(vect, Deaths1b)
+vect = append(vect, Deaths1c)
+vect = append(vect, Deaths1d)
+vect = append(vect, Deaths1e)
+vect = append(vect, Deaths1f)
+vect = append(vect, Deaths1g)
 vect = append(vect, Mort1a)
 vect = append(vect, Mort1b)
 vect = append(vect, Mort1c)
@@ -1785,18 +1771,35 @@ vect = append(vect, Smoothed_Cases2c)
 vect = append(vect, Smoothed_Cases2d)
 vect = append(vect, Smoothed_Cases2e)
 vect = append(vect, Smoothed_Cases2f)
+vect = append(vect, Smoothed_Cases2g)
+vect = append(vect, Cases2a)
+vect = append(vect, Cases2b)
+vect = append(vect, Cases2c)
+vect = append(vect, Cases2d)
+vect = append(vect, Cases2e)
+vect = append(vect, Cases2f)
+vect = append(vect, Cases2g)
 vect = append(vect, Smoothed_Deaths2a)
 vect = append(vect, Smoothed_Deaths2b)
 vect = append(vect, Smoothed_Deaths2c)
 vect = append(vect, Smoothed_Deaths2d)
 vect = append(vect, Smoothed_Deaths2e)
 vect = append(vect, Smoothed_Deaths2f)
+vect = append(vect, Smoothed_Deaths2g)
+vect = append(vect, Deaths2a)
+vect = append(vect, Deaths2b)
+vect = append(vect, Deaths2c)
+vect = append(vect, Deaths2d)
+vect = append(vect, Deaths2e)
+vect = append(vect, Deaths2f)
+vect = append(vect, Deaths2g)
 vect = append(vect, Mort2a)
 vect = append(vect, Mort2b)
 vect = append(vect, Mort2c)
 vect = append(vect, Mort2d)
 vect = append(vect, Mort2e)
 vect = append(vect, Mort2f)
+vect = append(vect, Mort2g)
 vect = append(vect, Smoothed_Cases2_5a)
 vect = append(vect, Smoothed_Cases2_5b)
 vect = append(vect, Smoothed_Cases2_5c)
@@ -1804,6 +1807,13 @@ vect = append(vect, Smoothed_Cases2_5d)
 vect = append(vect, Smoothed_Cases2_5e)
 vect = append(vect, Smoothed_Cases2_5f)
 vect = append(vect, Smoothed_Cases2_5g)
+vect = append(vect, Cases2_5a)
+vect = append(vect, Cases2_5b)
+vect = append(vect, Cases2_5c)
+vect = append(vect, Cases2_5d)
+vect = append(vect, Cases2_5e)
+vect = append(vect, Cases2_5f)
+vect = append(vect, Cases2_5g)
 vect = append(vect, Smoothed_Deaths2_5a)
 vect = append(vect, Smoothed_Deaths2_5b)
 vect = append(vect, Smoothed_Deaths2_5c)
@@ -1811,6 +1821,13 @@ vect = append(vect, Smoothed_Deaths2_5d)
 vect = append(vect, Smoothed_Deaths2_5e)
 vect = append(vect, Smoothed_Deaths2_5f)
 vect = append(vect, Smoothed_Deaths2_5g)
+vect = append(vect, Deaths2_5a)
+vect = append(vect, Deaths2_5b)
+vect = append(vect, Deaths2_5c)
+vect = append(vect, Deaths2_5d)
+vect = append(vect, Deaths2_5e)
+vect = append(vect, Deaths2_5f)
+vect = append(vect, Deaths2_5g)
 vect = append(vect, Mort2_5a)
 vect = append(vect, Mort2_5b)
 vect = append(vect, Mort2_5c)
@@ -1825,6 +1842,13 @@ vect = append(vect, Smoothed_Cases3d)
 vect = append(vect, Smoothed_Cases3e)
 vect = append(vect, Smoothed_Cases3f)
 vect = append(vect, Smoothed_Cases3g)
+vect = append(vect, Cases3a)
+vect = append(vect, Cases3b)
+vect = append(vect, Cases3c)
+vect = append(vect, Cases3d)
+vect = append(vect, Cases3e)
+vect = append(vect, Cases3f)
+vect = append(vect, Cases3g)
 vect = append(vect, Smoothed_Deaths3a)
 vect = append(vect, Smoothed_Deaths3b)
 vect = append(vect, Smoothed_Deaths3c)
@@ -1832,6 +1856,13 @@ vect = append(vect, Smoothed_Deaths3d)
 vect = append(vect, Smoothed_Deaths3e)
 vect = append(vect, Smoothed_Deaths3f)
 vect = append(vect, Smoothed_Deaths3g)
+vect = append(vect, Deaths3a)
+vect = append(vect, Deaths3b)
+vect = append(vect, Deaths3c)
+vect = append(vect, Deaths3d)
+vect = append(vect, Deaths3e)
+vect = append(vect, Deaths3f)
+vect = append(vect, Deaths3g)
 vect = append(vect, Mort3a)
 vect = append(vect, Mort3b)
 vect = append(vect, Mort3c)
@@ -1839,13 +1870,73 @@ vect = append(vect, Mort3d)
 vect = append(vect, Mort3e)
 vect = append(vect, Mort3f)
 vect = append(vect, Mort3g)
-vect = append(vect, Vax3a)
-vect = append(vect, Vax3b)
-vect = append(vect, Vax3c)
-vect = append(vect, Vax3d)
-vect = append(vect, Vax3e)
-vect = append(vect, Vax3f)
-vect = append(vect, Vax3g)
+vect = append(vect, Vax1_rate_3a)
+vect = append(vect, Vax1_rate_3b)
+vect = append(vect, Vax1_rate_3c)
+vect = append(vect, Vax1_rate_3d)
+vect = append(vect, Vax1_rate_3e)
+vect = append(vect, Vax1_rate_3f)
+vect = append(vect, Vax1_rate_3g)
+vect = append(vect, Vax2_rate_3a)
+vect = append(vect, Vax2_rate_3b)
+vect = append(vect, Vax2_rate_3c)
+vect = append(vect, Vax2_rate_3d)
+vect = append(vect, Vax2_rate_3e)
+vect = append(vect, Vax2_rate_3f)
+vect = append(vect, Vax2_rate_3g)
+vect = append(vect, Full_Vax1_rate_3a)
+vect = append(vect, Full_Vax1_rate_3b)
+vect = append(vect, Full_Vax1_rate_3c)
+vect = append(vect, Full_Vax1_rate_3d)
+vect = append(vect, Full_Vax1_rate_3e)
+vect = append(vect, Full_Vax1_rate_3f)
+vect = append(vect, Full_Vax1_rate_3g)
+vect = append(vect, Full_Vax2_rate_3a)
+vect = append(vect, Full_Vax2_rate_3b)
+vect = append(vect, Full_Vax2_rate_3c)
+vect = append(vect, Full_Vax2_rate_3d)
+vect = append(vect, Full_Vax2_rate_3e)
+vect = append(vect, Full_Vax2_rate_3f)
+vect = append(vect, Full_Vax2_rate_3g)
+vect = append(vect, Smoothed_Cases3_5a)
+vect = append(vect, Smoothed_Cases3_5b)
+vect = append(vect, Smoothed_Cases3_5c)
+vect = append(vect, Smoothed_Cases3_5d)
+vect = append(vect, Smoothed_Cases3_5e)
+vect = append(vect, Smoothed_Cases3_5f)
+vect = append(vect, Smoothed_Cases3_5g)
+vect = append(vect, Cases3_5a)
+vect = append(vect, Cases3_5b)
+vect = append(vect, Cases3_5c)
+vect = append(vect, Cases3_5d)
+vect = append(vect, Cases3_5e)
+vect = append(vect, Cases3_5f)
+vect = append(vect, Cases3_5g)
+vect = append(vect, Smoothed_Deaths3_5a)
+vect = append(vect, Smoothed_Deaths3_5b)
+vect = append(vect, Smoothed_Deaths3_5c)
+vect = append(vect, Smoothed_Deaths3_5d)
+vect = append(vect, Smoothed_Deaths3_5e)
+vect = append(vect, Smoothed_Deaths3_5f)
+vect = append(vect, Smoothed_Deaths3_5g)
+vect = append(vect, Deaths3_5a)
+vect = append(vect, Deaths3_5b)
+vect = append(vect, Deaths3_5c)
+vect = append(vect, Deaths3_5d)
+vect = append(vect, Deaths3_5e)
+vect = append(vect, Deaths3_5f)
+vect = append(vect, Deaths3_5g)
+vect = append(vect, Mort3_5a)
+vect = append(vect, Mort3_5b)
+vect = append(vect, Mort3_5c)
+vect = append(vect, Mort3_5d)
+vect = append(vect, Mort3_5e)
+vect = append(vect, Mort3_5f)
+vect = append(vect, Mort3_5g)
+
+
+
+
 
 vect1 = vector()
 vect1 = append(vect1, "Smoothed_Cases1a")
@@ -1855,6 +1946,13 @@ vect1 = append(vect1, "Smoothed_Cases1d")
 vect1 = append(vect1, "Smoothed_Cases1e")
 vect1 = append(vect1, "Smoothed_Cases1f")
 vect1 = append(vect1, "Smoothed_Cases1g")
+vect1 = append(vect1, "Cases1a")
+vect1 = append(vect1, "Cases1b")
+vect1 = append(vect1, "Cases1c")
+vect1 = append(vect1, "Cases1d")
+vect1 = append(vect1, "Cases1e")
+vect1 = append(vect1, "Cases1f")
+vect1 = append(vect1, "Cases1g")
 vect1 = append(vect1, "Smoothed_Deaths1a")
 vect1 = append(vect1, "Smoothed_Deaths1b")
 vect1 = append(vect1, "Smoothed_Deaths1c")
@@ -1862,6 +1960,13 @@ vect1 = append(vect1, "Smoothed_Deaths1d")
 vect1 = append(vect1, "Smoothed_Deaths1e")
 vect1 = append(vect1, "Smoothed_Deaths1f")
 vect1 = append(vect1, "Smoothed_Deaths1g")
+vect1 = append(vect1, "Deaths1a")
+vect1 = append(vect1, "Deaths1b")
+vect1 = append(vect1, "Deaths1c")
+vect1 = append(vect1, "Deaths1d")
+vect1 = append(vect1, "Deaths1e")
+vect1 = append(vect1, "Deaths1f")
+vect1 = append(vect1, "Deaths1g")
 vect1 = append(vect1, "Mort1a")
 vect1 = append(vect1, "Mort1b")
 vect1 = append(vect1, "Mort1c")
@@ -1875,32 +1980,63 @@ vect1 = append(vect1, "Smoothed_Cases2c")
 vect1 = append(vect1, "Smoothed_Cases2d")
 vect1 = append(vect1, "Smoothed_Cases2e")
 vect1 = append(vect1, "Smoothed_Cases2f")
+vect1 = append(vect1, "Smoothed_Cases2g")
+vect1 = append(vect1, "Cases2a")
+vect1 = append(vect1, "Cases2b")
+vect1 = append(vect1, "Cases2c")
+vect1 = append(vect1, "Cases2d")
+vect1 = append(vect1, "Cases2e")
+vect1 = append(vect1, "Cases2f")
+vect1 = append(vect1, "Cases2g")
 vect1 = append(vect1, "Smoothed_Deaths2a")
 vect1 = append(vect1, "Smoothed_Deaths2b")
 vect1 = append(vect1, "Smoothed_Deaths2c")
 vect1 = append(vect1, "Smoothed_Deaths2d")
 vect1 = append(vect1, "Smoothed_Deaths2e")
 vect1 = append(vect1, "Smoothed_Deaths2f")
+vect1 = append(vect1, "Smoothed_Deaths2g")
+vect1 = append(vect1, "Deaths2a")
+vect1 = append(vect1, "Deaths2b")
+vect1 = append(vect1, "Deaths2c")
+vect1 = append(vect1, "Deaths2d")
+vect1 = append(vect1, "Deaths2e")
+vect1 = append(vect1, "Deaths2f")
+vect1 = append(vect1, "Deaths2g")
 vect1 = append(vect1, "Mort2a")
 vect1 = append(vect1, "Mort2b")
 vect1 = append(vect1, "Mort2c")
 vect1 = append(vect1, "Mort2d")
 vect1 = append(vect1, "Mort2e")
 vect1 = append(vect1, "Mort2f")
-vect1 = append(vect1, "Case2_5a")
-vect1 = append(vect1, "Case2_5b")
-vect1 = append(vect1, "Case2_5c")
-vect1 = append(vect1, "Case2_5d")
-vect1 = append(vect1, "Case2_5e")
-vect1 = append(vect1, "Case2_5f")
-vect1 = append(vect1, "Case2_5g")
-vect1 = append(vect1, "Death2_5a")
-vect1 = append(vect1, "Death2_5b")
-vect1 = append(vect1, "Death2_5c")
-vect1 = append(vect1, "Death2_5d")
-vect1 = append(vect1, "Death2_5e")
-vect1 = append(vect1, "Death2_5f")
-vect1 = append(vect1, "Death2_5g")
+vect1 = append(vect1, "Mort2g")
+vect1 = append(vect1, "Smoothed_Cases2_5a")
+vect1 = append(vect1, "Smoothed_Cases2_5b")
+vect1 = append(vect1, "Smoothed_Cases2_5c")
+vect1 = append(vect1, "Smoothed_Cases2_5d")
+vect1 = append(vect1, "Smoothed_Cases2_5e")
+vect1 = append(vect1, "Smoothed_Cases2_5f")
+vect1 = append(vect1, "Smoothed_Cases2_5g")
+vect1 = append(vect1, "Cases2_5a")
+vect1 = append(vect1, "Cases2_5b")
+vect1 = append(vect1, "Cases2_5c")
+vect1 = append(vect1, "Cases2_5d")
+vect1 = append(vect1, "Cases2_5e")
+vect1 = append(vect1, "Cases2_5f")
+vect1 = append(vect1, "Cases2_5g")
+vect1 = append(vect1, "Smoothed_Deaths2_5a")
+vect1 = append(vect1, "Smoothed_Deaths2_5b")
+vect1 = append(vect1, "Smoothed_Deaths2_5c")
+vect1 = append(vect1, "Smoothed_Deaths2_5d")
+vect1 = append(vect1, "Smoothed_Deaths2_5e")
+vect1 = append(vect1, "Smoothed_Deaths2_5f")
+vect1 = append(vect1, "Smoothed_Deaths2_5g")
+vect1 = append(vect1, "Deaths2_5a")
+vect1 = append(vect1, "Deaths2_5b")
+vect1 = append(vect1, "Deaths2_5c")
+vect1 = append(vect1, "Deaths2_5d")
+vect1 = append(vect1, "Deaths2_5e")
+vect1 = append(vect1, "Deaths2_5f")
+vect1 = append(vect1, "Deaths2_5g")
 vect1 = append(vect1, "Mort2_5a")
 vect1 = append(vect1, "Mort2_5b")
 vect1 = append(vect1, "Mort2_5c")
@@ -1915,6 +2051,13 @@ vect1 = append(vect1, "Smoothed_Cases3d")
 vect1 = append(vect1, "Smoothed_Cases3e")
 vect1 = append(vect1, "Smoothed_Cases3f")
 vect1 = append(vect1, "Smoothed_Cases3g")
+vect1 = append(vect1, "Cases3a")
+vect1 = append(vect1, "Cases3b")
+vect1 = append(vect1, "Cases3c")
+vect1 = append(vect1, "Cases3d")
+vect1 = append(vect1, "Cases3e")
+vect1 = append(vect1, "Cases3f")
+vect1 = append(vect1, "Cases3g")
 vect1 = append(vect1, "Smoothed_Deaths3a")
 vect1 = append(vect1, "Smoothed_Deaths3b")
 vect1 = append(vect1, "Smoothed_Deaths3c")
@@ -1922,6 +2065,13 @@ vect1 = append(vect1, "Smoothed_Deaths3d")
 vect1 = append(vect1, "Smoothed_Deaths3e")
 vect1 = append(vect1, "Smoothed_Deaths3f")
 vect1 = append(vect1, "Smoothed_Deaths3g")
+vect1 = append(vect1, "Deaths3a")
+vect1 = append(vect1, "Deaths3b")
+vect1 = append(vect1, "Deaths3c")
+vect1 = append(vect1, "Deaths3d")
+vect1 = append(vect1, "Deaths3e")
+vect1 = append(vect1, "Deaths3f")
+vect1 = append(vect1, "Deaths3g")
 vect1 = append(vect1, "Mort3a")
 vect1 = append(vect1, "Mort3b")
 vect1 = append(vect1, "Mort3c")
@@ -1929,15 +2079,368 @@ vect1 = append(vect1, "Mort3d")
 vect1 = append(vect1, "Mort3e")
 vect1 = append(vect1, "Mort3f")
 vect1 = append(vect1, "Mort3g")
-vect1 = append(vect1, "Vax3a")
-vect1 = append(vect1, "Vax3b")
-vect1 = append(vect1, "Vax3c")
-vect1 = append(vect1, "Vax3d")
-vect1 = append(vect1, "Vax3e")
-vect1 = append(vect1, "Vax3f")
-vect1 = append(vect1, "Vax3g")
+vect1 = append(vect1, "Vax1_rate_3a")
+vect1 = append(vect1, "Vax1_rate_3b")
+vect1 = append(vect1, "Vax1_rate_3c")
+vect1 = append(vect1, "Vax1_rate_3d")
+vect1 = append(vect1, "Vax1_rate_3e")
+vect1 = append(vect1, "Vax1_rate_3f")
+vect1 = append(vect1, "Vax1_rate_3g")
+vect1 = append(vect1, "Vax2_rate_3a")
+vect1 = append(vect1, "Vax2_rate_3b")
+vect1 = append(vect1, "Vax2_rate_3c")
+vect1 = append(vect1, "Vax2_rate_3d")
+vect1 = append(vect1, "Vax2_rate_3e")
+vect1 = append(vect1, "Vax2_rate_3f")
+vect1 = append(vect1, "Vax2_rate_3g")
+vect1 = append(vect1, "Full_Vax1_rate_3a")
+vect1 = append(vect1, "Full_Vax1_rate_3b")
+vect1 = append(vect1, "Full_Vax1_rate_3c")
+vect1 = append(vect1, "Full_Vax1_rate_3d")
+vect1 = append(vect1, "Full_Vax1_rate_3e")
+vect1 = append(vect1, "Full_Vax1_rate_3f")
+vect1 = append(vect1, "Full_Vax1_rate_3g")
+vect1 = append(vect1, "Full_Vax2_rate_3a")
+vect1 = append(vect1, "Full_Vax2_rate_3b")
+vect1 = append(vect1, "Full_Vax2_rate_3c")
+vect1 = append(vect1, "Full_Vax2_rate_3d")
+vect1 = append(vect1, "Full_Vax2_rate_3e")
+vect1 = append(vect1, "Full_Vax2_rate_3f")
+vect1 = append(vect1, "Full_Vax2_rate_3g")
+vect1 = append(vect1, "Smoothed_Cases3_5a")
+vect1 = append(vect1, "Smoothed_Cases3_5b")
+vect1 = append(vect1, "Smoothed_Cases3_5c")
+vect1 = append(vect1, "Smoothed_Cases3_5d")
+vect1 = append(vect1, "Smoothed_Cases3_5e")
+vect1 = append(vect1, "Smoothed_Cases3_5f")
+vect1 = append(vect1, "Smoothed_Cases3_5g")
+vect1 = append(vect1, "Cases3_5a")
+vect1 = append(vect1, "Cases3_5b")
+vect1 = append(vect1, "Cases3_5c")
+vect1 = append(vect1, "Cases3_5d")
+vect1 = append(vect1, "Cases3_5e")
+vect1 = append(vect1, "Cases3_5f")
+vect1 = append(vect1, "Cases3_5g")
+vect1 = append(vect1, "Smoothed_Deaths3_5a")
+vect1 = append(vect1, "Smoothed_Deaths3_5b")
+vect1 = append(vect1, "Smoothed_Deaths3_5c")
+vect1 = append(vect1, "Smoothed_Deaths3_5d")
+vect1 = append(vect1, "Smoothed_Deaths3_5e")
+vect1 = append(vect1, "Smoothed_Deaths3_5f")
+vect1 = append(vect1, "Smoothed_Deaths3_5g")
+vect1 = append(vect1, "Deaths3_5a")
+vect1 = append(vect1, "Deaths3_5b")
+vect1 = append(vect1, "Deaths3_5c")
+vect1 = append(vect1, "Deaths3_5d")
+vect1 = append(vect1, "Deaths3_5e")
+vect1 = append(vect1, "Deaths3_5f")
+vect1 = append(vect1, "Deaths3_5g")
+vect1 = append(vect1, "Mort3_5a")
+vect1 = append(vect1, "Mort3_5b")
+vect1 = append(vect1, "Mort3_5c")
+vect1 = append(vect1, "Mort3_5d")
+vect1 = append(vect1, "Mort3_5e")
+vect1 = append(vect1, "Mort3_5f")
+vect1 = append(vect1, "Mort3_5g")
+
 ```
 \
+
+# Transformation, Differencing, Normality Tests, and Stationarity Tests
+# V1
+```{r, warning = FALSE}
+
+# We will create 3 transformations of each model:
+#   - Box-Cox Transformation
+#   - Log Transformation
+#   - Square Root Transformation
+
+`_` = list()
+bc = list()
+log = list()
+sqrt = list()
+Data <- data.frame(matrix(ncol=24, nrow=4872))
+colnames(Data) <- c("Name", "Pass", "Dataset", "Average", "Transformation", 
+                    "Differencing", "Anderson-Darling Test", "Shapiro test",
+                    "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test",
+                    "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance",
+                    "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance",
+                    "Variance", "Variance_test", "AICc", "Residual_Tests",
+                    "Normality_Tests", "Stationarity_Tests", "X")
+
+# For tests, reject if p < 0.05
+ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
+shapiro_test = list()   # H_0 = data is normal (do not want to reject)
+kpss_test = list()    # H_0 = data is stationary (do not want to reject)
+adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
+Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
+Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
+McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
+
+# Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
+
+# Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
+transformation_name = vector()
+Difference = vector()
+x = 1
+for(i in 1:length(vect)){
+  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
+
+  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
+  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
+  
+  # Perform transformations, plot transformed data, histograms:
+  transform = vector()
+  transform = append(transform, data.frame(vect[[i]]))
+  transform = append(transform, data.frame((1/lambda)*(vect[[i]]^lambda-1)))
+  transform = append(transform, data.frame(log(vect[[i]])))
+  transform = append(transform, data.frame(sqrt(vect[[i]])))
+
+  transform_name = vector()
+  transform_name = append(transform_name, vect1[i])
+  `_` = append(`_`, vect1[i])
+  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
+  bc = append(bc, paste0(vect1[i], ".bc"))
+  transform_name = append(transform_name, paste0(vect1[i], ".log"))
+  log = append(log, paste0(vect1[i], ".log"))
+  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
+  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
+  
+  transformation_name = append(transformation_name, transform_name)
+  
+# For each of the 3 transformations and the original for each data set, 
+# we will test the goodness of fit when each time series is differenced at: 
+#   - Lag 0 (no differencing) 
+#   - Lag 1 (non seasonal difference - yearly)
+#   - Lag 7 (seasonal difference - weekly) 
+#   - Lag 12 (seasonal difference - monthly) 
+#   - Lag 1.7 (non seasonal difference - yearly & seasonal difference - weekly) 
+#   - Lag 1.12 (non seasonal difference - yearly & seasonal difference - monthly) 
+
+# This bring the total number of models being evaluated to 480.
+  
+  list = c(0,1,7,12,1.7,1.12)
+  for(j in 1:length(transform)){
+    difference = vector()
+    diff_name = vector()
+    for(k in 1:length(list)){
+      Data$X[x] = x
+      Data$Grandparent_Variance[x] = signif(var(vect[[i]]), 4)
+      Data$Parent_Variance[x] = signif(var(transform[[j]]), 4)
+      Data$Dataset[x] = vect1[i]
+      if(transform_name[j] %in% `_`){
+        Data$Transformation[x] = "none"}
+      if(transform_name[j] %in% bc){
+        Data$Transformation[x] = "Box-Cox"}
+      if(transform_name[j] %in% log){
+        Data$Transformation[x] = "Log"}
+      if(transform_name[j] %in% sqrt){
+        Data$Transformation[x] = "Square Root"}
+      if(i%%7 == 1){
+        Data$Average[x] = "Daily"}
+      if(i%%7 == 2){
+        Data$Average[x] = "Weekly"}
+      if(i%%7 == 3){
+        Data$Average[x] = "Bi-Daily"}
+      if(i%%7 == 4){
+        Data$Average[x] = "Tri-Daily"}
+      if(i%%7 == 5){
+        Data$Average[x] = "Quad-Daily"}
+      if(i%%7 == 6){
+        Data$Average[x] = "Penta-Daily"}
+      if(i%%7 == 0){
+        Data$Average[x] = "Sext-Daily"}
+      
+      if(list[k]==0){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+        Data[x,1] = transform_name[j]
+        Data$Differencing[x] = "Lag = none, Period = none"
+        difference = append(difference, transform[j])
+        Data$AICc[x] = Data$Parent_Variance[x]
+        Data$Variance[x] = signif(var(transform[[j]]), 4)
+        Data$Nonseasonal_Variance[x] = Data$Variance[x]
+        Data$Seasonal_Variance[x] = Data$Variance[x]}
+      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+      if(list[k]==1){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+        arima = arima(transform[[j]], order = c(0,1,0), method="ML")
+        Data$AICc[x] = try(AICc(arima), silent = TRUE)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = none"
+        difference = append(difference, data.frame(arima$residuals))
+        Data$Variance[x] = signif(var(arima$residuals), 4)
+        Data$Nonseasonal_Variance[x] = Data$Variance[x]
+        Data$Seasonal_Variance[x] = Data$Variance[x]}
+      if(list[k]==7 | list[k]==12){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+        arima = arima(transform[[j]], order = c(0,0,0), seasonal=list(
+            order=c(0,1,0), period = list[k]), method="ML")
+        Data$AICc[x] = try(AICc(arima), silent = TRUE)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = paste0("Lag = none, Period = ", list[k])
+        difference = append(difference, data.frame(arima$residuals))
+        Data$Variance[x] = signif(var(arima$residuals), 4)
+        Data$Seasonal_Variance[x] = Data$Variance[x]}
+      if(list[k]==7){
+        Data$Nonseasonal_Variance[x] = Data$Variance[x-2]}
+      if(list[k]==12){
+        Data$Nonseasonal_Variance[x] = Data$Variance[x-3]}
+      if(list[k]==1.7){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 7), method="ML")
+        Data$AICc[x] = try(AICc(arima), silent = TRUE)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = 7"
+        difference = append(difference, data.frame(arima$residuals))
+        Data$Variance[x] = signif(var(arima$residuals), 4)
+        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-3]
+        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]}
+      if(list[k]==1.12){
+        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
+        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
+            order=c(0,1,0), period = 12), method="ML")
+        Data$AICc[x] = try(AICc(arima), silent = TRUE)
+        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
+        Data$Differencing[x] = "Lag = 1, Period = 12"
+        difference = append(difference, data.frame(arima$residuals))
+        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-4]
+        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]
+        Data$Variance[x] = signif(var(arima$residuals), 4)
+        Difference = append(Difference, difference)}
+      
+      Data[x, 7] = round(ad.test(difference[[k]])$p.value, digits=5)
+      
+      Data[x, 8] = round(shapiro.test(difference[[k]])$p.value, digits=5)
+      
+      Data[x, 9] = round(adf.test(difference[[k]])$p.value, digits=5)
+      
+      Data[x, 10] = round(kpss.test(difference[[k]])$p.value, digits=5)
+      
+      Data[x, 11] = round(Box.test(difference[[k]], lag=sqrt(length(
+        difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5)
+      
+      Data[x, 12] = round(Box.test(difference[[k]], lag=sqrt(length(
+        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
+      
+      Data[x, 13] = round(Box.test((difference[[k]])^2, lag=sqrt(length(
+        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
+      
+      Data$Pass[x]=0
+      for(z in c(7,8, 10:13)){
+        if(Data[x,z]>=0.05){
+          Data$Pass[x] = 1 + Data$Pass[x]}}
+      if(Data[x, 9] <= 0.05){
+        Data$Pass[x] = 2 + Data$Pass[x]}
+      Variance_Order = data.frame(matrix(ncol=3, nrow=5))
+      colnames(Variance_Order) = c("Levels", "Variance", "Rank")
+      Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
+                                "Seasonality", "Current")
+      Variance_Order$Variance[1:5] = Data[x, c(14:18)]
+      Variance_Order$Variance = as.double(Variance_Order$Variance)
+      Variance_Order$Rank = as.integer(rank(Variance_Order$Variance, ties.method = "min"))
+      Data$Variance_test[x] = paste0(
+        Variance_Order$Rank[1], ", ", Variance_Order$Rank[2],
+        ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", 
+        Variance_Order$Rank[5])
+      Fails = 0
+      if(Data[x, 14] < Data[x, 15]){
+        Fails=Fails+1}
+      if((Data[x, 15] < Data[x, 16]) & (Data[x, 15] < Data[x, 17])){
+        Fails=Fails+1}
+      if((Data[x, 14] < Data[x, 16]) & (Data[x, 14] < Data[x, 17])){
+        Fails=Fails+1}
+      if((Data[x, 16] < Data[x, 18]) & (Data[x, 17] < Data[x, 18])){
+        Fails=Fails+1}
+      if(Data[x, 14] < Data[x, 18]){
+        Fails=Fails+1}
+      if(Data[x, 15] < Data[x, 18]){
+        Fails=Fails+1}
+      Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
+      # if(Data$Pass[x] >= 6){
+      #   # None of the undifferenced transformations for each data set are part of the best models
+      #   if(list(k)==0){
+      #     list1 = list("ARIMA(0,0,0)", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}
+      #   if(list[k]==1){
+      #     list1 = list("ARIMA(0,1,0)", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}
+      #   if(list[k]==7){
+      #     list1 = list("ARIMA(0,7,0)", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}
+      #   if(list[k]==12){
+      #     list1 = list("ARIMA(0,12,0)", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}
+      #   if(list[k]==1.7){
+      #     list1 = list("SARIMA(0,1,0)x(0,1,0)_7", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}
+      #   if(list[k]==1.12){
+      #     list1 = list("SARIMA(0,1,0)x(0,1,0)_12", x, i, transform_name[j])
+      #     Best_Models1 = append(Best_Models1, list1)
+      #     Best_Models = append(Best_Models, difference[k])}}
+      Pass1 = 0 
+      for(s in 11:13){
+        if(Data[x,s] >= 0.05){
+          Pass1 = Pass1 + 1}}
+      if(Pass1 >= 3){
+        Data$Residual_Tests[x] = "Pass3"}
+      if(Pass1 > 1 & Pass1 < 3){
+        Data$Residual_Tests[x] = "Pass2"}
+      if(Pass1 > 0 & Pass1 < 2){
+        Data$Residual_Tests[x] = "Pass1"}
+      if(Pass1 == 0){
+        Data$Residual_Tests[x] = "Fail"}
+      Pass2 = 0
+      if(Data[x,7] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Data[x,8] >= 0.05){
+        Pass2 = Pass2 + 1}
+      if(Pass2 >= 1){
+        Data$Normality_Tests[x] = "Pass"}
+      else{
+        Data$Normality_Tests[x] = "Fail"}
+      Pass3 = 0
+      if(Data[x,10] >= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Data[x,9] <= 0.05){
+        Pass3 = Pass3 + 1}
+      if(Pass3 >= 1){
+        Data$Stationarity_Tests[x] = "Pass"}
+      else{
+        Data$Stationarity_Tests[x] = "Fail"}
+      x = x + 1}}}
+
+# Dict1 = dict(init_keys = NULL, init_values = NULL)
+# for(i in 1:4872){
+#   Dict1[Data$Name[i]] = Difference1[[i]]}
+# 
+# Data["Dict"] = 2
+
+
+Stationarity = subset(Data, Data$Stationarity_Tests == "Pass")
+Stationarity
+Normality = subset(Data, Data$Normality_Tests == "Pass")
+Normality
+Residuals = subset(Data, Data$Residual_Tests != "Fail")
+Residuals
+
+
+Stat_Norm = subset(Stationarity, Stationarity$Normality_Tests == "Pass")
+Stat_Norm_Pass = subset(Stat_Norm, Stat_Norm$Pass >=4)
+Stat_Res = subset(Stationarity, Stationarity$Residual_Tests != "Fail")
+Stat_Res_Pass = subset(Stat_Res, Stat_Res$Pass >=4)
+Stat_Res_Norm = subset(Stat_Res, Stat_Res$Normality_Tests == "Pass")
+Res_Norm = subset(Residuals, Residuals$Normality_Tests == "Pass")
+```
+
+
+
 
 
 
@@ -2429,304 +2932,6 @@ Stat_Res_Pass_a = subset(Stat_Res_a, Stat_Res_a$Pass >=3)
 Stat_Res_Norm_a = subset(Stat_Res_a, Stat_Res_a$Normality_Tests == "Pass")
 Res_Norm_a = subset(Residuals_a, Residuals_a$Normality_Tests == "Pass")
 ```
-
-# Transformation, Differencing, Normality Tests, and Stationarity Tests
-# V1
-```{r, warning = FALSE}
-
-# We will create 3 transformations of each model:
-#   - Box-Cox Transformation
-#   - Log Transformation
-#   - Square Root Transformation
-
-`_` = list()
-bc = list()
-log = list()
-sqrt = list()
-Data <- data.frame(matrix(ncol=24, nrow=2112))
-colnames(Data) <- c("Name", "Pass", "Dataset", "Average", "Transformation", 
-                    "Differencing", "Anderson-Darling Test", "Shapiro test",
-                    "Augmented Dickey-Fuller Test", "KPSS Test", "Box-Pierce Test",
-                    "Ljung-Box Test", "McLeod-Li Test", "Grandparent_Variance",
-                    "Parent_Variance", "Nonseasonal_Variance", "Seasonal_Variance",
-                    "Variance", "Variance_test", "AICc", "Residual_Tests",
-                    "Normality_Tests", "Stationarity_Tests", "X")
-
-# For tests, reject if p < 0.05
-ad_test = list()    # H_0 = data is normally distributed (do not want to reject)
-shapiro_test = list()   # H_0 = data is normal (do not want to reject)
-kpss_test = list()    # H_0 = data is stationary (do not want to reject)
-adf_test = list()       # H_0 = data contains a unit root and are non stationary (want to reject)
-Box_Pierce_test = list()  # H_0 = data are white noise (do not want to reject)
-Ljung_Box_test = list()   # H_0 = Residuals are not autocorrelated / the data are independently distributed (do not want to reject)
-McLeod_Li_test = list()   # H_0 = Independence of residuals (do not want to reject)
-
-# Rejecting a test has a greater significance than not rejecting a test. This is because rejection proves that the null hypothesis cannot be true while not rejecting implies that nothing was found that proves the null hypothesis false. Just because a test doesn't have a reason to reject the null hypothesis does not mean that there exists no reason to reject it. It only means that particular test could not prove the null hypothesis false. A similar test for the same null or alternative hypothesis can have a different result. The test that rejects its null hypothesis is therefore given more weight to its validity.
-
-# Since the kpss.test and adf.test have opposing null hypotheses for the stationarity of a time series, we will put more double weight on the adf.test being rejected when calulating the amount of tests that give a favorable result.
-transformation_name = vector()
-Best_Models = list()
-Best_Models1 = list()
-Difference = vector()
-x = 1
-for(i in 1:length(vect)){
-  bcTransform <- boxcox(vect[[i]]~ as.numeric(1:length(vect[[i]])))       # plot the graph
-
-  bcTransform$x[which(bcTransform$y == max(bcTransform$y))] # gives the value of λ
-  lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-  title(main = paste0(vect1[i], "  lambda = ", round(lambda, 3)))
-  
-  # Perform transformations, plot transformed data, histograms:
-  transform = vector()
-  transform = append(transform, data.frame(vect[[i]]))
-  transform = append(transform, data.frame((1/lambda)*(vect[[i]]^lambda-1)))
-  transform = append(transform, data.frame(log(vect[[i]])))
-  transform = append(transform, data.frame(sqrt(vect[[i]])))
-
-  transform_name = vector()
-  transform_name = append(transform_name, vect1[i])
-  `_` = append(`_`, vect1[i])
-  transform_name = append(transform_name, paste0(vect1[i], ".bc"))
-  bc = append(bc, paste0(vect1[i], ".bc"))
-  transform_name = append(transform_name, paste0(vect1[i], ".log"))
-  log = append(log, paste0(vect1[i], ".log"))
-  transform_name = append(transform_name, paste0(vect1[i], ".sqrt"))
-  sqrt = append(sqrt, paste0(vect1[i], ".sqrt"))
-  
-  transformation_name = append(transformation_name, transform_name)
-  
-# For each of the 3 transformations and the original for each data set, 
-# we will test the goodness of fit when each time series is differenced at: 
-#   - Lag 0 (no differencing) 
-#   - Lag 1 (non seasonal difference - yearly)
-#   - Lag 7 (seasonal difference - weekly) 
-#   - Lag 12 (seasonal difference - monthly) 
-#   - Lag 1.7 (non seasonal difference - yearly & seasonal difference - weekly) 
-#   - Lag 1.12 (non seasonal difference - yearly & seasonal difference - monthly) 
-
-# This bring the total number of models being evaluated to 480.
-  
-  list = c(0,1,7,12,1.7,1.12)
-  for(j in 1:length(transform)){
-    difference = vector()
-    diff_name = vector()
-    for(k in 1:length(list)){
-      Data$X[x] = x
-      Data$Grandparent_Variance[x] = signif(var(vect[[i]]), 4)
-      Data$Parent_Variance[x] = signif(var(transform[[j]]), 4)
-      Data$Dataset[x] = vect1[i]
-      if(transform_name[j] %in% `_`){
-        Data$Transformation[x] = "none"}
-      if(transform_name[j] %in% bc){
-        Data$Transformation[x] = "Box-Cox"}
-      if(transform_name[j] %in% log){
-        Data$Transformation[x] = "Log"}
-      if(transform_name[j] %in% sqrt){
-        Data$Transformation[x] = "Square Root"}
-      if(i %in% c(1,8,15,22,28,34,40,47,54,61,68,75,82)){
-        Data$Average[x] = "Daily"}
-      if(i %in% c(2,9,16,23,29,35,41,48,55,62,69,76,83)){
-        Data$Average[x] = "Weekly"}
-      if(i %in% c(3,10,17,24,30,36,42,49,56,63,70,77,84)){
-        Data$Average[x] = "Bi-Daily"}
-      if(i %in% c(4,11,18,25,31,37,43,50,57,64,71,78,85)){
-        Data$Average[x] = "Tri-Daily"}
-      if(i %in% c(5,12,19,26,32,38,44,51,58,65,72,79,86)){
-        Data$Average[x] = "Quad-Daily"}
-      if(i %in% c(6,13,20,27,33,39,45,52,59,66,73,80,87)){
-        Data$Average[x] = "Penta-Daily"}
-      if(i %in% c(7,14,21,28,34,40,46,53,60,67,74,81,88)){
-        Data$Average[x] = "Sext-Daily"}
-      
-      if(list[k]==0){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        Data[x,1] = transform_name[j]
-        Data$Differencing[x] = "Lag = none, Period = none"
-        difference = append(difference, transform[j])
-        Data$AICc[x] = Data$Parent_Variance[x]
-        Data$Variance[x] = signif(var(transform[[j]]), 4)
-        Data$Nonseasonal_Variance[x] = Data$Variance[x]
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-      if(list[k]==1){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), method="ML")$residuals
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = none"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Nonseasonal_Variance[x] = Data$Variance[x]
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      if(list[k]==7 | list[k]==12){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,0,0), seasonal=list(
-            order=c(0,1,0), period = list[k]), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = paste0("Lag = none, Period = ", list[k])
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Seasonal_Variance[x] = Data$Variance[x]}
-      if(list[k]==7){
-        Data$Nonseasonal_Variance[x] = Data$Variance[x-2]}
-      if(list[k]==12){
-        Data$Nonseasonal_Variance[x] = Data$Variance[x-3]}
-      if(list[k]==1.7){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 7), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = 7"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-3]
-        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]}
-      if(list[k]==1.12){
-        diff_name = append(diff_name, paste0(transform_name[j], "(", list[k], ")"))
-        arima = arima(transform[[j]], order = c(0,1,0), seasonal=list(
-            order=c(0,1,0), period = 12), method="ML")
-        Data$AICc[x] = try(AICc(arima), silent = TRUE)
-        Data[x,1] = paste0(transform_name[j], "(", list[k], ")")
-        Data$Differencing[x] = "Lag = 1, Period = 12"
-        difference = append(difference, data.frame(arima$residuals))
-        Data$Nonseasonal_Variance[x] = Data$Nonseasonal_Variance[x-4]
-        Data$Seasonal_Variance[x] = Data$Seasonal_Variance[x-2]
-        Data$Variance[x] = signif(var(arima$residuals), 4)
-        Difference = append(Difference, difference)}
-      
-      Data[x, 7] = round(ad.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 8] = round(shapiro.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 9] = round(adf.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 10] = round(kpss.test(difference[[k]])$p.value, digits=5)
-      
-      Data[x, 11] = round(Box.test(difference[[k]], lag=sqrt(length(
-        difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5)
-      
-      Data[x, 12] = round(Box.test(difference[[k]], lag=sqrt(length(
-        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
-      
-      Data[x, 13] = round(Box.test((difference[[k]])^2, lag=sqrt(length(
-        difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5)
-      
-      Data$Pass[x]=0
-      for(z in c(7,8, 10:13)){
-        if(Data[x,z]>=0.05){
-          Data$Pass[x] = 1 + Data$Pass[x]}}
-      if(Data[x, 9] <= 0.05){
-        Data$Pass[x] = 2 + Data$Pass[x]}
-      Variance_Order = data.frame(matrix(ncol=3, nrow=5))
-      colnames(Variance_Order) = c("Levels", "Variance", "Rank")
-      Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
-                                "Seasonality", "Current")
-      Variance_Order$Variance[1:5] = Data[x, c(14:18)]
-      Variance_Order$Variance = as.double(Variance_Order$Variance)
-      Variance_Order$Rank = as.integer(rank(Variance_Order$Variance, ties.method = "min"))
-      Data$Variance_test[x] = paste0(
-        Variance_Order$Rank[1], ", ", Variance_Order$Rank[2],
-        ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", 
-        Variance_Order$Rank[5])
-      Fails = 0
-      if(Data[x, 14] < Data[x, 15]){
-        Fails=Fails+1}
-      if((Data[x, 15] < Data[x, 16]) & (Data[x, 15] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 14] < Data[x, 16]) & (Data[x, 14] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 16] < Data[x, 18]) & (Data[x, 17] < Data[x, 18])){
-        Fails=Fails+1}
-      if(Data[x, 14] < Data[x, 18]){
-        Fails=Fails+1}
-      if(Data[x, 15] < Data[x, 18]){
-        Fails=Fails+1}
-      Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
-      if(Data$Pass[x] >= 6){
-        # None of the undifferenced transformations for each data set are part of the best models
-        if(list(k)==0){
-          list1 = list("ARIMA(0,0,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1){
-          list1 = list("ARIMA(0,1,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==7){
-          list1 = list("ARIMA(0,7,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==12){
-          list1 = list("ARIMA(0,12,0)", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1.7){
-          list1 = list("SARIMA(0,1,0)x(0,1,0)_7", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}
-        if(list[k]==1.12){
-          list1 = list("SARIMA(0,1,0)x(0,1,0)_12", x, i, transform_name[j])
-          Best_Models1 = append(Best_Models1, list1)
-          Best_Models = append(Best_Models, difference[k])}}
-      Pass1 = 0 
-      for(s in 11:13){
-        if(Data[x,s] >= 0.05){
-          Pass1 = Pass1 + 1}}
-      if(Pass1 >= 3){
-        Data_a$Residual_Tests[x] = "Pass3"}
-      if(Pass1 > 1 & Pass1 < 3){
-        Data_a$Residual_Tests[x] = "Pass2"}
-      if(Pass1 > 0 & Pass1 < 2){
-        Data_a$Residual_Tests[x] = "Pass1"}
-      if(Pass1 == 0){
-        Data_a$Residual_Tests[x] = "Fail"}
-      Pass2 = 0
-      if(Data[x,7] >= 0.05){
-        Pass2 = Pass2 + 1}
-      if(Data[x,8] >= 0.05){
-        Pass2 = Pass2 + 1}
-      if(Pass2 >= 1){
-        Data$Normality_Tests[x] = "Pass"}
-      else{
-        Data$Normality_Tests[x] = "Fail"}
-      Pass3 = 0
-      if(Data[x,10] >= 0.05){
-        Pass3 = Pass3 + 1}
-      if(Data[x,9] <= 0.05){
-        Pass3 = Pass3 + 1}
-      if(Pass3 >= 1){
-        Data$Stationarity_Tests[x] = "Pass"}
-      else{
-        Data$Stationarity_Tests[x] = "Fail"}
-      x = x + 1}}}
-
-Dict1 = dict(init_keys = NULL, init_values = NULL)
-for(i in 1:576){
-  Dict1[Data$Name[i]] = Difference1[[i]]}
-
-Data["Dict"] = 2
-
-Data1 = subset(Data, Data$Pass >= 4)
-Data1
-
-Stationarity = subset(Data, Data$Stationarity_Tests == "Pass")
-Stationarity
-Normality = subset(Data, Data$Normality_Tests == "Pass")
-Normality
-Residuals = subset(Data, Data$Residual_Tests != "Fail")
-Residuals
-
-
-Stat_Norm = subset(Stationarity, Stationarity$Normality_Tests == "Pass")
-Stat_Norm_Pass = subset(Stat_Norm, Stat_Norm$Pass >=4)
-Stat_Res = subset(Stationarity, Stationarity$Residual_Tests != "Fail")
-Stat_Res_Pass = subset(Stat_Res, Stat_Res$Pass >=4)
-Stat_Res_Norm = subset(Stat_Res, Stat_Res$Normality_Tests == "Pass")
-Res_Norm = subset(Residuals, Residuals$Normality_Tests == "Pass")
-```
-
 
 
 ```{r}
