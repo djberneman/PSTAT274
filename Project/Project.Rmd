@@ -13,6 +13,33 @@ knitr::opts_chunk$set(
 )
 
 
+# install.packages("pkgload")
+# install.packages("stats")
+# install.packages("pkgbuild")
+# install.packages("pkgconfig")
+# install.packages("plyr")
+# install.packages("dplyr")
+# install.packages("MASS")
+# install.packages("devtools")
+# install.packages("grid")
+# install.packages("gtable")
+# install.packages("gtools")
+# install.packages("jsonlite")
+# install.packages("knitr")
+# install.packages("markdown")
+# install.packages("rmarkdown")
+# install.packages("parallel")
+# install.packages("scales")
+# install.packages("rlang")
+# install.packages("distributional")
+# install.packages("forecast")
+# install.packages("readr")
+# install.packages("readxl")
+# install.packages("tinytex")
+# install.packages("stringr")
+# install.packages("ggplot2")
+
+
 library(pkgload)
 library(stats)
 library(pkgbuild)
@@ -39,7 +66,8 @@ library(tinytex)
 library(stringr)
 library(ggplot2)
 
-pkgs <- c("uroot", "FinTS", "Rdpack", "latex2exp", "plot3D", "ks", "rugarch",
+
+pkgs <- c("pkgbuild", "pkgconfig", "plyr", "dplyr", "MASS", "grid", "gtable", "gtools", "jsonlite", "knitr", "markdown", "rmarkdown", "parallel", "scales", "rlang", "distributional", "forecast", "reader", "readxl", "tinytex", "stringr", "ggplot2", "uroot", "FinTS", "Rdpack", "latex2exp", "plot3D", "ks", "rugarch",
           "~/PSTAT274/Project/Packages/astsa_2.0.tar.gz",
           "~/PSTAT274/Project/Packages/Dict_0.1.0.tar.gz",
           "~/PSTAT274/Project/Packages/UnitCircle_0.1.3.tar.gz",
@@ -68,7 +96,7 @@ for(i in 1:length(pkgs)){
   if(substr(pkgs[i], 1, 28) != "~/PSTAT274/Project/Packages/"){
     res = pkgs[i]
     if(res %in% installed.packages() == FALSE){
-      install.packages(res)
+      install.packages(res, dependencies = TRUE)
       library(res, character.only = TRUE)}}
   if(substr(pkgs[i], 1, 28) == "~/PSTAT274/Project/Packages/"){
     res = str_match(pkgs[i], "~/PSTAT274/Project/Packages/(.*?)_")[2]
@@ -156,7 +184,7 @@ covid[1:453, 21:23] = NA
 
 # Smoothed_Cases: [January 8, 2020 - September 27, 2023]
   # Daily
-Smoothed_Cases1a = ts(covid$new_cases_smoothed[1:1359])
+Smoothed_Cases1a = ts(covid$new_cases_smoothed[1:1359], frequency = 365, start = c(2020, 8))
 Smoothed_Cases1a= data.frame(Smoothed_Cases1a)
   # Weekly
 Smoothed_Cases1b=vector()
@@ -164,7 +192,7 @@ for(i in 1:194){
   x = 7 * (i-1) + 1
   y = 7 * i
   Smoothed_Cases1b <- append(Smoothed_Cases1b, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1b = ts(Smoothed_Cases1b)}
+  Smoothed_Cases1b = ts(Smoothed_Cases1b, frequency = 365/7, start = c(2020, 8/7))}
 Smoothed_Cases1b = data.frame(Smoothed_Cases1b)
   # Bi-Daily
 Smoothed_Cases1c=vector()
@@ -172,7 +200,7 @@ for(i in 1:679){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Cases1c <- append(Smoothed_Cases1c, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1c = ts(Smoothed_Cases1c)}
+  Smoothed_Cases1c = ts(Smoothed_Cases1c, frequency = 365/2, start = c(2020, 4))}
 Smoothed_Cases1c = data.frame(Smoothed_Cases1c)
   # Tri-Daily
 Smoothed_Cases1d=vector()
@@ -180,7 +208,7 @@ for(i in 1:453){
   x = 3 * (i-1) + 1
   y = 3 * i
   Smoothed_Cases1d <- append(Smoothed_Cases1d, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1d = ts(Smoothed_Cases1d)}
+  Smoothed_Cases1d = ts(Smoothed_Cases1d, frequency = 365/3, start = c(2020, 8/3))}
 Smoothed_Cases1d = data.frame(Smoothed_Cases1d)
   # Quad-Daily
 Smoothed_Cases1e=vector()
@@ -188,7 +216,7 @@ for(i in 1:339){
   x = 4 * (i-1) + 1
   y = 4 * i
   Smoothed_Cases1e <- append(Smoothed_Cases1e, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1e = ts(Smoothed_Cases1e)}
+  Smoothed_Cases1e = ts(Smoothed_Cases1e, frequency = 365/4, start = c(2020, 2))}
 Smoothed_Cases1e = data.frame(Smoothed_Cases1e)
   # Penta-Daily
 Smoothed_Cases1f=vector()
@@ -196,7 +224,7 @@ for(i in 1:271){
   x = 5 * (i-1) + 1
   y = 5 * i
   Smoothed_Cases1f <- append(Smoothed_Cases1f, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1f = ts(Smoothed_Cases1f)}
+  Smoothed_Cases1f = ts(Smoothed_Cases1f, frequency = 365/5, start = c(2020, 8/5))}
 Smoothed_Cases1f = data.frame(Smoothed_Cases1f)
   # Sext-Daily
 Smoothed_Cases1g=vector()
@@ -204,14 +232,14 @@ for(i in 1:226){
   x = 6 * (i-1) + 1
   y = 6 * i
   Smoothed_Cases1g <- append(Smoothed_Cases1g, mean(Smoothed_Cases1a[x:y, 1]))
-  Smoothed_Cases1g = ts(Smoothed_Cases1g)}
+  Smoothed_Cases1g = ts(Smoothed_Cases1g, frequency = 365/6, start = c(2020, 8/6))}
 Smoothed_Cases1g = data.frame(Smoothed_Cases1g)
 
 
 
 # Cases: [January 17, 2020 - September 24, 2023]
   # Daily
-Cases1a = ts(covid$new_cases[10:1356])
+Cases1a = ts(covid$new_cases[10:1356], frequency = 365, start = c(2020, 17))
 Cases1a= data.frame(Cases1a)
   # Weekly
 Cases1b=vector()
@@ -219,7 +247,7 @@ for(i in 1:192){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases1b <- append(Cases1b, mean(Cases1a[x:y, 1]))
-  Cases1b = ts(Cases1b)}
+  Cases1b = ts(Cases1b, frequency = 365/7, start = c(2020, 17/7))}
 Cases1b = data.frame(Cases1b)
   # Bi-Daily
 Cases1c=vector()
@@ -227,7 +255,7 @@ for(i in 1:673){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases1c <- append(Cases1c, mean(Cases1a[x:y, 1]))
-  Cases1c = ts(Cases1c)}
+  Cases1c = ts(Cases1c, frequency = 365/2, start = c(2020, 17/2))}
 Cases1c = data.frame(Cases1c)
   # Tri-Daily
 Cases1d=vector()
@@ -235,7 +263,7 @@ for(i in 1:449){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases1d <- append(Cases1d, mean(Cases1a[x:y, 1]))
-  Cases1d = ts(Cases1d)}
+  Cases1d = ts(Cases1d, frequency = 365/3, start = c(2020, 17/3))}
 Cases1d = data.frame(Cases1d)
   # Quad-Daily
 Cases1e=vector()
@@ -243,7 +271,7 @@ for(i in 1:336){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases1e <- append(Cases1e, mean(Cases1a[x:y, 1]))
-  Cases1e = ts(Cases1e)}
+  Cases1e = ts(Cases1e, frequency = 365/4, start = c(2020, 17/4))}
 Cases1e = data.frame(Cases1e)
   # Penta-Daily
 Cases1f=vector()
@@ -251,7 +279,7 @@ for(i in 1:269){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases1f <- append(Cases1f, mean(Cases1a[x:y, 1]))
-  Cases1f = ts(Cases1f)}
+  Cases1f = ts(Cases1f, frequency = 365/5, start = c(2020, 17/5))}
 Cases1f = data.frame(Cases1f)
   # Sext-Daily
 Cases1g=vector()
@@ -259,14 +287,14 @@ for(i in 1:224){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases1g <- append(Cases1g, mean(Cases1a[x:y, 1]))
-  Cases1g = ts(Cases1g)}
+  Cases1g = ts(Cases1g, frequency = 365/6, start = c(2020, 17/6))}
 Cases1g = data.frame(Cases1g)
 
 
 
 # Smoothed_Deaths: [January 8, 2020 - September 27, 2023]
   # Daily
-Smoothed_Deaths1a = ts(covid$new_deaths_smoothed[1:1359])
+Smoothed_Deaths1a = ts(covid$new_deaths_smoothed[1:1359], frequency = 365, start = c(2020, 8))
 Smoothed_Deaths1a= data.frame(Smoothed_Deaths1a)
   # Weekly
 Smoothed_Deaths1b=vector()
@@ -274,7 +302,7 @@ for(i in 1:194){
   x = 7 * (i-1) + 1
   y = 7 * i
   Smoothed_Deaths1b <- append(Smoothed_Deaths1b, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1b = ts(Smoothed_Deaths1b)}
+  Smoothed_Deaths1b = ts(Smoothed_Deaths1b, frequency = 365/7, start = c(2020, 8/7))}
 Smoothed_Deaths1b = data.frame(Smoothed_Deaths1b)
   # Bi-Daily
 Smoothed_Deaths1c=vector()
@@ -282,7 +310,7 @@ for(i in 1:679){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Deaths1c <- append(Smoothed_Deaths1c, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1c = ts(Smoothed_Deaths1c)}
+  Smoothed_Deaths1c = ts(Smoothed_Deaths1c, frequency = 365/2, start = c(2020, 4))}
 Smoothed_Deaths1c = data.frame(Smoothed_Deaths1c)
   # Tri-Daily
 Smoothed_Deaths1d=vector()
@@ -290,7 +318,7 @@ for(i in 1:453){
   x = 3 * (i-1) + 1
   y = 3 * i
   Smoothed_Deaths1d <- append(Smoothed_Deaths1d, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1d = ts(Smoothed_Deaths1d)}
+  Smoothed_Deaths1d = ts(Smoothed_Deaths1d, frequency = 365/3, start = c(2020, 8/3))}
 Smoothed_Deaths1d = data.frame(Smoothed_Deaths1d)
   # Quad-Daily
 Smoothed_Deaths1e=vector()
@@ -298,7 +326,7 @@ for(i in 1:339){
   x = 4 * (i-1) + 1
   y = 4 * i
   Smoothed_Deaths1e <- append(Smoothed_Deaths1e, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1e = ts(Smoothed_Deaths1e)}
+  Smoothed_Deaths1e = ts(Smoothed_Deaths1e, frequency = 365/4, start = c(2020, 2))}
 Smoothed_Deaths1e = data.frame(Smoothed_Deaths1e)
   # Penta-Daily
 Smoothed_Deaths1f=vector()
@@ -306,7 +334,7 @@ for(i in 1:271){
   x = 5 * (i-1) + 1
   y = 5 * i
   Smoothed_Deaths1f <- append(Smoothed_Deaths1f, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1f = ts(Smoothed_Deaths1f)}
+  Smoothed_Deaths1f = ts(Smoothed_Deaths1f, frequency = 365/5, start = c(2020, 8/5))}
 Smoothed_Deaths1f = data.frame(Smoothed_Deaths1f)
   # Sext-Daily
 Smoothed_Deaths1g=vector()
@@ -314,7 +342,7 @@ for(i in 1:226){
   x = 6 * (i-1) + 1
   y = 6 * i
   Smoothed_Deaths1g <- append(Smoothed_Deaths1g, mean(Smoothed_Deaths1a[x:y, 1]))
-  Smoothed_Deaths1g = ts(Smoothed_Deaths1g)}
+  Smoothed_Deaths1g = ts(Smoothed_Deaths1g, frequency = 365/6, start = c(2020, 8/6))}
 Smoothed_Deaths1g = data.frame(Smoothed_Deaths1g)
 
 
@@ -322,14 +350,14 @@ Smoothed_Deaths1g = data.frame(Smoothed_Deaths1g)
 # Deaths: [January 19, 2020 - September 20, 2023]
   # Daily
 Deaths1a = ts(covid$new_deaths[12:1352])
-Deaths1a= data.frame(Deaths1a)
+Deaths1a= data.frame(Deaths1a, frequency = 365, start = c(2020, 19))
   # Weekly
 Deaths1b=vector()
 for(i in 1:191){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths1b <- append(Deaths1b, mean(Deaths1a[x:y, 1]))
-  Deaths1b = ts(Deaths1b)}
+  Deaths1b = ts(Deaths1b, frequency = 365/7, start = c(2020, 19/7))}
 Deaths1b = data.frame(Deaths1b)
   # Bi-Daily
 Deaths1c=vector()
@@ -337,7 +365,7 @@ for(i in 1:670){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths1c <- append(Deaths1c, mean(Deaths1a[x:y, 1]))
-  Deaths1c = ts(Deaths1c)}
+  Deaths1c = ts(Deaths1c, frequency = 365/2, start = c(2020, 19/2))}
 Deaths1c = data.frame(Deaths1c)
   # Tri-Daily
 Deaths1d=vector()
@@ -345,7 +373,7 @@ for(i in 1:447){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths1d <- append(Deaths1d, mean(Deaths1a[x:y, 1]))
-  Deaths1d = ts(Deaths1d)}
+  Deaths1d = ts(Deaths1d, frequency = 365/3, start = c(2020, 19/3))}
 Deaths1d = data.frame(Deaths1d)
   # Quad-Daily
 Deaths1e=vector()
@@ -353,7 +381,7 @@ for(i in 1:335){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths1e <- append(Deaths1e, mean(Deaths1a[x:y, 1]))
-  Deaths1e = ts(Deaths1e)}
+  Deaths1e = ts(Deaths1e, frequency = 365/4, start = c(2020, 19/4))}
 Deaths1e = data.frame(Deaths1e)
   # Penta-Daily
 Deaths1f=vector()
@@ -361,7 +389,7 @@ for(i in 1:268){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths1f <- append(Deaths1f, mean(Deaths1a[x:y, 1]))
-  Deaths1f = ts(Deaths1f)}
+  Deaths1f = ts(Deaths1f, frequency = 365/5, start = c(2020, 19/5))}
 Deaths1f = data.frame(Deaths1f)
   # Sext-Daily
 Deaths1g=vector()
@@ -369,13 +397,13 @@ for(i in 1:223){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths1g <- append(Deaths1g, mean(Deaths1a[x:y, 1]))
-  Deaths1g = ts(Deaths1g)}
+  Deaths1g = ts(Deaths1g, frequency = 365/6, start = c(2020, 19/6))}
 Deaths1g = data.frame(Deaths1g)
 
 
 # Mortality: [January 5, 2020 - September 27, 2023]
   # Daily
-Mort1a = ts(covid$Mortality[1:1359])
+Mort1a = ts(covid$Mortality[1:1359], frequency = 365, start = c(2020, 5))
 Mort1a= data.frame(Mort1a)
   # Weekly
 Mort1b=vector()
@@ -383,7 +411,7 @@ for(i in 1:194){
   x = 7 * (i-1) + 1
   y = 7 * i
   Mort1b <- append(Mort1b, mean(Mort1a[x:y, 1]))
-  Mort1b = ts(Mort1b)}
+  Mort1b = ts(Mort1b, frequency = 365/7, start = c(2020, 5/7))}
 Mort1b = data.frame(Mort1b)
   # Bi-Daily
 Mort1c=vector()
@@ -391,7 +419,7 @@ for(i in 1:679){
   x = 2 * (i-1) + 1
   y = 2 * i
   Mort1c <- append(Mort1c, mean(Mort1a[x:y, 1]))
-  Mort1c = ts(Mort1c)}
+  Mort1c = ts(Mort1c, frequency = 365/2, start = c(2020, 5/2))}
 Mort1c = data.frame(Mort1c)
   # Tri-Daily
 Mort1d=vector()
@@ -399,7 +427,7 @@ for(i in 1:453){
   x = 3 * (i-1) + 1
   y = 3 * i
   Mort1d <- append(Mort1d, mean(Mort1a[x:y, 1]))
-  Mort1d = ts(Mort1d)}
+  Mort1d = ts(Mort1d, frequency = 365/3, start = c(2020, 5/3))}
 Mort1d = data.frame(Mort1d)
   # Quad-Daily
 Mort1e=vector()
@@ -407,7 +435,7 @@ for(i in 1:339){
   x = 4 * (i-1) + 1
   y = 4 * i
   Mort1e <- append(Mort1e, mean(Mort1a[x:y, 1]))
-  Mort1e = ts(Mort1e)}
+  Mort1e = ts(Mort1e, frequency = 365/4, start = c(2020, 5/4))}
 Mort1e = data.frame(Mort1e)
   # Penta-Daily
 Mort1f=vector()
@@ -415,7 +443,7 @@ for(i in 1:271){
   x = 5 * (i-1) + 1
   y = 5 * i
   Mort1f <- append(Mort1f, mean(Mort1a[x:y, 1]))
-  Mort1f = ts(Mort1f)}
+  Mort1f = ts(Mort1f, frequency = 365/5, start = c(2020, 1))}
 Mort1f = data.frame(Mort1f)
   # Sext-Daily
 Mort1g=vector()
@@ -423,13 +451,13 @@ for(i in 1:226){
   x = 6 * (i-1) + 1
   y = 6 * i
   Mort1g <- append(Mort1g, mean(Mort1a[x:y, 1]))
-  Mort1g = ts(Mort1g)}
+  Mort1g = ts(Mort1g, frequency = 365/6, start = c(2020, 5/6))}
 Mort1g = data.frame(Mort1g)
 
 
 # Smoothed_Cases: [January 8, 2020 - December 3, 2020]
   # Daily
-Smoothed_Cases2a = ts(covid$new_cases_smoothed[1:331])
+Smoothed_Cases2a = ts(covid$new_cases_smoothed[1:331], frequency = 365, start = c(2020, 8))
 Smoothed_Cases2a= data.frame(Smoothed_Cases2a)
   # Weekly
 Smoothed_Cases2b=vector()
@@ -437,7 +465,7 @@ for(i in 1:47){
   x = 7 * (i-1) + 1
   y = 7 * i
   Smoothed_Cases2b <- append(Smoothed_Cases2b, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2b = ts(Smoothed_Cases2b)}
+  Smoothed_Cases2b = ts(Smoothed_Cases2b, frequency = 365/7, start = c(2020, 8/7))}
 Smoothed_Cases2b = data.frame(Smoothed_Cases2b)
   # Bi-Daily
 Smoothed_Cases2c=vector()
@@ -445,7 +473,7 @@ for(i in 1:165){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Cases2c <- append(Smoothed_Cases2c, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2c = ts(Smoothed_Cases2c)}
+  Smoothed_Cases2c = ts(Smoothed_Cases2c, frequency = 365/2, start = c(2020, 4))}
 Smoothed_Cases2c = data.frame(Smoothed_Cases2c)
   # Tri-Daily
 Smoothed_Cases2d=vector()
@@ -453,7 +481,7 @@ for(i in 1:110){
   x = 3 * (i-1) + 1
   y = 3 * i
   Smoothed_Cases2d <- append(Smoothed_Cases2d, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2d = ts(Smoothed_Cases2d)}
+  Smoothed_Cases2d = ts(Smoothed_Cases2d, frequency = 365/3, start = c(2020, 8/3))}
 Smoothed_Cases2d = data.frame(Smoothed_Cases2d)
   # Quad-Daily
 Smoothed_Cases2e=vector()
@@ -461,7 +489,7 @@ for(i in 1:82){
   x = 4 * (i-1) + 1
   y = 4 * i
   Smoothed_Cases2e <- append(Smoothed_Cases2e, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2e = ts(Smoothed_Cases2e)}
+  Smoothed_Cases2e = ts(Smoothed_Cases2e, frequency = 365/4, start = c(2020, 2))}
 Smoothed_Cases2e = data.frame(Smoothed_Cases2e)
   # Penta-Daily
 Smoothed_Cases2f=vector()
@@ -469,7 +497,7 @@ for(i in 1:66){
   x = 5 * (i-1) + 1
   y = 5 * i
   Smoothed_Cases2f <- append(Smoothed_Cases2f, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2f = ts(Smoothed_Cases2f)}
+  Smoothed_Cases2f = ts(Smoothed_Cases2f, frequency = 365/5, start = c(2020, 8/5))}
 Smoothed_Cases2f = data.frame(Smoothed_Cases2f)
   # Sext-Daily
 Smoothed_Cases2g=vector()
@@ -477,21 +505,21 @@ for(i in 1:55){
   x = 6 * (i-1) + 1
   y = 6 * i
   Smoothed_Cases2g <- append(Smoothed_Cases2g, mean(Smoothed_Cases2a[x:y, 1]))
-  Smoothed_Cases2g = ts(Smoothed_Cases2g)}
+  Smoothed_Cases2g = ts(Smoothed_Cases2g, frequency = 365/6, start = c(2020, 8/6))}
 Smoothed_Cases2g = data.frame(Smoothed_Cases2g)
 
 
 # Cases: [January 17, 2020 - December 3, 2020]
   # Daily
 Cases2a = ts(covid$new_cases[10:331])
-Cases2a= data.frame(Cases2a)
+Cases2a= data.frame(Cases2a, frequency = 365, start = c(2020, 17))
   # Weekly
 Cases2b=vector()
 for(i in 1:46){
   x = 7 * (i-1) + 1
   y = 7 * i
   Cases2b <- append(Cases2b, mean(Cases2a[x:y, 1]))
-  Cases2b = ts(Cases2b)}
+  Cases2b = ts(Cases2b, frequency = 365/7, start = c(2020, 17/7))}
 Cases2b = data.frame(Cases2b)
   # Bi-Daily
 Cases2c=vector()
@@ -499,7 +527,7 @@ for(i in 1:161){
   x = 2 * (i-1) + 1
   y = 2 * i
   Cases2c <- append(Cases2c, mean(Cases2a[x:y, 1]))
-  Cases2c = ts(Cases2c)}
+  Cases2c = ts(Cases2c, frequency = 365/2, start = c(2020, 17/2))}
 Cases2c = data.frame(Cases2c)
   # Tri-Daily
 Cases2d=vector()
@@ -507,7 +535,7 @@ for(i in 1:107){
   x = 3 * (i-1) + 1
   y = 3 * i
   Cases2d <- append(Cases2d, mean(Cases2a[x:y, 1]))
-  Cases2d = ts(Cases2d)}
+  Cases2d = ts(Cases2d, frequency = 365/3, start = c(2020, 17/3))}
 Cases2d = data.frame(Cases2d)
   # Quad-Daily
 Cases2e=vector()
@@ -515,7 +543,7 @@ for(i in 1:80){
   x = 4 * (i-1) + 1
   y = 4 * i
   Cases2e <- append(Cases2e, mean(Cases2a[x:y, 1]))
-  Cases2e = ts(Cases2e)}
+  Cases2e = ts(Cases2e, frequency = 365/4, start = c(2020, 17/4))}
 Cases2e = data.frame(Cases2e)
   # Penta-Daily
 Cases2f=vector()
@@ -523,7 +551,7 @@ for(i in 1:64){
   x = 5 * (i-1) + 1
   y = 5 * i
   Cases2f <- append(Cases2f, mean(Cases2a[x:y, 1]))
-  Cases2f = ts(Cases2f)}
+  Cases2f = ts(Cases2f, frequency = 365/5, start = c(2020, 17/5))}
 Cases2f = data.frame(Cases2f)
   # Sext-Daily
 Cases2g=vector()
@@ -531,13 +559,13 @@ for(i in 1:53){
   x = 6 * (i-1) + 1
   y = 6 * i
   Cases2g <- append(Cases2g, mean(Cases2a[x:y, 1]))
-  Cases2g = ts(Cases2g)}
+  Cases2g = ts(Cases2g, frequency = 365/6, start = c(2020, 17/6))}
 Cases2g = data.frame(Cases2g)
 
 
 # Smoothed_Deaths: [January 8, 2020 - December 3, 2020]
   # Daily
-Smoothed_Deaths2a = ts(covid$new_deaths_smoothed[1:331])
+Smoothed_Deaths2a = ts(covid$new_deaths_smoothed[1:331], frequency = 365, start = c(2020, 8))
 Smoothed_Deaths2a= data.frame(Smoothed_Deaths2a)
   # Weekly
 Smoothed_Deaths2b=vector()
@@ -545,7 +573,7 @@ for(i in 1:47){
   x = 7 * (i-1) + 1
   y = 7 * i
   Smoothed_Deaths2b <- append(Smoothed_Deaths2b, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2b = ts(Smoothed_Deaths2b)}
+  Smoothed_Deaths2b = ts(Smoothed_Deaths2b, frequency = 365/7, start = c(2020, 8/7))}
 Smoothed_Deaths2b = data.frame(Smoothed_Deaths2b)
   # Bi-Daily
 Smoothed_Deaths2c=vector()
@@ -553,7 +581,7 @@ for(i in 1:165){
   x = 2 * (i-1) + 1
   y = 2 * i
   Smoothed_Deaths2c <- append(Smoothed_Deaths2c, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2c = ts(Smoothed_Deaths2c)}
+  Smoothed_Deaths2c = ts(Smoothed_Deaths2c, frequency = 365/2, start = c(2020, 8/2))}
 Smoothed_Deaths2c = data.frame(Smoothed_Deaths2c)
   # Tri-Daily
 Smoothed_Deaths2d=vector()
@@ -561,7 +589,7 @@ for(i in 1:110){
   x = 3 * (i-1) + 1
   y = 3 * i
   Smoothed_Deaths2d <- append(Smoothed_Deaths2d, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2d = ts(Smoothed_Deaths2d)}
+  Smoothed_Deaths2d = ts(Smoothed_Deaths2d, frequency = 365/3, start = c(2020, 8/3))}
 Smoothed_Deaths2d = data.frame(Smoothed_Deaths2d)
   # Quad-Daily
 Smoothed_Deaths2e=vector()
@@ -569,7 +597,7 @@ for(i in 1:82){
   x = 4 * (i-1) + 1
   y = 4 * i
   Smoothed_Deaths2e <- append(Smoothed_Deaths2e, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2e = ts(Smoothed_Deaths2e)}
+  Smoothed_Deaths2e = ts(Smoothed_Deaths2e, frequency = 365/4, start = c(2020, 8/4))}
 Smoothed_Deaths2e = data.frame(Smoothed_Deaths2e)
   # Penta-Daily
 Smoothed_Deaths2f=vector()
@@ -577,7 +605,7 @@ for(i in 1:66){
   x = 5 * (i-1) + 1
   y = 5 * i
   Smoothed_Deaths2f <- append(Smoothed_Deaths2f, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2f = ts(Smoothed_Deaths2f)}
+  Smoothed_Deaths2f = ts(Smoothed_Deaths2f, frequency = 365/5, start = c(2020, 8/5))}
 Smoothed_Deaths2f = data.frame(Smoothed_Deaths2f)
   # Sext-Daily
 Smoothed_Deaths2g=vector()
@@ -585,14 +613,14 @@ for(i in 1:55){
   x = 6 * (i-1) + 1
   y = 6 * i
   Smoothed_Deaths2g <- append(Smoothed_Deaths2g, mean(Smoothed_Deaths2a[x:y, 1]))
-  Smoothed_Deaths2g = ts(Smoothed_Deaths2g)}
+  Smoothed_Deaths2g = ts(Smoothed_Deaths2g, frequency = 365/6, start = c(2020, 8/6))}
 Smoothed_Deaths2g = data.frame(Smoothed_Deaths2g)
 
 
 
 # Deaths: [January 19, 2020 - December 3, 2020]
   # Daily
-Deaths2a = ts(covid$new_deaths_smoothed[12:331])
+Deaths2a = ts(covid$new_deaths_smoothed[12:331], frequency = 365, start = c(2020, 19))
 Deaths2a= data.frame(Deaths2a)
   # Weekly
 Deaths2b=vector()
@@ -600,7 +628,7 @@ for(i in 1:45){
   x = 7 * (i-1) + 1
   y = 7 * i
   Deaths2b <- append(Deaths2b, mean(Deaths2a[x:y, 1]))
-  Deaths2b = ts(Deaths2b)}
+  Deaths2b = ts(Deaths2b, frequency = 365/7, start = c(2020, 19/7))}
 Deaths2b = data.frame(Deaths2b)
   # Bi-Daily
 Deaths2c=vector()
@@ -608,7 +636,7 @@ for(i in 1:160){
   x = 2 * (i-1) + 1
   y = 2 * i
   Deaths2c <- append(Deaths2c, mean(Deaths2a[x:y, 1]))
-  Deaths2c = ts(Deaths2c)}
+  Deaths2c = ts(Deaths2c, frequency = 365/2, start = c(2020, 19/2))}
 Deaths2c = data.frame(Deaths2c)
   # Tri-Daily
 Deaths2d=vector()
@@ -616,7 +644,7 @@ for(i in 1:106){
   x = 3 * (i-1) + 1
   y = 3 * i
   Deaths2d <- append(Deaths2d, mean(Deaths2a[x:y, 1]))
-  Deaths2d = ts(Deaths2d)}
+  Deaths2d = ts(Deaths2d, frequency = 365/3, start = c(2020, 19/3))}
 Deaths2d = data.frame(Deaths2d)
   # Quad-Daily
 Deaths2e=vector()
@@ -624,7 +652,7 @@ for(i in 1:80){
   x = 4 * (i-1) + 1
   y = 4 * i
   Deaths2e <- append(Deaths2e, mean(Deaths2a[x:y, 1]))
-  Deaths2e = ts(Deaths2e)}
+  Deaths2e = ts(Deaths2e, frequency = 365/4, start = c(2020, 19/4))}
 Deaths2e = data.frame(Deaths2e)
   # Penta-Daily
 Deaths2f=vector()
@@ -632,7 +660,7 @@ for(i in 1:64){
   x = 5 * (i-1) + 1
   y = 5 * i
   Deaths2f <- append(Deaths2f, mean(Deaths2a[x:y, 1]))
-  Deaths2f = ts(Deaths2f)}
+  Deaths2f = ts(Deaths2f, frequency = 365/5, start = c(2020, 19/5))}
 Deaths2f = data.frame(Deaths2f)
   # Sext-Daily
 Deaths2g=vector()
@@ -640,7 +668,7 @@ for(i in 1:53){
   x = 6 * (i-1) + 1
   y = 6 * i
   Deaths2g <- append(Deaths2g, mean(Deaths2a[x:y, 1]))
-  Deaths2g = ts(Deaths2g)}
+  Deaths2g = ts(Deaths2g, frequency = 365/6, start = c(2020, 19/6))}
 Deaths2g = data.frame(Deaths2g)
 
 
@@ -2148,7 +2176,7 @@ vect1 = append(vect1, "Mort3_5g")
 
 # Transformation, Differencing, Normality Tests, and Stationarity Tests
 # V1
-```{r, warning = FALSE}
+````{r, warning = FALSE}
 
 # We will create 3 transformations of each model:
 #   - Box-Cox Transformation
@@ -2219,6 +2247,7 @@ for(i in 1:length(vect)){
 #   - Lag 1.12 (non seasonal difference - yearly & seasonal difference - monthly) 
 
 # This bring the total number of models being evaluated to 480.
+
   
   list = c(0,1,7,12,1.7,1.12)
   for(j in 1:length(transform)){
@@ -2332,7 +2361,9 @@ for(i in 1:length(vect)){
         if(Data[x,z]>=0.05){
           Data$Pass[x] = 1 + Data$Pass[x]}}
       if(Data[x, 9] <= 0.05){
-        Data$Pass[x] = 2 + Data$Pass[x]}
+        Data$Pass[x] = 1 + Data$Pass[x]}
+      if(Data[x, 9] <= 0.05 & Data[x, 10] >= 0.05){
+        Data$Pass[x] = Data$Pass[x] - 1}
       Variance_Order = data.frame(matrix(ncol=3, nrow=5))
       colnames(Variance_Order) = c("Levels", "Variance", "Rank")
       Variance_Order$Levels = c("Original", "Transformation", "Differencing", 
@@ -2344,20 +2375,12 @@ for(i in 1:length(vect)){
         Variance_Order$Rank[1], ", ", Variance_Order$Rank[2],
         ", ", Variance_Order$Rank[3], ", ", Variance_Order$Rank[4], ", ", 
         Variance_Order$Rank[5])
-      Fails = 0
-      if(Data[x, 14] < Data[x, 15]){
-        Fails=Fails+1}
-      if((Data[x, 15] < Data[x, 16]) & (Data[x, 15] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 14] < Data[x, 16]) & (Data[x, 14] < Data[x, 17])){
-        Fails=Fails+1}
-      if((Data[x, 16] < Data[x, 18]) & (Data[x, 17] < Data[x, 18])){
-        Fails=Fails+1}
-      if(Data[x, 14] < Data[x, 18]){
-        Fails=Fails+1}
-      if(Data[x, 15] < Data[x, 18]){
-        Fails=Fails+1}
-      Data$Pass[x] = (6-Fails)/6 + Data$Pass[x]
+      if(substr(Data$Variance_test[x], -1, 0) %in% c("1","2")){
+        Data$Pass[x] = Data$Pass[x] + 1}
+      if(substr(Data$Variance_test[x], -1, 0) %in% c("4","5")){
+        Data$Pass[x] = Data$Pass[x]}
+      if(substr(Data$Variance_test[x], -1, 0) == "3"){
+        Data$Pass[x] = Data$Pass[x] + 0.5}
       # if(Data$Pass[x] >= 6){
       #   # None of the undifferenced transformations for each data set are part of the best models
       #   if(list(k)==0){
@@ -2389,11 +2412,14 @@ for(i in 1:length(vect)){
         if(Data[x,s] >= 0.05){
           Pass1 = Pass1 + 1}}
       if(Pass1 >= 3){
-        Data$Residual_Tests[x] = "Pass3"}
+        Data$Residual_Tests[x] = "Pass3"
+        Data$Pass[x] = Data$Pass[x] + 3}
       if(Pass1 > 1 & Pass1 < 3){
-        Data$Residual_Tests[x] = "Pass2"}
+        Data$Residual_Tests[x] = "Pass2"
+        Data$Pass[x] = Data$Pass[x] + 2}
       if(Pass1 > 0 & Pass1 < 2){
-        Data$Residual_Tests[x] = "Pass1"}
+        Data$Residual_Tests[x] = "Pass1"
+        Data$Pass[x] = Data$Pass[x] + 1}
       if(Pass1 == 0){
         Data$Residual_Tests[x] = "Fail"}
       Pass2 = 0
@@ -3280,10 +3306,182 @@ ts.plot(Mortality, xlim = c(100,length(Mortality)+12), ylim = c(250,max(U)), col
 lines(L, col="blue", lty="dashed")
 points((length(Mortality)+1):(length(Mortality)+12), pred.orig, col="green")
 points((length(Mortality)+1):(length(Mortality)+12), pred.orig, col="black")
+```
+
+```{r}
+nsdiffs(Difference[[1]])
+
+z = ts(vect[[29]], frequency = 365, start = c(2020, 5))
+z
+z = ts(vect[[29]], frequency = 365/7, start = c(2020, 8/7))
+z
+ndiffs(z)
+y=acf2(Difference[[677]])
+y=acf2(Difference[[674]])
+x = arima(Difference[[674]], order = c(0,0,0), seasonal = list(order = c(0,1,0), period = 7))
+y=acf2(x$residuals)
+x = arima(Difference[[674]], order = c(0,1,0), seasonal = list(order = c(0,1,0), period = 7))
+y=acf2(x$residuals)
+x = arima(Difference[[674]], order = c(1,1,0), seasonal = list(order = c(0,1,0), period = 7))
+y=acf2(x$residuals)
+x = arima(Difference[[674]], order = c(0,1,1), seasonal = list(order = c(0,1,0), period = 7))
+y=acf2(x$residuals)
 
 
+
+x = arima(Difference[[677]], order = c(0,0,0), seasonal = list(order = c(1,1,0), period = 7))
+acf2(x$residuals)
+x = arima(Difference[[677]], order = c(1,0,0), seasonal = list(order = c(1,0,0), period = 7))
+acf2(x$residuals)
+x = arima(Difference[[677]], order = c(1,0,1), seasonal = list(order = c(1,0,0), period = 7))
+acf2(x$residuals)
+x = arima(Difference[[677]], order = c(1,1,1), seasonal = list(order = c(1,0,0), period = 7))
+acf2(x$residuals)
+x = arima(Difference[[674]], order = c(1,2,1), seasonal = list(order = c(1,1,0), period = 7))
+acf2(x$residuals)
+auto.arima
 
 ```
+
+
+```{r}
+
+Data1 = data.frame(matrix(nrow=3456, ncol=2))
+colnames(Data1) = c("Model", "AICc")
+
+loop.s = c(7)
+loop.p = c(0,1,2,3)
+loop.d = c(0,1,2,3,4,5,6,7)
+loop.q = c(0,1,2,3)
+loop.P = c(1,2)
+loop.Q = c(0,1,2)
+loop.D = c(1,2)
+
+i = 1
+for(s in loop.s){
+  for(D in loop.D){
+    for(Q in loop.Q){
+      for(P in loop.P){
+        for(d in loop.d){
+          for(q in loop.q){
+            for(p in loop.p){
+                Data1[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+                assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                       try(arima(vect[[29]], order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML")))
+                Data1[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
+                x=try(acf2(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
+                       main = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data1[i,2])))
+                i = i + 1
+                }
+              }}}}}}
+
+```
+
+
+
+```{r}
+Data_aa = data.frame(matrix(nrow=10000, ncol=3))
+colnames(Data_aa) = c("Model", "AICc", "Pass")
+
+i = 1
+for(x in 1:length(Difference)){
+  min = vector()
+  if(ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order)}
+  if(ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("mle"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("mle"))$order)}
+  if(ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("ols"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = TRUE, order.max = NULL, method = c("ols"))$order)}
+  if(ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order)}
+  if(ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("mle"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("mle"))$order)}
+  if(ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("ols"))$order > 0){
+    min = append(min, ar(Difference[[x]], aic = FALSE, order.max = NULL, method = c("ols"))$order)}
+  min1 = sort(min)[1]
+
+  num = 4 * (x-1) + 2
+  Set = 4 * (x-1) + 3
+  name = Best_Models_a1[[Set]]
+  Name = vect1[name]
+  number = Best_Models_a1[[num]]
+  if(Data_a$Differencing[[number]] == "Lag = 1, Period = 7"){
+    s = 7
+    d = 1
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = 1, Period = 12"){
+    s = 12
+    d = 1
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = 1, Period = none"){
+    s = 0
+    d = 1
+    D = 0}
+  if(Data_a$Differencing[[number]] == "Lag = none, Period = 7"){
+    s = 7
+    d = 0
+    D = 1}
+  if(Data_a$Differencing[[number]] == "Lag = none, Period = 12"){
+    s = 12
+    d = 0
+    D = 1}
+  
+  if(min >= 4){
+    loop.p = c(0,1,2,min1-1,min1)
+    loop.q = c(0,1,2,min1-1,min1)}
+  else{
+    loop.p = c(seq(0,5))
+    loop.q = c(seq(0,5))}
+
+  loop.P = c(0,1,2)
+  loop.Q = c(0,1,2)
+  
+  for(Q in loop.Q){
+    for(P in loop.P){
+      for(q in loop.q){
+        for(p in loop.p){
+          print(paste0(i, ".", x))
+          Data_aa[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
+          assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
+                 try(arima(Best_Models_a[[x]], order=c(p,d,q), seasonal=list(
+                   order=c(P,D,Q), period=s), method="ML")))
+          Data_aa[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
+          res = try(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals)
+          Data_aa$Pass[i] = 0
+          if(try(round(ad.test(difference[[k]])$p.value, digits=5) >= 0.05) |
+             try(round(shapiro.test(difference[[k]])$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(adf.test(difference[[k]])$p.value, digits=5) <= 0.05) |
+             try(round(kpss.test(difference[[k]])$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
+            difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
+            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(try(round(Box.test((difference[[k]])^2, lag=sqrt(length(
+            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
+            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
+          if(Data_aa$Pass[i] >= 3){
+            z=try(acf2(res, main = paste0(Name, "SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data_aa[i,2]), cex=0.8))
+            try(mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), 
+                             "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), 
+                                                                fitdf = 0)$p.value, digits=3),
+                             "     ad.test: ", round(ad.test(res)$p.value, digits=3)), 
+                      side=3, line=-9, adj=0, cex=0.7))
+            try(mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), 
+                                                            fitdf = 0)$p.value, digits=3), 
+                             "     adf.test: ", round(adf.test(res)$p.value, digits=3), 
+                             "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), 
+                                                            fitdf = 0)$p.value, digits=3), 
+                             "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), 
+                      side=3, line=-10, adj=0, cex=0.7))}
+                i=i+1}}}}}
+
+```
+
+
 
 # Plot, Box-Cox, Histogram, Periodogram, QQ-Plot, ACF/PACF
 # V1
@@ -3367,145 +3565,6 @@ for(t in 1:length(Best_Models_a)){
     mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), fitdf = 0)$p.value, digits=3), "     adf.test: ", round(adf.test(res)$p.value, digits=3), "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=3), "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), side=1, line=-6.5, adj=0, cex=0.7)}
 
 ```
-
-
-```{r}
-x
-Data = data.frame(matrix(nrow=972, ncol=2))
-colnames(Data) = c("Model", "AICc")
-
-loop.s = c(12)
-loop.p = c(0,1,2,3,4,5,12,15)
-loop.d = c(0,1)
-loop.q = c(0,1,2,3,4,5,12,15)
-loop.P = c(0,1)
-loop.Q = c(0,1)
-loop.D = c(0)
-
-i = 1
-for(s in loop.s){
-  for(D in loop.D){
-    for(Q in loop.Q){
-      for(P in loop.P){
-        for(d in loop.d){
-          for(q in loop.q){
-            for(p in loop.p){
-                Data[i, 1] = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-                assign(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                       try(arima(Best_Models_a[[12]], order=c(p,d,q), seasonal=list(order=c(P,D,Q), period=s), method="ML")))
-                Data[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
-                x=try(acf2(get(paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals, 
-                       main = paste0("SARIMA(", p, ",", d+1, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data[i,2])))
-                }
-              }}}}}}
-
-```
-
-
-
-```{r}
-Data_aa = data.frame(matrix(nrow=10000, ncol=3))
-colnames(Data_aa) = c("Model", "AICc", "Pass")
-
-i = 1
-for(x in 1:length(Best_Models_a)){
-  min = vector()
-  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("yule-walker"))$order)}
-  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("mle"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("mle"))$order)}
-  if(ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("ols"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = TRUE, order.max = NULL, method = c("ols"))$order)}
-  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("yule-walker"))$order)}
-  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("mle"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("mle"))$order)}
-  if(ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order > 0){
-    min = append(min, ar(Best_Models_a[[1]], aic = FALSE, order.max = NULL, method = c("ols"))$order)}
-  min1 = sort(min)[1]
-
-  num = 4 * (x-1) + 2
-  Set = 4 * (x-1) + 3
-  name = Best_Models_a1[[Set]]
-  Name = vect1[name]
-  number = Best_Models_a1[[num]]
-  if(Data_a$Differencing[[number]] == "Lag = 1 & Lag = 7"){
-    s = 7
-    d = 1
-    D = 1}
-  if(Data_a$Differencing[[number]] == "Lag = 1 & Lag = 12"){
-    s = 12
-    d = 1
-    D = 1}
-  if(Data_a$Differencing[[number]] == "Lag = 1"){
-    s = 0
-    d = 1
-    D = 0}
-  if(Data_a$Differencing[[number]] == "Lag = 7"){
-    s = 7
-    d = 0
-    D = 1}
-  if(Data_a$Differencing[[number]] == "Lag = 12"){
-    s = 12
-    d = 0
-    D = 1}
-  
-  if(min >= 4){
-    loop.p = c(0,1,2,min1-1,min1)
-    loop.q = c(0,1,2,min1-1,min1)}
-  else{
-    loop.p = c(seq(0,5))
-    loop.q = c(seq(0,5))}
-
-  loop.P = c(0,1,2)
-  loop.Q = c(0,1,2)
-  
-  for(Q in loop.Q){
-    for(P in loop.P){
-      for(q in loop.q){
-        for(p in loop.p){
-          print(paste0(i, ".", x))
-          Data_aa[i, 1] = paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s)
-          assign(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s), 
-                 try(arima(Best_Models_a[[x]], order=c(p,d,q), seasonal=list(
-                   order=c(P,D,Q), period=s), method="ML")))
-          Data_aa[i, 2] = try(AIC(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))))
-          res = try(get(paste0("SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s))$residuals)
-          Data_aa$Pass[i] = 0
-          if(try(round(ad.test(difference[[k]])$p.value, digits=5) >= 0.05) |
-             try(round(shapiro.test(difference[[k]])$p.value, digits=5) >= 0.05)){
-            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
-          if(try(round(adf.test(difference[[k]])$p.value, digits=5) <= 0.05) |
-             try(round(kpss.test(difference[[k]])$p.value, digits=5) >= 0.05)){
-            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
-          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
-            difference[[k]])), type=c("Box-Pierce"), fitdf = 0)$p.value, digits=5) >= 0.05)){
-            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
-          if(try(round(Box.test(difference[[k]], lag=sqrt(length(
-            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
-            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
-          if(try(round(Box.test((difference[[k]])^2, lag=sqrt(length(
-            difference[[k]])), type=c("Ljung-Box"), fitdf = 0)$p.value, digits=5) >= 0.05)){
-            Data_aa$Pass[i] = Data_aa$Pass[i] + 1}
-          if(Data_aa$Pass[i] >= 3){
-            z=try(acf2(res, main = paste0(Name, "SARIMA(", p, ",", d, ",", q, ")x(", P, ",", D, ",", Q, ")_", s, "  AICc = ", Data_aa[i,2]), cex=0.8))
-            try(mtext(paste0("Shapiro: ", round(shapiro.test(res)$p.value, digits=3), 
-                             "     McLeod-Li: ", round(Box.test((res)^2, lag=sqrt(length(res)), type=c("Ljung-Box"), 
-                                                                fitdf = 0)$p.value, digits=3),
-                             "     ad.test: ", round(ad.test(res)$p.value, digits=3)), 
-                      side=3, line=-9, adj=0, cex=0.7))
-            try(mtext(paste0("Box-Pierce: ", round(Box.test(res, lag = sqrt(length(res)), type = c("Box-Pierce"), 
-                                                            fitdf = 0)$p.value, digits=3), 
-                             "     adf.test: ", round(adf.test(res)$p.value, digits=3), 
-                             "     Ljung-Box: ", round(Box.test(res, lag=sqrt(length(res)), type=c("Ljung-Box"), 
-                                                            fitdf = 0)$p.value, digits=3), 
-                             "     kpss.test: ", round(kpss.test(res)$p.value, digits=3)), 
-                      side=3, line=-10, adj=0, cex=0.7))}
-                i=i+1}}}}}
-
-```
-
-
 
 
 ```{r}
