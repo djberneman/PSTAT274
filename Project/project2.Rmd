@@ -1,26 +1,25 @@
 ---
-title: "Untitled"
-output: html_document
-date: "2023-11-27"
+title: "PSTAT 174/274 Spring 2023 Project"
+author: "Dylan Berneman"
+date: "`r Sys.Date()`"
+output: pdf_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ```{r, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
+  echo = TRUE,
 	message = FALSE,
 	warning = FALSE,
-	include = FALSE
+	include = TRUE
 )
+```
 
-pkgs <- c("pkgbuild", "pkgconfig", "plyr", "dplyr", "MASS", "grid", "gtable", "gtools", "jsonlite", "knitr", "markdown", "rmarkdown", "parallel", "scales", "rlang", "distributional", "forecast", "reader", "readxl", "tinytex", "stringr", "ggplot2", "uroot", "FinTS", "Rdpack", "latex2exp", "plot3D", "ks", "rugarch",
+```{r}
+pkgs <- c("pkgbuild", "pkgconfig", "plyr", "dplyr", "MASS", "grid", "gtable", "gtools", "jsonlite", "knitr", "markdown", "rmarkdown", "parallel", "scales", "rlang", "distributional", "forecast", "reader", "readxl", "tinytex", "stringr", "ggplot2", "uroot", "FinTS", "Rdpack", "latex2exp", "plot3D", "ks", "rugarch", "arfima",
           "~/PSTAT274/Project/Packages/astsa_2.0.tar.gz",
           "~/PSTAT274/Project/Packages/Dict_0.1.0.tar.gz",
           "~/PSTAT274/Project/Packages/UnitCircle_0.1.3.tar.gz",
           "~/PSTAT274/Project/Packages/expm_0.999-7.tar.gz",
-          "~/PSTAT274/Project/Packages/MSGARCH_2.51.tar.gz",
           "~/PSTAT274/Project/Packages/polynom_1.4-1.tar.gz",
           "~/PSTAT274/Project/Packages/PolynomF_2.0-5.tar.gz",
           "~/PSTAT274/Project/Packages/locfit_1.5-9.8.tar.gz",
@@ -35,7 +34,6 @@ pkgs <- c("pkgbuild", "pkgconfig", "plyr", "dplyr", "MASS", "grid", "gtable", "g
           "~/PSTAT274/Project/Packages/nortest_1.0-4.tar.gz",
           "~/PSTAT274/Project/Packages/nortsTest_1.0.3.tar.gz",
           "~/PSTAT274/Project/Packages/sarima_0.9.1.tar.gz",
-          "~/PSTAT274/Project/Packages/SBAGM_0.1.0.tar.gz",
           "~/PSTAT274/Project/Packages/sae_1.3.tar.gz",
           "~/PSTAT274/Project/Packages/tseries_0.10-54.tar.gz",
           "~/PSTAT274/Project/Packages/TSA_1.3.1.tar.gz")
@@ -90,11 +88,345 @@ In regards to the names of the data sets:\
 ```{r}
 options(scipen = 9)
 covid <- read_excel("covid_final_data.xlsx")
+```
+
+# Deaths: [January 8, 2020 - September 27, 2023]
+```{r, warning=FALSE}
+# Original
+Deaths = ts(covid$new_deaths_smoothed[1:1359])
+y <- ts(as.ts(Deaths), frequency = 365)
+decomp <- decompose(y)
+plot(decomp)
+
+# Box-Cox
+bcTransform <- boxcox(Deaths~ as.numeric(1:length(Deaths)))
+bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+lambda=bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+Deaths.bc = (1/lambda)*(Deaths^lambda-1)
+y <- ts(as.ts(Deaths.bc), frequency = 365)
+decomp <- decompose(y)
+plot(decomp)
+
+# Log
+Deaths.log = log(Deaths)
+y <- ts(as.ts(Deaths.log), frequency = 365)
+decomp <- decompose(y)
+plot(decomp)
+
+# Squared Root
+Deaths.sqrt = sqrt(Deaths)
+y <- ts(as.ts(Deaths.sqrt), frequency = 365)
+decomp <- decompose(y)
+plot(decomp)
+
+# Plots
+op <- par("mfrow", "mar")
+par(mfrow = c(2, 2))
+plot.ts(Deaths, main = paste0("Original: var = ", var(Deaths)))
+abline(h=mean(Deaths), col= "blue")
+abline(lm(Deaths ~ as.numeric(1:length(Deaths))), col="red")
+plot.ts(Deaths.bc, main = paste0("Box-Cox: var = ", var(Deaths.bc)))
+abline(h=mean(Deaths.bc), col= "blue")
+abline(lm(Deaths.bc ~ as.numeric(1:length(Deaths.bc))), col="red")
+plot.ts(Deaths.log, main = paste0("Log Transformed: var = ", var(Deaths.log)))
+abline(h=mean(Deaths.log), col= "blue")
+abline(lm(Deaths.log ~ as.numeric(1:length(Deaths.log))), col="red")
+plot.ts(Deaths.sqrt, main = paste0("Square Root Transformed: var = ", var(Deaths.sqrt)))
+abline(h=mean(Deaths.sqrt), col= "blue")
+abline(lm(Deaths.sqrt ~ as.numeric(1:length(Deaths.sqrt))), col="red")
+par(mfrow = op$mfrow, mar = op$mar)
+
+# Histograms
+op <- par("mfrow", "mar")
+par(mfrow = c(2, 2))
+hist(Deaths, col="light blue", xlab="", main="Original", probability = TRUE)
+m <-mean(Deaths)
+std <- sqrt(var(Deaths))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.bc, col="light blue", xlab="", main="Box-Cox", probability = TRUE)
+m <-mean(Deaths.bc)
+std <- sqrt(var(Deaths.bc))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.log, col="light blue", xlab="", main="Log Transformed", probability = TRUE)
+m <-mean(Deaths.log)
+std <- sqrt(var(Deaths.log))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.sqrt, col="light blue", xlab="", main="Square Root Transformed", probability = TRUE)
+m <-mean(Deaths.sqrt)
+std <- sqrt(var(Deaths.sqrt))
+curve(dnorm(x,m,std), add=TRUE )
+par(mfrow = op$mfrow, mar = op$mar)
+
+# ACF & PACF
+x = acf2(Deaths)
+x = acf2(Deaths.bc)
+x = acf2(Deaths.log)
+x = acf2(Deaths.sqrt)
+```
+
+# Differencing
+```{r}
+diff = ndiffs(Deaths)
+Deaths_1 <- arima(Deaths, order=c(0,1,0), method="ML")$residuals
+diff.bc = ndiffs(Deaths.bc)
+Deaths.bc_2 <- arima(Deaths.bc, order=c(0,2,0), method="ML")$residuals
+diff.log = ndiffs(Deaths.log)
+Deaths.log_2 <- arima(Deaths.log, order=c(0,2,0), method="ML")$residuals
+diff.sqrt = ndiffs(Deaths)
+Deaths.sqrt_1 <- arima(Deaths.sqrt, order=c(0,1,0), method="ML")$residuals
+
+# Plots
+op <- par("mfrow", "mar")
+par(mfrow = c(2, 2))
+plot.ts(Deaths_1, main = paste0("Original_1: var = ", var(Deaths_1)))
+abline(h=mean(Deaths_1), col= "blue")
+abline(lm(Deaths_1 ~ as.numeric(1:length(Deaths_1))), col="red")
+plot.ts(Deaths.bc_2, main = paste0("Box-Cox_2: var = ", var(Deaths.bc_2)))
+abline(h=mean(Deaths.bc_2), col= "blue")
+abline(lm(Deaths.bc_2 ~ as.numeric(1:length(Deaths.bc_2))), col="red")
+plot.ts(Deaths.log_2, main = paste0("Log Transformed_2: var = ", var(Deaths.log_2)))
+abline(h=mean(Deaths.log_2), col= "blue")
+abline(lm(Deaths.log_2 ~ as.numeric(1:length(Deaths.log_2))), col="red")
+plot.ts(Deaths.sqrt_1, main = paste0("Square Root Transformed_1: var = ", var(Deaths.sqrt_1)))
+abline(h=mean(Deaths.sqrt_1), col= "blue")
+abline(lm(Deaths.sqrt_1 ~ as.numeric(1:length(Deaths.sqrt_1))), col="red")
+par(mfrow = op$mfrow, mar = op$mar)
+
+# Histograms
+op <- par("mfrow", "mar")
+par(mfrow = c(2, 2))
+hist(Deaths_1, col="light blue", xlab="", main="Original_1", probability = TRUE)
+m <-mean(Deaths_1)
+std <- sqrt(var(Deaths_1))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.bc_2, col="light blue", xlab="", main="(Box-Cox)_2", probability = TRUE)
+m <-mean(Deaths.bc_2)
+std <- sqrt(var(Deaths.bc_2))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.log_2, col="light blue", xlab="", main="(Log Transformed)_2", probability = TRUE)
+m <-mean(Deaths.log_2)
+std <- sqrt(var(Deaths.log_2))
+curve(dnorm(x,m,std), add=TRUE )
+hist(Deaths.sqrt_1, col="light blue", xlab="", main="(Square Root Transformed)_1", probability = TRUE)
+m <-mean(Deaths.sqrt_1)
+std <- sqrt(var(Deaths.sqrt_1))
+curve(dnorm(x,m,std), add=TRUE )
+par(mfrow = op$mfrow, mar = op$mar)
+
+# ACF & PACF
+x = acf2(Deaths_1)
+x = acf2(Deaths.bc_2)
+x = acf2(Deaths.log_2)
+x = acf2(Deaths.sqrt_1)
+
+# Spectral Analysis using Periodograms
+gram = TSA::periodogram(Deaths_1, main=paste0(" Deaths_1"), cex.main=0.6)
+gram.bc = TSA::periodogram(Deaths.bc_2, main=paste0(" Deaths.bc_2"), cex.main=0.6)
+gram.log = TSA::periodogram(Deaths.log_2, main=paste0(" Deaths.log_2"), cex.main=0.6)
+gram.sqrt = TSA::periodogram(Deaths.sqrt_1, main=paste0(" Deaths.sqrt_1"), cex.main=0.6)
+
+1/gram$freq[which.max(gram$spec)]
+1/gram.bc$freq[which.max(gram.bc$spec)]
+1/gram.log$freq[which.max(gram.log$spec)]
+1/gram.sqrt$freq[which.max(gram.sqrt$spec)]
+
+try(acf2(arima(Deaths_1, order = c(0,0,0), seasonal = list(order=c(0,1,0), period=96),
+                   method="ML")$residuals, max.lag = 40, main = "Deaths_1.96", j[b]))
 
 
-# Smoothed_Cases: [January 8, 2020 - September 27, 2023]
-  # Daily
-Smoothed_Cases1a = ts(covid$new_cases_smoothed[1:1359])
-Smoothed_Cases1a= data.frame(Smoothed_Cases1a)
+frame = data.frame(matrix(nrow=720,ncol=3))
+colnames(frame) = c("spec", "freq", "1/freq")
+frame$spec = gram.bc$spec
+frame$freq = gram.bc$freq
+frame$`1/freq` = 1/gram$freq
+frame = subset(frame, frame$spec >= 50)
+frame
+j = unique(round(frame$`1/freq`, 0))
 
+for(b in 1:length(j)){
+    try(acf2(arima(Deaths.bc_2, order = c(0,0,0), seasonal = list(order=c(0,1,0), period=j[b]),
+                   method="ML")$residuals, main = paste0("Deaths.bc_2.", j[b])))}
+
+frame = data.frame(matrix(nrow=720,ncol=3))
+colnames(frame) = c("spec", "freq", "1/freq")
+frame$spec = gram.log$spec
+frame$freq = gram.log$freq
+frame$`1/freq` = 1/gram$freq
+frame = subset(frame, frame$spec >= 0.05)
+frame
+j = unique(round(frame$`1/freq`, 0))
+
+for(b in 1:length(j)){
+    try(acf2(arima(Deaths.log_2, order = c(0,0,0), seasonal = list(order=c(0,1,0), period=j[b]),
+                   method="ML")$residuals, main = paste0("Deaths.log_2.", j[b])))}
+
+try(acf2(arima(Deaths.sqrt_1, order = c(0,0,0), seasonal = list(order=c(0,1,0), period=144),
+                   method="ML")$residuals, main = "Deaths.sqrt_1.144"))
+```
+
+# Periodicity at 2-7 and 96
+```{r}
+
+Deaths_1.2 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=2),
+                    method="ML")$residuals
+x = acf2(Deaths_1.2, main = "Deaths_1.2")
+
+Deaths_1.3 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=3),
+                    method="ML")$residuals
+x = acf2(Deaths_1.3, main = "Deaths_1.3")
+
+Deaths_1.4 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=4),
+                    method="ML")$residuals
+x = acf2(Deaths_1.4, main = "Deaths_1.4")
+
+Deaths_1.5 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=5),
+                    method="ML")$residuals
+x = acf2(Deaths_1.5, main = "Deaths_1.5")
+
+Deaths_1.6 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=6),
+                    method="ML")$residuals
+x = acf2(Deaths_1.6, main = "Deaths_1.6")
+
+Deaths_1.7 <- arima(Deaths_1, order=c(0,0,0), seasonal = list(order=c(0,1,0), period=7),
+                    method="ML")$residuals
+x = acf2(Deaths_1.7, main = "Deaths_1.7")
+
+Deaths_1.7 <- arima(Deaths_1, order=c(7,0,0), seasonal = list(order=c(0,1,0), period=96),
+                    method="ML")$residuals
+x = acf2(Deaths_1.7, main = "Deaths_1.96")
+
+Deaths_1.7 <- arima(Deaths_1.7, order=c(5,0,5),method="ML")$residuals
+x = acf2(Deaths_1.7, main = "Deaths_1.7")
+
+arima.obj <- arima(Deaths_1.7, order=c(8,0,8), method="ML")
+x = acf2(arima.obj$residuals, main = "Deaths_1.96")
+
+round(ad.test(arima.obj$residuals)$p.value, 5)
+round(shapiro.test(arima.obj$residuals)$p.value, 5)
+round(adf.test(arima.obj$residuals)$p.value, 5)
+round(kpss.test(arima.obj$residuals)$p.value, 5)
+round(Box.test(arima.obj$residuals, lag=sqrt(length(arima.obj$residuals)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(arima.obj$residuals, lag=sqrt(length(arima.obj$residuals)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((arima.obj$residuals)^2, lag=sqrt(length(arima.obj$residuals)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+
+```
+# Periodicity of 2
+```{r}
+Deaths_1.2 <- arima(Deaths_1, order=c(7,0,2), seasonal = list(order=c(0,1,0), period=2),
+                    method="ML")$residuals
+x = acf2(Deaths_1.2, main = "Deaths_1.2")
+
+round(ad.test(Deaths_1.2)$p.value, 5)
+round(shapiro.test(Deaths_1.2)$p.value, 5)
+round(adf.test(Deaths_1.2)$p.value, 5)
+round(kpss.test(Deaths_1.2)$p.value, 5)
+round(Box.test(Deaths_1.2, lag=sqrt(length(Deaths_1.2)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.2, lag=sqrt(length(Deaths_1.2)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.2)^2, lag=sqrt(length(Deaths_1.2)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+
+Deaths_1.2 <- arima(Deaths_1, order=c(0,0,9), seasonal = list(order=c(0,1,0), period=2),
+                    method="ML")$residuals
+x = acf2(Deaths_1.2, main = "Deaths_1.2")
+
+round(ad.test(Deaths_1.2)$p.value, 5)
+round(shapiro.test(Deaths_1.2)$p.value, 5)
+round(adf.test(Deaths_1.2)$p.value, 5)
+round(kpss.test(Deaths_1.2)$p.value, 5)
+round(Box.test(Deaths_1.2, lag=sqrt(length(Deaths_1.2)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.2, lag=sqrt(length(Deaths_1.2)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.2)^2, lag=sqrt(length(Deaths_1.2)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+```
+
+# Periodicity of 3
+```{r}
+Deaths_1.3 <- arima(Deaths_1, order=c(7,0,3), seasonal = list(order=c(0,1,0), period=3),
+                    method="ML")$residuals
+x = acf2(Deaths_1.3, main = "Deaths_1.3")
+
+round(ad.test(Deaths_1.3)$p.value, 5)
+round(shapiro.test(Deaths_1.3)$p.value, 5)
+round(adf.test(Deaths_1.3)$p.value, 5)
+round(kpss.test(Deaths_1.3)$p.value, 5)
+round(Box.test(Deaths_1.3, lag=sqrt(length(Deaths_1.3)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.3, lag=sqrt(length(Deaths_1.3)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.3)^2, lag=sqrt(length(Deaths_1.3)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+
+Deaths_1.3 <- arima(Deaths_1, order=c(0,0,10), seasonal = list(order=c(0,1,0), period=3),
+                    method="ML")$residuals
+x = acf2(Deaths_1.3, main = "Deaths_1.3")
+
+round(ad.test(Deaths_1.3)$p.value, 5)
+round(shapiro.test(Deaths_1.3)$p.value, 5)
+round(adf.test(Deaths_1.3)$p.value, 5)
+round(kpss.test(Deaths_1.3)$p.value, 5)
+round(Box.test(Deaths_1.3, lag=sqrt(length(Deaths_1.3)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.3, lag=sqrt(length(Deaths_1.3)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.3)^2, lag=sqrt(length(Deaths_1.3)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+
+```
+# Periodicity of 4
+```{r}
+Deaths_1.4 <- arima(Deaths_1, order=c(7,0,4), seasonal = list(order=c(0,1,0), period=4),
+                    method="ML")$residuals
+x = acf2(Deaths_1.4, main = "Deaths_1.4")
+
+round(ad.test(Deaths_1.4)$p.value, 5)
+round(shapiro.test(Deaths_1.4)$p.value, 5)
+round(adf.test(Deaths_1.4)$p.value, 5)
+round(kpss.test(Deaths_1.4)$p.value, 5)
+round(Box.test(Deaths_1.4, lag=sqrt(length(Deaths_1.4)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.4, lag=sqrt(length(Deaths_1.4)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.4)^2, lag=sqrt(length(Deaths_1.4)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+```
+# Periodicity of 5
+```{r}
+Deaths_1.5 <- arima(Deaths_1, order=c(7,0,5), seasonal = list(order=c(0,1,0), period=5),
+                    method="ML")$residuals
+x = acf2(Deaths_1.5, main = "Deaths_1.5")
+
+round(ad.test(Deaths_1.5)$p.value, 5)
+round(shapiro.test(Deaths_1.5)$p.value, 5)
+round(adf.test(Deaths_1.5)$p.value, 5)
+round(kpss.test(Deaths_1.5)$p.value, 5)
+round(Box.test(Deaths_1.5, lag=sqrt(length(Deaths_1.5)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.5, lag=sqrt(length(Deaths_1.5)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.5)^2, lag=sqrt(length(Deaths_1.5)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+```
+# Periodicity of 7
+```{r}
+Deaths_1.7 <- arima(Deaths_1, order=c(6,0,0), seasonal = list(order=c(5,1,2), period=7),
+                    method="ML")$residuals
+x = acf2(Deaths_1.7, main = "Deaths_1.7")
+
+round(ad.test(Deaths_1.7)$p.value, 5)
+round(shapiro.test(Deaths_1.7)$p.value, 5)
+round(adf.test(Deaths_1.7)$p.value, 5)
+round(kpss.test(Deaths_1.7)$p.value, 5)
+round(Box.test(Deaths_1.7, lag=sqrt(length(Deaths_1.7)), type=c("Box-Pierce"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test(Deaths_1.7, lag=sqrt(length(Deaths_1.7)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
+round(Box.test((Deaths_1.7)^2, lag=sqrt(length(Deaths_1.7)), type=c("Ljung-Box"), 
+               fitdf = 0)$p.value, 5)
 ```
